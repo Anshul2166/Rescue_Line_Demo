@@ -1,0 +1,10 @@
+.signup-box {
+  width:100%;
+  max-width:400px;
+  min-width:300px;
+  height:500px;
+  border: 1px solid #eee;
+}
+.ios-and-badges {
+  height:90px;
+}

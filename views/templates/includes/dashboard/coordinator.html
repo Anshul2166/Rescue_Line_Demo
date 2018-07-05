@@ -1,0 +1,40 @@
+{% include 'templates/includes/dash_header.html' %}
+
+<div class="dash-sidebar bg-dark">
+  <img id="sb_logo" class="dash-logo" src="/assets/logo/rescueline-white.png" style="top:20px;"/>
+  <div id="dashboard" class="ds-item ds-active a-b no-a-b"><i class="fas fa-home"></i><span>Dashboard</span></div>
+  <div id="chat" class="ds-item a-b"><i class="fas fa-comment"></i><span>Chat</span></div>
+  <div id="map" class="ds-item a-b"><i class="fas fa-map-marker-alt"></i><span>Maps</span></div>
+  <div id="safe_place" class="ds-item a-b"><i class="fas fa-hospital"></i><span>Safe Places</span></div>
+</div>
+
+<div class="dash-container bg-light-gray pad">
+  <div id="dashboard_view" class="dash-view active-view">
+    <div class="tip rounded">
+      <i class="far fa-lightbulb" style="margin-top: 14px;"></i>
+      <span class="inva">Click and drag to reposition boxes</span>
+    </div>
+    <div style="position:relative;"><h3>EMERGENCY COORDINATOR</h3><div class="add-view top-right">ADD VIEW</div></div>
+    <div class="dash-grid">
+      <div class="grid-item gi-critical paper rounded"></div>
+      <div class="grid-item gi-critical paper rounded"></div>
+      <div class="grid-item gi-critical paper rounded"></div>
+      <div class="grid-item gi-critical paper rounded"></div>
+      <div class="grid-item paper rounded"></div>
+      <div class="grid-item paper rounded"></div>
+      <div class="grid-item paper rounded"></div>
+      <div class="grid-item paper rounded"></div>
+    </div>
+  </div>
+  <div id="chat_view" class="dash-view">
+    <h3>CHAT</h3>
+  </div>
+  <div id="map_view" class="dash-view">
+    <div id="mapbox"></div>
+  </div>
+  <div id="safe_place_view" class="dash-view">
+    <h3>SAFE PLACE</h3>
+  </div>
+</div>
+
+<script src="/js/coordinator.js"></script>

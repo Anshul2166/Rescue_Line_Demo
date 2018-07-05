@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rescue Line</title>
+
+    <!-- CSS -->
+    <link href="css/styles.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,500" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="antixss.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+  {% include "templates/includes/header.html" %}
+
+  <!-- HOME BLOCK -->
+  <div class="block head-block bg-dark">
+    <div class="width_wrapper">
+      <div id="home_block_text" class="lg-txt-w c-50 inva roboto tl">
+        <div class="tl" style="max-width:500px;margin-top:18%;">
+          Manage natural disasters efficiently, in real time<br>
+          <div class="f17 lh30 thin">
+            Our system is powered by the latest techniques in Artificial Intelligence to manage natural disaster response and ensure the right information is flowing to the right people.
+          </div>
+          <a href="/#how_it_works"><div class="bt-lg bt-lg-circ bg-white cl-light">Learn More</div></a>
+          <br><br>
+        </div>
+      </div><div id="home_block_pc" class="c-50 inva tr o-h">
+        <span class="v-align"></span>
+        <img src="/assets/pc-screen.png"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS BLOCK -->
+  <div id="how_it_works" class="block">
+    <div class="md-txt-g invm tl lh30" style="margin-top:7%;padding-left:10px;padding-right:40px;max-width:400px;">
+      Information is critical<br>
+      <div class="f17 lh30 thin" style="padding-top:10px;">
+       Learn more about how Rescue Line utilizes the Cloud and AI to gather, analyze and distribute valuable information that aids in disaster relief.
+      </div>
+      <br>
+    </div>
+    <div class="youtube-vid rounded inva"><div style="width:100px;height:20px;" class="c-align-abs">Epic Video</div></div>
+  </div>
+
+  <!-- GET STARTED BLOCK -->
+  <div id="get_started" class="block">
+    <div class="width_wrapper">
+      <h1>Get Started</h1><br>
+      <div class="gs-box roboto-thin inva rounded paper m-w-100 m-no-m-x">
+        <a href="/signup/citizen" class="inva wh100">
+          <i class="fas fa-user-shield cl-light"></i><br><br>
+          <span class="md-txt-g roboto-thin">Citizen</span><br><br>
+          I'm a citizen that wants to take advantage of RescueLine's features
+        </a>
+      </div>
+      <div class="gs-box roboto-thin inva rounded paper m-w-100 m-no-m-x">
+        <a href="/signup/responder" class="inva wh100">
+          <i class="fas fa-first-aid cl-light"></i><br><br>
+          <span class="md-txt-g roboto-thin">Responder</span><br><br>
+          I will be out in the field. ( Firefighter, Police Officer, NGO, and more )
+        </a>
+      </div>
+      <div class="gs-box roboto-thin inva rounded paper m-w-100 m-no-m-x">
+        <a href="/signup/coordinator" class="inva wh100">
+          <i class="fas fa-globe cl-light"></i><br><br>
+          <span class="md-txt-g roboto-thin">Coordinator</span><br><br>
+          I'm tasked with helping coordinate disaster response for an area
+        </a>
+      </div>
+      <div class="gs-box roboto-thin inva rounded paper m-w-100 m-no-m-x">
+        <a href="/signup/hospital" class="inva wh100">
+          <i class="fas fa-hospital cl-light"></i><br><br>
+          <span class="md-txt-g roboto-thin">Hospital</span><br><br>
+          I'm a Hospital Manager that wants to be better prepared for an emergency
+        </a>
+      </div>
+      <div class="space30"></div>
+    </div>
+  </div>
+
+  {% include "templates/includes/footer.html" %}
+
+  <script type='text/javascript'>
+  /*
+    $(function () {
+      var socket = io();
+      socket.emit('chat message', "Hello");
+      socket.on('chat message',function(msg){
+        console.log(msg);
+      });
+    });
+    */
+   </script>
+
+</body>
+
+
+</html>

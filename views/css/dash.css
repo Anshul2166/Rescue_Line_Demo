@@ -1,0 +1,146 @@
+.dash-header {
+  height: 70px;
+  width: 100%;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 3;
+  line-height:70px;
+}
+.dash-logo {
+  height:40px;
+  position:absolute;
+  left:38px;
+}
+.dash-container {
+  width:100%;
+  min-height:90%;
+  padding-left:200px;
+  position:relative;
+  text-align: left;
+}
+.dash-sidebar {
+  width:180px;
+  height:100%;
+  position:fixed;
+  padding-top:90px;
+  top:0;
+  left:0;
+  z-index: 2;
+  transition: width .5s;
+}
+.dash-side-group {
+  position:absolute;
+  height:100%;
+  width:90px;
+  top:0;
+  right:2.5%;
+}
+.dh-profile {
+  right: 0px;
+  width:40px;
+  height:40px;
+  overflow: hidden;
+  border-radius: 50%;
+  cursor:pointer;
+}
+#dh_noti {
+  right: 65px;
+  height:18px;
+  width:18px;
+}
+.ds-item {
+  height:45px;
+  line-height:45px;
+  padding-left:20px;
+  text-align: left;
+  color:#fff;
+  cursor:pointer;
+  white-space: nowrap;
+}
+.ds-toggle {
+  left: 190px;
+  font-size:20px;
+  height:20px;
+}
+.ds-item>i {
+  display:inline-block;
+  margin-right:20px;
+}
+.ds-active {
+  background-color: #209e91 !important;
+}
+.dash-grid {
+  width:100%;
+  height:auto;
+}
+.grid-item {
+  width: 47%;
+  height: 400px;
+}
+.gi-critical {
+  width:23%;
+  height:150px;
+}
+.add-view {
+  position: absolute;
+  top:1px;
+  right:1px;
+}
+.grid-item.is-dragging,
+.grid-item.is-positioning-post-drag {
+  background: #fafafa;
+  z-index: 2;
+}
+.packery-drop-placeholder {
+  outline: 2px dashed #777;
+  outline-offset: -6px;
+  /* transition position changing */
+  -webkit-transition: -webkit-transform 0.2s;
+          transition: transform 0.2s;
+}
+.dash-view {
+  position: relative;
+  display: none;
+}
+.active-view {
+  display: block !important;
+}
+
+
+/* MOBILE RESPONSIVE */
+@media only screen and (max-width: 700px) {
+
+.ds-toggle {
+  left:10px;
+}
+.dash-logo {
+  left: 0px;
+  right: 0px;
+  margin: auto;
+}
+.dash-sidebar {
+  width:180px !important;
+  height:100%;
+  position:fixed;
+  padding-top:90px;
+  top:0;
+  left:-180px;
+  z-index: 2;
+  transition: width .5s , left .5s;
+}
+.ds-item span {
+  display:inline-block !important;
+}
+.dash-container {
+  padding-left:20px !important;
+}
+.grid-item {
+  width: 100% !important;
+  height: 400px;
+}
+.gi-critical {
+  width:47% !important;
+  height:150px;
+}
+
+}
