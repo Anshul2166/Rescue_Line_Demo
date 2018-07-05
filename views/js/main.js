@@ -1,3 +1,5 @@
+//included on every page
+
 $(document).on('ready',function(){
   //To perform on page load
 
@@ -63,6 +65,7 @@ $(document).on('ready',function(){
     $dropdown.hide();
   });
 
+  //makes sure menu always functions right when switching between mobile and desktop multiple times
   $(window).on("resize", function(){
     var winWidth = $(document).width();
     if (menu.getMenuState() == false && winWidth > 700 && $('nav').css('right') == "-280px"){

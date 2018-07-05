@@ -1,4 +1,4 @@
-//Loads and manages views
+//Loads and manages views in dashboard
 //allViews is a key-value pair dictionary
 //the key is view name and the value is a callback function that initializes that view.
 function ViewManager(allViews){

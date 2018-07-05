@@ -1,6 +1,10 @@
 /* THEME: */
 
 /* COLORS */
+
+/* MAIN THEME COLORS: dark (currently dark green) and light (currently light green)
+	bg- means background and cl- means text color */
+
 .bg-dark {
 	background-color: #1C2B36;
 }
@@ -13,10 +17,11 @@
 .cl-light {
 	color: #209e91;
 }
+/* END MAIN THEME COLORS */
+
 .cl-med-gray {
   color: #666;
 }
-
 .cl-white {
 	color: #fff;
 }
