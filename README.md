@@ -6,6 +6,7 @@ The front-end is pure HTML, CSS & JS.
 Getting started:
 
 1.) Make sure [Git](https://git-scm.com/downloads) and [NodeJS](https://nodejs.org/en/) are installed
+
 2.) Open command line, 'cd' to your home directory and then clone this app:
 ```
 git clone https://github.com/rogisolorzano/rescue-line
