@@ -15,12 +15,14 @@ git clone https://github.com/rogisolorzano/rescue-line
 ```
 cd rescue-line
 ```
-4.) Install any dependencies required by app
+4.) Contact me for 'vcap-local.json' file that has DB info, you need to put it in the rescue-line directory or the DB won't connect and the app won't start. I didn't upload it on here for security reasons.
+
+5.) Install any dependencies required by app
 ```
 npm install
 ```
-5.) Run app
+6.) Run app
 ```
 npm start
 ```
-6.) Go to http://localhost:3000 to view
+7.) Go to http://localhost:3000 to view
