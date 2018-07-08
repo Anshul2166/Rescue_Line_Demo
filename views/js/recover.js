@@ -18,12 +18,21 @@ function RecoverHandler(){
     });
   }
 
-  $('#recover_go').on('click',function(){
-    loadingButton($(this));
+  var handleRecovery = function(){
+    loadingButton($('#recover_go'));
     if ($('#recover_form input')[0].validity.valid)
       recover($.trim($("#recover_form input[name='email']").val()));
     else
       handleError({message: "E-mail is required."});
+  };
+
+  $('#recover_go').on('click',function(e){
+    handleRecovery();
+  });
+
+  $('#recover_form').on('submit',function(e){
+    e.preventDefault();
+    handleRecovery();
   });
 
 }

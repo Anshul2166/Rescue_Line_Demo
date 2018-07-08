@@ -41,6 +41,9 @@ $(document).on('ready',function(){
     },
     "dashboard" : function(){
       console.log("Loaded dashboard view");
+      setTimeout(function(){
+        $grid.packery();
+      },300);
     },
     "chat" : function(){
       console.log("Loaded chat view");

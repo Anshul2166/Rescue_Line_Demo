@@ -96,7 +96,7 @@ app.get('/recover', function(req, res) {
 });
 
 
-//load dashboard, or log in page if user not logged in
+//checks if reset token is valid, then loads the reset password page if it is
 app.get('/reset/:token', function(req, res) {
     var token = req.params.token;
 

@@ -20,12 +20,21 @@ function ResetHandler(){
     });
   }
 
-  $('#reset_go').on('click',function(){
-    loadingButton($(this));
+  var handleReset = function(){
+    loadingButton($('#reset_go'));
     if ($('#reset_form input')[0].validity.valid)
       reset($.trim($("#reset_form input[name='password']").val()),token);
     else
       handleError({message: "Password is required."});
+  };
+
+  $('#reset_go').on('click',function(){
+    handleReset();
+  });
+
+  $('#reset_form').on('submit',function(e){
+    e.preventDefault();
+    handleReset();
   });
 
 }

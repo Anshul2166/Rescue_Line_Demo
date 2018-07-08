@@ -1,7 +1,7 @@
 # Rescue Line
 
-Rescue Line is built with NodeJS and Express, and uses Nunjucks templating engine.
-The front-end is pure HTML, CSS & JS.
+Rescue Line is an IBM Cloud Foundry app built with NodeJS, Express, Nunjucks, Cloudant NoSQL and IBM Cloud Object Storage for image storage.
+The web app front-end is pure HTML, CSS & JS.
 
 Getting started:
 

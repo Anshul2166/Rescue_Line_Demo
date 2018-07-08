@@ -42,6 +42,9 @@ $(document).on('ready',function(){
     },
     "dashboard" : function(){
       console.log("Loaded dashboard view");
+      setTimeout(function(){
+        $grid.packery();
+      },300);
     },
     "report_hazard" : function(){
       console.log("Loaded hazard view");
