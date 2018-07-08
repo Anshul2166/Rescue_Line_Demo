@@ -42,7 +42,15 @@
 .cl-light-blue {
   color:#3897f0;
 }
-
+.cl-green {
+	color:#4BB543;
+}
+.cl-red {
+	color:#ff0000;
+}
+.bd-red {
+	border: .5px solid #ff0000;
+}
 /* BUTTONS */
 
 .bt-lg {
@@ -112,6 +120,12 @@ header {
 	height:100%;
 	position:relative;
 	margin:0 auto;
+}
+.wrap-600 {
+	width:100%;
+	max-width: 600px;
+	margin: 0 auto;
+	position: relative;
 }
 header div img {
 	height:55px;
@@ -329,6 +343,12 @@ p {
 	font-weight: bold;
 	color:#fff;
 }
+.lg-txt {
+	font-size:2.857em;
+}
+.md-txt {
+	font-size:2.2em;
+}
 .md-txt-g {
 	font-size:2.2em;
 	font-weight: bold;
@@ -394,6 +414,25 @@ footer {
 	height:100%;
 	min-width: 290px;
 }
+.w-50-holder {
+	position:relative;
+	width:100%;
+	height:auto;
+}
+.w-50 {
+	width:49%;
+}
+.float-l {
+	float:left;
+}
+.float-r {
+	float:right;
+}
+.clearfix {
+	content:"";
+	clear:both;
+	display:block;
+}
 .youtube-vid {
 	position:relative;
 	width:100%;
@@ -425,6 +464,10 @@ footer {
 	border-radius: 8px;
 	overflow: hidden;
 	display: none;
+}
+.input-tip {
+	display: inline-block;
+	margin-top:5px;
 }
 .signup-drop>div {
 	width: 100%;

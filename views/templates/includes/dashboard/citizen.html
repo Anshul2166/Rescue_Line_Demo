@@ -2,21 +2,48 @@
 
 <div class="dash-sidebar bg-dark">
   <img id="sb_logo" class="dash-logo" src="/assets/logo/rescueline-white.png" style="top:20px;"/>
-  <div id="get_help" class="ds-item ds-active a-b no-a-b"><i class="fas fa-comment"></i><span>Get Help</span></div>
+  <div id="profile" class="ds-item ds-active a-b no-a-b"><i class="fas fa-user"></i><span>Profile</span></div>
+  <div id="get_help" class="ds-item a-b"><i class="fas fa-comment"></i><span>Get Help</span></div>
   <div id="report_hazard" class="ds-item a-b"><i class="fas fa-exclamation-circle"></i><span>Report Hazard</span></div>
-  <div id="map" class="ds-item a-b"><i class="fas fa-map-marker-alt"> </i><span>Map</span></div>
+  <div id="map" class="ds-item a-b"><i class="fas fa-map-marker-alt"> </i><span> Map</span></div>
   <div id="safe_place" class="ds-item a-b"><i class="fas fa-hospital"></i><span>Safe Places</span></div>
 </div>
 
 <div class="dash-container bg-light-gray pad">
-  <div id="get_help_view" class="dash-view active-view">
+  <div id="profile_view" class="dash-view active-view">
+      <h3>PROFILE</h3>
+      <div class="wrap-600 tc">
+        <div class="dash-profile-pic inva">
+          <span class="v-align"></span><img id="profile_img" class="invm" src="/assets/placeholder.jpg" style="width:100%;" />
+          <form id="profile_pic_form" enctype="multipart/form-data">
+            <input id="profile_pic" name="profile_pic" type="file" style="display:none;"/>
+          </form>
+          <div class="dash-profile-pic-edit cl-white tc"><label for="profile_pic" class="inva wh100 cp"><i class="fas fa-edit"></i> Change</label></div>
+        </div>
+        <div class="dash-profile-info roboto-thin inva">
+          <span id="profile_username" class="md-txt cl-med-gray"></span>
+          <form id="profile_form">
+            <input name="name" placeholder="Name">
+            <input name="email" placeholder="Recovery E-mail">
+            <div id="email-tip" class="input-tip cl-red roboto" style="display:none;">IMPORTANT to recover forgotten username or password</div>
+            <input name="phone" placeholder="Phone number">
+            <div class="w-50-holder o-h">
+            <input name="blood_type" class="w-50 inva float-l" placeholder="Blood type">
+            <input name="contact" class="w-50 inva float-r" placeholder="Emergency contact">
+            </div>
+          </form><br>
+          <div id="update_profile" class="bt-lg bg-light cl-white">Update Profile</div>
+        </div>
+      </div>
+  </div>
+  <div id="get_help_view" class="dash-view">
       <h3>GET HELP</h3>
   </div>
   <div id="report_hazard_view" class="dash-view">
     <h3>REPORT HAZARD</h3>
   </div>
   <div id="map_view" class="dash-view">
-    <div id="mapbox" class="wh100"></div>
+    <div id="mapbox"></div>
   </div>
   <div id="safe_place_view" class="dash-view">
     <h3>SAFE PLACE</h3>

@@ -36,6 +36,10 @@ $(document).on('ready',function(){
 
   //load views into viewManager programmatically
   var viewManager = new ViewManager({
+    "profile" : function(){
+      console.log("Loaded profile view");
+      var profile = getProfile(Cookies.get('token'));
+    },
     "dashboard" : function(){
       console.log("Loaded dashboard view");
     },

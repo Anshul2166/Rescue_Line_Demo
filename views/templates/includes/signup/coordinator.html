@@ -8,10 +8,15 @@
 </div><div class="inva c-50 tr m-tc">
   <div class="signup-box inva rounded bg-white pad tc m-no-m-y" style="height:405px;margin-top:1%;">
     <h1 style="margin:5px 0px;" class="roboto-thin">SIGN UP</h1>
-    <input name="name" type="text" class="line-input" placeholder="Name">
-    <input name="email" type="text" class="line-input" placeholder="E-mail">
-    <input name="pass" type="password" class="line-input" placeholder="New Password">
-    <input name="pass" type="password" class="line-input" placeholder="Organization / Government Code"><br>
-    <div class="bt-lg bg-light cl-white">SIGN UP</div>
+    <form id="signup_form">
+    <input name="name" type="text" class="line-input" placeholder="Full name" required >
+    <input id="username" name="username" type="text" class="line-input" placeholder="Choose a login username" required >
+    <input name="pass" pattern=".{6,}" type="password" class="line-input" placeholder="New Password" required>
+    <input name="code" type="text" class="line-input" placeholder="Organization / Government Code" required>
+    </form>
+    <div id="signup_go" class="bt-lg bg-light cl-white" style="margin-top:20px;">SIGN UP</div>
   </div>
 </div>
+<script>
+   var signup = new SignupHandler('coordinator');
+</script>

@@ -1,10 +1,28 @@
 var express = require("express");
 var app = express();
-var cfenv = require("cfenv");
+//var cfenv = require("cfenv");
 var bodyParser = require('body-parser');
 var nunjucks = require('nunjucks');
-var port = process.env.PORT || 3000;
+var cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+var DB = require('./util/db.js');
+exports.dbh = new DB();
+exports.parser = function(){
+  // parse application/x-www-form-urlencoded
+  app.use(bodyParser.urlencoded({ extended: false }));
+  // parse application/json
+  app.use(bodyParser.json());
+  app.use(cookieParser());
 
+};
+
+//API includes
+var accountAPI = require('./api/account/endpoints.js');
+var profileAPI = require('./api/profile/endpoints.js');
+app.use(accountAPI);
+app.use(profileAPI);
+
+var port = process.env.PORT || 3000;
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
@@ -24,55 +42,16 @@ http.listen(port, function(){
   console.log('listening on :'+ port);
 });
 
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
-
-// parse application/json
-app.use(bodyParser.json())
-
 nunjucks.configure('views', {
     autoescape: true,
     express: app
 });
 
-var mydb;
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
 
-// load local VCAP configuration  and service credentials
-var vcapLocal;
-try {
-  vcapLocal = require('./vcap-local.json');
-  console.log("Loaded local VCAP", vcapLocal);
-} catch (e) { }
-
-const appEnvOpts = vcapLocal ? { vcap: vcapLocal} : {}
-
-const appEnv = cfenv.getAppEnv(appEnvOpts);
-
-if (appEnv.services['cloudantNoSQLDB'] || appEnv.getService(/cloudant/)) {
-  // Load the Cloudant library.
-  var Cloudant = require('cloudant');
-
-  // Initialize database with credentials
-  if (appEnv.services['cloudantNoSQLDB']) {
-     // CF service named 'cloudantNoSQLDB'
-     var cloudant = Cloudant(appEnv.services['cloudantNoSQLDB'][0].credentials);
-  } else {
-     // user-provided service with 'cloudant' in its name
-     var cloudant = Cloudant(appEnv.getService(/cloudant/).credentials);
-  }
-
-  //database name
-  var dbName = 'mydb';
-
-  // Create a new "mydb" database.
-  cloudant.db.create(dbName, function(err, data) {
-    if(!err) //err if database doesn't already exists
-      console.log("Created database: " + dbName);
-  });
-
-  // Specify the database we are going to use (mydb)...
-  mydb = cloudant.db.use(dbName);
-}
+// parse application/json
+app.use(bodyParser.json());
 
 //home page
 app.get('/', function(req, res) {
@@ -87,10 +66,56 @@ app.get('/signup/:signup_type', function(req, res) {
 
 //load dashboard, or log in page if user not logged in
 app.get('/dashboard', function(req, res) {
-    var userInfo = { logged_in : "true", account_type : "coordinator" };
+    var userInfo = { logged_in : "false", account_type : null };
+    if (req.cookies['token']){
+      console.log(req.cookies['token']);
+      var token = req.cookies['token'];
+      // verify a token symmetric
+      jwt.verify(token, "MkREMTk1RTExN0ZFNUE5MkYxNDE2NDYwNzFFNTI2N0JCQQ==", function(err, decoded) {
+        if (!err){
+          console.log(decoded);
+          userInfo.logged_in = "true";
+          userInfo.account_type = decoded.type;
+        } else {
+          //token isn't valid
+          //err.name == 'TokenExpiredError'
+            userInfo.logged_in = "false";
+            res.clearCookie("token");
+        }
+      });
+    } else {
+      userInfo.logged_in = "false";
+    }
+
     res.render('templates/dashboard.html', { userInfo : userInfo });
 });
 
+//load account recovery page
+app.get('/recover', function(req, res) {
+    res.render('templates/recover.html',{type: "recover"});
+});
+
+
+//load dashboard, or log in page if user not logged in
+app.get('/reset/:token', function(req, res) {
+    var token = req.params.token;
+
+    // verify a token symmetric
+    jwt.verify(token, "MkREMTk1RTExN0ZFNUE5MkYxNDE2NDYwNzFFNTI2N0JCQQ==", function(err, decoded) {
+      if (!err){
+        console.log(decoded);
+        if (decoded.valid_reset)
+          res.render('templates/recover.html',{ type: "reset", token: token});
+        else
+          res.send('Token has expired.');
+
+      } else {
+        //token isn't valid
+        res.send('Token has expired.');
+      }
+    });
+
+});
 
 //serve static file (index.html, images, css)
 app.use(express.static(__dirname + '/views'));

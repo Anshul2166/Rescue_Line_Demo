@@ -49,7 +49,8 @@
       });
     });
 
-//EXAMPLE API ENDPOINTS, NODE JS    
+//EXAMPLE API ENDPOINTS, NODE JS
+  
     /* Endpoint to greet and add a new visitor to database.
     * Send a POST request to localhost:3000/api/visitors with body
     * {

@@ -1,3 +1,81 @@
+function handleError(err){
+  swal({
+  title: "Oops",
+  text: err.message,
+  icon: "error",
+});
+}
+
+function handleSuccess(msg){
+  swal({
+    title: "Success",
+    text: msg,
+    icon: "success",
+  });
+}
+
+function getProfile(token){
+  $.get("/api/profile/"+ token)
+      .done(function(response) {
+        console.log(response);
+        if (response.status == "success"){
+          if (typeof response.data["username"] != "undefined")
+            $('#profile_username').html(response.data["username"]);
+          if (typeof response.data["email"] == "undefined"){
+            $('#profile_form input[name="email"]').addClass('bd-red');
+            $('#email-tip').show();
+          } else {
+            $('#profile_form input[name="email"]').removeClass('bd-red');
+            $('#email-tip').hide();
+          }
+          if (typeof response.data["profile_pic"] != "undefined")
+            $('#profile_img').attr('src',response.data["profile_pic"]);
+
+          for (var key in response.data){
+            $("#profile_form input[name='"+ key +"']").val(response.data[key]);
+          }
+        } else {
+
+        }
+      });
+}
+
+function updateProfile(profile, token){
+  $.ajax({
+    method: "POST",
+    url: "/api/profile",
+    contentType: "application/json",
+    data: JSON.stringify({ profile: profile, token: token })
+  }).done(function(response){
+    console.log(response);
+    if (response.status == "success"){
+      handleSuccess("Saved profile");
+    } else {
+      handleError(response.error);
+    }
+  });
+}
+
+function updateProfilePic(formData,token){
+  formData.append('token',token);
+
+  $.ajax({
+    method: "POST",
+    url: "/api/profile/image",
+    processData: false,
+    contentType: false,
+    data: formData
+  }).done(function(response){
+    console.log(response);
+    if (response.status == "success"){
+      handleSuccess("Updated profile pic");
+      $('#profile_img').attr('src',response.data["profile_pic"]);
+    } else {
+      handleError(response.error);
+    }
+  });
+}
+
 //Loads and manages views in dashboard
 //allViews is a key-value pair dictionary
 //the key is view name and the value is a callback function that initializes that view.
@@ -129,8 +207,46 @@ $(document).on('ready',function(){
       self.toggle();
     });
 
+    //makes sure menu always functions right when switching between mobile and desktop multiple times
+    $(window).on("resize", function(){
+      var winWidth = $(document).width();
+      console.log(state);
+      if (state == true && winWidth > 700 && $('.dash-sidebar').css('left') == '-180px'){
+        $('.dash-sidebar').css('left','0px');
+        self.toggle();
+      }
+    });
+
   }
 
   sideHandler = new SideHandler();
+
+  $('#logout').on('click',function(){
+    Cookies.remove('token');
+    window.location.href = window.location.href;
+  });
+
+  $('#update_profile').on('click',function(){
+    var inputs = $('#profile_form input');
+    var profile = {};
+    var $inp = null;
+    //build profile
+    for (var i = 0; i < inputs.length; i++){
+      $inp = $(inputs[i]);
+      if ($.trim($inp.val()) != "")
+        profile[$inp.attr('name')] = $inp.val();
+    }
+    updateProfile(profile,Cookies.get('token'));
+  });
+
+  $('#profile_pic').on('change',function(){
+    // Get the files from input, create new FormData.
+    var file = $('#profile_pic').get(0).files[0],
+        formData = new FormData();
+
+    formData.append('image', file, file.name);
+
+    updateProfilePic(formData,Cookies.get('token'));
+  });
 
 });

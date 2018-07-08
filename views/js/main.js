@@ -1,4 +1,40 @@
-//included on every page
+function handleError(err){
+  swal({
+  title: "Oops",
+  text: err.message,
+  icon: "error",
+});
+}
+
+function handleSuccess(msg){
+  swal({
+    title: "Success",
+    text: msg,
+    icon: "success",
+  });
+}
+
+//show small message under input field
+//pass in a jquery input object
+function inputTip($input,message,colorClass){
+  //check if input tip has already been shown, if not add 20px to parent to make up for outerHeight
+  var $parent = $input.parent().parent();
+  if ($input.next().hasClass('input-tip'))
+    $input.next().remove();
+  else
+    $parent.css('height',$parent.outerHeight() + 20 + 'px');
+
+  $input.after('<span class="input-tip '+ colorClass +'">'+ message +'</span>');
+}
+
+//animate loading button
+function loadingButton($button){
+  var currentValue = $button.html();
+  $button.html('<div class="spinner" style="height:30px;width:30px;margin-top:-5px;"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
+  setTimeout(function(){
+    $button.html(currentValue);
+  },3000);
+}
 
 $(document).on('ready',function(){
   //To perform on page load
