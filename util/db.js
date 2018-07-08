@@ -1,4 +1,5 @@
 var cfenv = require("cfenv");
+var Cloudant = require('cloudant');
 
 //handles DB connection to Cloudant
 module.exports = class DB {
@@ -18,12 +19,12 @@ module.exports = class DB {
     }
 
     const appEnvOpts = vcapLocal ? { vcap: vcapLocal} : {}
-
+    console.log(appEnvOpts);
     const appEnv = cfenv.getAppEnv(appEnvOpts);
 
     if (appEnv.services['cloudantNoSQLDB'] || appEnv.getService(/cloudant/)) {
+      console.log("in app env");
       // Load the Cloudant library.
-      var Cloudant = require('cloudant');
 
       // Initialize database with credentials
       if (appEnv.services['cloudantNoSQLDB']) {
@@ -34,9 +35,12 @@ module.exports = class DB {
          this.cloudant = Cloudant(appEnv.getService(/cloudant/).credentials);
       }
 
-      this.use('users_db');
-
+    } else {
+      //fail safe, for some read cfenv.getAppEnv isn't parsing appEnvOpts correctly
+      this.cloudant = Cloudant(vcapLocal.services['cloudantNoSQLDB'][0].credentials);
     }
+
+    this.use('users_db');
 
   }
 

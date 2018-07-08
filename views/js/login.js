@@ -43,6 +43,7 @@ function LoginHandler(){
   });
 
   $('#login_go').on('click',function(){
+    loadingButton($(this));
     var validForm = true;
     $('#login_form input').each(function(index,input){
       if (!input.validity.valid){

@@ -14,6 +14,15 @@ function handleSuccess(msg){
   });
 }
 
+//animate loading button
+function loadingButton($button){
+  var currentValue = $button.html();
+  $button.html('<div class="spinner" style="height:30px;width:30px;margin-top:-5px;"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
+  setTimeout(function(){
+    $button.html(currentValue);
+  },3000);
+}
+
 function getProfile(token){
   $.get("/api/profile/"+ token)
       .done(function(response) {
@@ -227,6 +236,7 @@ $(document).on('ready',function(){
   });
 
   $('#update_profile').on('click',function(){
+    loadingButton($(this));
     var inputs = $('#profile_form input');
     var profile = {};
     var $inp = null;

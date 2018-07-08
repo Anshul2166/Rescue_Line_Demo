@@ -98,6 +98,7 @@ function SignupHandler(type){
 
   //handle signup button click
   $('#signup_go').on('click',function(){
+    loadingButton($(this));
     resetInputs();
     state.validForm = true;
     $('#signup_form input').each(function(index,input){

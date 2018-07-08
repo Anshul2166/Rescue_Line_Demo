@@ -19,6 +19,7 @@ function RecoverHandler(){
   }
 
   $('#recover_go').on('click',function(){
+    loadingButton($(this));
     if ($('#recover_form input')[0].validity.valid)
       recover($.trim($("#recover_form input[name='email']").val()));
     else

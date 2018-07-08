@@ -21,6 +21,7 @@ function ResetHandler(){
   }
 
   $('#reset_go').on('click',function(){
+    loadingButton($(this));
     if ($('#reset_form input')[0].validity.valid)
       reset($.trim($("#reset_form input[name='password']").val()),token);
     else
