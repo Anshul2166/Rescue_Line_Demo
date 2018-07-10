@@ -133,7 +133,7 @@ app.post('/api/profile/image', upload.single('image'), async (req, res) => {
   var fileLocation = req.file.key;
   var token = req.body.token;
 
-  var tokeInfo = null;
+  var tokenInfo = null;
   //verify token
   jwt.verify(token, "MkREMTk1RTExN0ZFNUE5MkYxNDE2NDYwNzFFNTI2N0JCQQ==", function(err, decoded) {
     if (!err){
@@ -149,6 +149,9 @@ app.post('/api/profile/image', upload.single('image'), async (req, res) => {
       return false;
     }
   });
+
+  if (tokenInfo == null)
+    return false;
 
   //get profile from DB
   let db_profile = await profileManager.getProfile(tokenInfo.user);
@@ -176,17 +179,6 @@ app.post('/api/profile/image', upload.single('image'), async (req, res) => {
  * HELPER FUNCTIONS BELOW
  ####################################
  */
-
- //builds a very simple error payload
- function buildError(code,message){
-   return {
-     "status" : "error",
-     "error" : {
-       "code" : code,
-       "message" : message
-     }
-   };
- }
 
  //builds a very simple error payload
  function buildError(code,message){

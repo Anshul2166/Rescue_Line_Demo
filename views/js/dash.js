@@ -146,7 +146,7 @@ $(document).on('ready',function(){
     if (winWidth < 700)
       return;
     var $btn = $(this);
-    $btn.css('background-color','rgba(155,155,155,0.3)');
+    $btn.css('background-color','rgba(155,155,155,0.2)');
   });
   $('.a-b').on('mouseout',function(){
     if ($(this).hasClass('no-a-b'))
@@ -157,7 +157,13 @@ $(document).on('ready',function(){
 
   //handles any dropdowns in dash
   $('.dd-toggle').on('click',function(){
-    $(this).find('.dropdown').toggle();
+    var $drop = $(this).find('.dropdown');
+    if ($drop.css('display') == "none"){
+      $('.dropdown').hide();
+      $drop.show();
+    } else {
+      $('.dropdown').hide();
+    }
   });
 
 
@@ -214,9 +220,15 @@ $(document).on('ready',function(){
       }
     };
 
-    //set click on toggle
+    //set toggle on click
     $('.ds-toggle').on('click',function(){
       self.toggle();
+    });
+
+    //set toggle on click if mobile
+    $('.ds-item').on('click',function(){
+      if ($(document).width() < 700)
+        self.toggle();
     });
 
     //makes sure menu always functions right when switching between mobile and desktop multiple times

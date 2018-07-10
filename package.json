@@ -29,7 +29,10 @@
     "multer-s3": "^2.7.0",
     "nodemailer": "^4.6.7",
     "nunjucks": "^3.1.3",
-    "socket.io": "^2.1.1"
+    "request": "^2.87.0",
+    "socket.io": "^2.1.1",
+    "twilio": "^3.17.5",
+    "watson-developer-cloud": "^3.5.3"
   },
   "author": "Rogi Solorzano",
   "license": "Apache-2.0"

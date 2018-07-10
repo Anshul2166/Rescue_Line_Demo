@@ -19,8 +19,10 @@ exports.parser = function(){
 //API includes
 var accountAPI = require('./api/account/endpoints.js');
 var profileAPI = require('./api/profile/endpoints.js');
+var watsonAPI = require('./api/ai/endpoints.js');
 app.use(accountAPI);
 app.use(profileAPI);
+app.use(watsonAPI);
 
 var port = process.env.PORT || 3000;
 var http = require('http').Server(app);

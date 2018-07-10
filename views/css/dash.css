@@ -13,10 +13,12 @@
 }
 .dash-container {
   width:100%;
-  min-height:90%;
+  height:90%;
   padding-left:200px;
   position:relative;
   text-align: left;
+  overflow-y: scroll;
+ -webkit-overflow-scrolling: touch;
 }
 .dash-sidebar {
   width:180px;
@@ -101,6 +103,8 @@
 .dash-view {
   position: relative;
   display: none;
+  min-height: 100%;
+  width: 100%;
 }
 .active-view {
   display: block !important;

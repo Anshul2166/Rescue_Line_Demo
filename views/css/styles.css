@@ -22,6 +22,9 @@
 .cl-med-gray {
   color: #666;
 }
+.cl-light-gray {
+  color: #999;
+}
 .cl-white {
 	color: #fff;
 }
@@ -172,6 +175,8 @@ input {
 	max-width: 100%;
 	width: 100%;
 	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	display: block;
 	font-weight: 500;
   font-family: Lato;
@@ -186,6 +191,8 @@ input, textarea
 }
 * {
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
 }
 a {
   color: inherit;
@@ -229,14 +236,6 @@ p {
 {
 	width:100% !important;
 	height:100% !important;
-}
-.abs-center {
-  position:absolute;
-  top:0;
-  bottom:0;
-  left:0;
-  right:0;
-  margin: auto;
 }
 .block {
 	width:100%;
@@ -305,8 +304,24 @@ p {
 	font-size:30px;
 	margin: 0px 20px;
 }
+.top-left-0 {
+	top:0px;
+	left:0px;
+}
+.top-left {
+	top:10px;
+	left:10px;
+}
 .top-right {
 	top:10px;
+	right:10px;
+}
+.top-right-0 {
+	top:0px;
+	right:0px;
+}
+.bottom-right {
+	bottom:10px;
 	right:10px;
 }
 .inva {
@@ -331,7 +346,7 @@ p {
 .paper {
   background-color: #fff;
   border: 1px solid #eee !important;
-  box-shadow: 2px 2px 4px #dfdfdf;
+  box-shadow: 2px 2px 8px #dfdfdf;
 }
 .paper-bottom {
   background-color: #fff;
@@ -360,6 +375,9 @@ p {
   vertical-align: middle;
   margin: 0;
   display: inline-block;
+}
+.abs {
+	position:absolute;
 }
 .v-align-abs {
 	position:absolute;
@@ -451,6 +469,10 @@ footer {
 }
 .gs-box i {
 	font-size:60px;
+}
+.touch-scroll {
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 }
 .dropdown {
 	position:absolute;

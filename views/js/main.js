@@ -80,7 +80,7 @@ $(document).on('ready',function(){
     if (winWidth < 700)
       return;
     var $btn = $(this);
-    $btn.css('background-color','rgba(155,155,155,0.3)');
+    $btn.css('background-color','rgba(155,155,155,0.2)');
   });
   $('.a-b').on('mouseout',function(){
     var $btn = $(this);
