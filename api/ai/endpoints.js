@@ -68,7 +68,7 @@ app.post('/api/ai/chat', async (req, res) => {
         if (decoded.type == "citizen")
           userInfo = decoded;
         else
-          res.json(buildError(400,'User is a '+ userInfo.type +'. Only citizens are allowed.'));
+          res.json(buildError(400,'User is a '+ decoded.type +'. Only citizens are allowed.'));
 
       } else {
         //token isn't valid

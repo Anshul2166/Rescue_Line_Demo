@@ -1,13 +1,12 @@
 //handles the chat interface
-function ChatHandler(){
+function ChatHandler(options){
 
   var self = this;
-  var noti = null;
-  var locationHandler = null;
+  var noti, locationHandler = null;
 
-  this.state = {
-    "current_target" : "rescueline-bot" //will be user ID of chat that is open. defaults to 'rescueline-bot'
-  };
+  this.state = options || {};
+  //user ID of current chat. defaults to 'rescueline-bot' for citizen
+  this.state.current_target = (typeof this.state.type == "undefined") ? "rescueline-bot" : null;
 
   this.setNoti = function(n){
     noti = n;
@@ -17,6 +16,7 @@ function ChatHandler(){
     locationHandler = lH;
   };
 
+  //start a chat session
   this.startChat = function(username,token){
     $('.chat-log').html('<div class="spinner c-align-abs"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
     self.state.current_target = username;
@@ -43,8 +43,8 @@ function ChatHandler(){
         });
   }
 
+  //get chat history
   this.getHistory = function(token, notify){
-    //get chat history
     // GET /api/chat/history/:token
 
     $.get("/api/chat/history/"+ token)
@@ -56,14 +56,31 @@ function ChatHandler(){
 
             $ch.html('');
 
-            $ch.append(buildChatHistory({
-                    other_user : "rescueline-bot",
-                    sender : "rescueline-bot",
-                    name : "Get Help",
-                    msg: "Click here to get help now",
-                    profile_pic : "/assets/placeholder.jpg",
-                    read : true
-                  },true));
+            if (self.state.type == "notcitizen"){
+
+              if (self.state.current_target == null){
+                $('.chat-log').html('<div class="chat-starter c-align-abs f17 cl-light-gray tc" style="width:180px;height:70px;">No recent logs</div>');
+                $('.ch-head-name').html('Get started');
+              }
+
+              if (response.data.length == 0){
+                $ch.html('<div class="tc f-med cl-light-gray" style="margin-top:100px;">No recent chats</div>');
+                return;
+              }
+
+            }
+
+            if (self.state.type != "notcitizen"){
+              //append default chat with bot
+              $ch.append(buildChatHistory({
+                      other_user : "rescueline-bot",
+                      sender : "rescueline-bot",
+                      name : "Get Help",
+                      msg: "Click here to get help now",
+                      profile_pic : "/assets/placeholder.jpg",
+                      read : true
+                    },true));
+            }
 
             for (var i = 0; i < response.data.length; i++){
               if (!response.data[i].read && response.data[i].other_user == response.data[i].sender)
@@ -181,6 +198,10 @@ function ChatHandler(){
   }
 
   function sendChat(message,token){
+
+    if (self.state.current_target == null)
+      return false;
+
     console.log("in send chat");
     var msgEl = self.insertChat({msg: message, timestamp:'now'}, 'sent'); //insert, but if it is an error, we will remove DOM element.
     var payload = {

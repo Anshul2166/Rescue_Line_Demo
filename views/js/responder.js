@@ -1,5 +1,5 @@
 
-//handles mapbox map
+//handles mapbox map, will be different for everyone so not in its own file, for now
 function MapHandler(){
   var self = this;
   this.loaded = false;
@@ -33,6 +33,8 @@ function MapHandler(){
 $(document).on('ready',function(){
 
   var mapHandler = new MapHandler();
+  var chatHandler = new ChatHandler({ type : "notcitizen" });
+  var locationHandler = new LocationHandler();
 
   //load views into viewManager programmatically
   var viewManager = new ViewManager({
@@ -46,6 +48,11 @@ $(document).on('ready',function(){
         $grid.packery();
       },300);
     },
+    "get_help" : function(){
+      //get_help is actually chat view
+      console.log("chat view");
+      chatHandler.getHistory(Cookies.get('token'));
+    },
     "report_hazard" : function(){
       console.log("Loaded hazard view");
     },
@@ -53,12 +60,22 @@ $(document).on('ready',function(){
       console.log("map view");
       if (!mapHandler.loaded)
         mapHandler.load();
-    },
-    "safe_place" : function(){
-      console.log("safe_place view");
     }
   });
 
   showTip($('#dashboard_view')[0]);
+
+  var noti = new Noti(viewManager);
+
+  //pass noti into chatHandler
+  chatHandler.setNoti(noti);
+  //pass locationHandler into chatHandler
+  chatHandler.setLocationHandler(locationHandler);
+
+  //pass the chatHandler instance into socketHandler since they will have to be talking to each other
+  var socketHandler = new SocketHandler(chatHandler, noti);
+
+  //check if any unread messages and notify if yes
+  chatHandler.getHistory(Cookies.get('token'),true);
 
 });

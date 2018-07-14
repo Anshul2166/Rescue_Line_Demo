@@ -32,6 +32,8 @@ function MapHandler(){
 $(document).on('ready',function(){
 
   var mapHandler = new MapHandler();
+  var chatHandler = new ChatHandler({ type : "notcitizen" });
+  var locationHandler = new LocationHandler();
 
   //load views into viewManager programmatically
   var viewManager = new ViewManager({
@@ -45,8 +47,10 @@ $(document).on('ready',function(){
         $grid.packery();
       },300);
     },
-    "chat" : function(){
-      console.log("Loaded chat view");
+    "get_help" : function(){
+      //get_help is actually chat view
+      console.log("chat view");
+      chatHandler.getHistory(Cookies.get('token'));
     },
     "map" : function(){
       console.log("map view");
@@ -60,5 +64,18 @@ $(document).on('ready',function(){
   });
 
   showTip($('#dashboard_view')[0]);
+
+  var noti = new Noti(viewManager);
+
+  //pass noti into chatHandler
+  chatHandler.setNoti(noti);
+  //pass locationHandler into chatHandler
+  chatHandler.setLocationHandler(locationHandler);
+
+  //pass the chatHandler instance into socketHandler since they will have to be talking to each other
+  var socketHandler = new SocketHandler(chatHandler, noti);
+
+  //check if any unread messages and notify if yes
+  chatHandler.getHistory(Cookies.get('token'),true);
 
 });

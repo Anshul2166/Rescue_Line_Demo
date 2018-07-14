@@ -33,6 +33,7 @@ function Noti(viewManager){
 
     $(notiBlock).on('click',function(){
       viewManager.load(info.view);
+      $(this).remove();
     });
 
   };

@@ -58,7 +58,7 @@ app.get('/api/chat/logs', async (req, res) => {
  */
 app.get('/api/chat/history/:token', async (req, res) => {
   var token = req.params.token;
-  var tokenInfo, thisHistory, otherUser, thisProfile = null;
+  var tokenInfo = null;
   var history = {};
 
   jwt.verify(token, "MkREMTk1RTExN0ZFNUE5MkYxNDE2NDYwNzFFNTI2N0JCQQ==", function(err, decoded) {
@@ -89,9 +89,11 @@ app.get('/api/chat/history/:token', async (req, res) => {
     }
   }
 
-  //convert to array and get
+  //convert to array and get profile
   db_response.data = await Promise.all(Object.keys(history).map(async (key,index) => {
-    thisHistory = history[key];
+    var thisProfile = {};
+    var otherUser = null;
+    var thisHistory = history[key];
 
     if (thisHistory.sender == tokenInfo.user){
       otherUser = thisHistory.receiver;
@@ -307,8 +309,6 @@ const getNearby = async (coords) => {
   var dbName = 'users_db';
   dbh.use(dbName);
 
-  console.log("COORDS",typeof coords);
-
   // Find nearby users within 8km (~ 5 miles) radius
   var query = {
     lat: coords.lat,
@@ -317,8 +317,6 @@ const getNearby = async (coords) => {
     relation: "contains",
     include_docs:true
   };
-
-  console.log("QUERY",query);
 
   var db_response = dbh.db.geo('locationDoc', 'locationIndex', query).then(function(data) {
     return {

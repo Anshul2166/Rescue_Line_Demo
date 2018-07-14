@@ -197,6 +197,7 @@ app.post('/api/profile/image', upload.single('image'), async (req, res) => {
  */
 app.post('/api/profile/location', async (req, res) => {
   var location = req.body.location;
+  console.log("LOCATION RECEIVED",location);
 
   var tokenInfo = null;
   var token = req.body.token;
@@ -229,6 +230,7 @@ app.post('/api/profile/location', async (req, res) => {
     "type": "Feature",
     "properties": {
         "timestamp": Date.now(),
+        "version": "1.01"
     },
     "geometry": {
         "type": "Point",
