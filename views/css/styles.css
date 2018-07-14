@@ -269,7 +269,7 @@ p {
 	line-height: 30px;
 }
 .bold {
-	font-weight:bold;
+	font-weight:bold !important;
 }
 .thin {
 	font-weight: 300;
@@ -386,7 +386,7 @@ p {
 	margin:auto 0;
 }
 .c-align-abs {
-	position:absolute;
+	position:absolute !important;
 	top:0;
 	left:0;
 	right:0;
@@ -400,7 +400,7 @@ p {
 }
 .overlay {
   position:fixed;
-  z-index: 100;
+  z-index: 101;
   height:100%;
   width:100%;
   background: rgba(0,0,0,0.5);
@@ -423,6 +423,9 @@ footer {
 }
 .lato {
 	font-family: Lato;
+}
+.no-cp {
+	cursor: auto !important;
 }
 .cp {
 	cursor:pointer;
@@ -476,7 +479,7 @@ footer {
 }
 .dropdown {
 	position:absolute;
-	z-index: 2;
+	z-index: 101;
 	width:200px;
 	height:200px;
 	bottom:-200px;
@@ -523,6 +526,7 @@ footer {
 	right:-5px;
 	background-color:#ee4422;
 	border-radius: 50%;
+	display: none;
 }
 
 /* LOADING ANIMATION: */
@@ -620,10 +624,10 @@ footer {
 /* MOBILE RESPONSIVE: */
 @media only screen and (max-width: 700px) {
 	body {
-		font-size:0.70em;
+		font-size:0.75em;
 	}
 	.mobile-only {
-		display: block !important;
+		display: inline-block !important;
 	}
 	.mobile-hidden {
 		display: none !important;

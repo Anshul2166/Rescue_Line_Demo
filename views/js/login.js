@@ -54,7 +54,7 @@ function LoginHandler(){
       }
     });
     if (validForm)
-      login($.trim($("#login_form input[name='username']").val()),$.trim($("#login_form input[name='pass']").val()));
+      login($.trim($("#login_form input[name='username']").val()).toLowerCase(),$.trim($("#login_form input[name='pass']").val()));
   });
 
 }

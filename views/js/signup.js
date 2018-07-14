@@ -91,8 +91,9 @@ function SignupHandler(type){
     $inp = $(this);
     clearTimeout(checkNameTimeout);
     checkNameTimeout = setTimeout(function(){
-      $inp.val($inp.val().replace(/\s/g,'').toLowerCase());
-      checkName($inp.val().replace(/\s/g,'').toLowerCase());
+      var name = $inp.val().replace(/\s/g,'').toLowerCase();
+      $inp.val(name);
+      checkName(name);
     },800);
   });
 

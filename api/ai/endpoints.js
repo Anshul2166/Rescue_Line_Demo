@@ -12,7 +12,7 @@ var multer  = require('multer');
 var multerS3 = require('multer-s3');
 var awsConfig = {
     endpoint: 's3-api.us-geo.objectstorage.softlayer.net',
-    apiKeyId: 'L7aO9YtTajvJjSGJZOkWxyouKZq583uIG8_7oW8cJV6Y',
+    apiKeyId: process.env.COS_API_KEY,
     ibmAuthEndpoint: 'https://iam.ng.bluemix.net/oidc/token',
     serviceInstanceId: 'crn:v1:bluemix:public:iam-identity::a/36bf5424ec774ea0b849445b3240d473::serviceid:ServiceId-f2756543-ccef-4fb5-bf6a-32dddfe00bab'
 };
@@ -21,7 +21,6 @@ const accountSid = process.env.TWILIO_SID;
 const authToken = process.env.TWILIO_TOKEN;
 const twilio = require('twilio')(accountSid, authToken);
 const TwilioResponse = require('twilio').twiml.MessagingResponse;
-console.log("twilio response",TwilioResponse);
 
 //for watson assistant
 var assistant;
@@ -31,7 +30,11 @@ assistant = new watson.AssistantV1({
   'username': process.env.ASSISTANT_USERNAME || '<username>',
   'password': process.env.ASSISTANT_PASSWORD || '<password>'
 });
-console.log(assistant);
+
+//lookup intents, we need to know if information is being provided now or in the next message
+const intentLookup = {
+
+};
 
 /*************************************
  * ENDPOINT /ai/chat
@@ -40,6 +43,9 @@ console.log(assistant);
  */
 app.post('/api/ai/chat', async (req, res) => {
 
+  if (req.body.location != null)
+    console.log("PRECISE LOCATION",req.body.location);
+
   var contextDoc,
       identifier,
       inputMsg,
@@ -47,10 +53,8 @@ app.post('/api/ai/chat', async (req, res) => {
 
   if (typeof req.body.token == "undefined"){
     requestType = "SMS";
-    console.log(req.body);
     identifier = req.body["From"];
     inputMsg = req.body["Body"];
-    console.log("SMS IDENTIFIER",identifier);
   } else {
     requestType = "APP";
     //get chat context based on username gotten from token
@@ -60,7 +64,6 @@ app.post('/api/ai/chat', async (req, res) => {
     // decode the token to get username and type. The chatbot is meant for citizens only
     jwt.verify(token, "MkREMTk1RTExN0ZFNUE5MkYxNDE2NDYwNzFFNTI2N0JCQQ==", function(err, decoded) {
       if (!err){
-        console.log(decoded);
 
         if (decoded.type == "citizen")
           userInfo = decoded;
@@ -76,7 +79,6 @@ app.post('/api/ai/chat', async (req, res) => {
     identifier = userInfo.user;
     inputMsg = req.body.input;
   }
-  console.log("IDENTIFIER: ",identifier);
 
   if (identifier == null)
     return false;
@@ -91,7 +93,6 @@ app.post('/api/ai/chat', async (req, res) => {
     };
     var context = {};
   } else {
-    console.log("OLD CONTEXT DOC",contextDoc);
     var context = contextDoc.context;
   }
   var workspace = process.env.WORKSPACE_ID || '<workspace-id>';
@@ -112,11 +113,19 @@ app.post('/api/ai/chat', async (req, res) => {
     // TODO: process response to update info object / prompt for more information in front end
     //analyzeResponse will read contextDoc previous intents to try to "save information", will reply with text response / info doc
     var response = analyzeResponse(data,contextDoc);
+
     contextDoc.info = response.info;
     contextDoc.context = data.context;
-    contextDoc.previousIntents = data.intents;
     contextDoc.timestamp = Date.now();
-    console.log("NEW CONTEXT DOC",contextDoc);
+
+    //log previous intents
+    if (data.intents.length > 0)
+      contextDoc.previousIntent = { "intent" : data.intents[0].intent , "message" : inputMsg };
+
+    //if precise location is available in request, update that into info variable
+    if (req.body.location != null)
+      contextDoc.info.latLng = req.body.location;
+
     var contextStatus = await updateContext(contextDoc,identifier);
     if (requestType == "SMS"){
       const twiml = new TwilioResponse();
@@ -160,10 +169,16 @@ function buildError(code,message){
 const getContext = async (identifier) => {
   var dbName = 'context_db';
 
+  //only get contexts with watson from 12 hours ago
+  var halfdayAgo = Date.now() - 43200000;
+
   //prepare query
   var query =   {
-      "fields": [ "_id","_rev","identifier","context","info","timestamp" ],
-      "selector": { "identifier" : { "$eq": identifier } },
+//      "fields": [],
+      "selector": {
+        "identifier" : { "$eq": identifier },
+        "timestamp": { "$gt": halfdayAgo }
+      },
       "sort":[{ "timestamp":"desc" }],
     };
 
@@ -206,19 +221,20 @@ const updateContext = async (newContext) => {
 
 //analyzes watson response and returns a suitable message
 function analyzeResponse(data,prevContext){
-  console.log("DATA RECEIVED",data);
   //set default response values
   var response = {
     msg : "We want to help you, but your response isn't clear. Please provide more details so that we can quickly route your emergency.",
-    info : {}
+    info : prevContext.info || {}
   };
+
+  console.log("CURRENT INTENT", data);
+  console.log("PREVIOUS INTENT", prevContext.previousIntent);
 
   // TODO: will analyze prevContext for previous intents
   //and will see if users message contains any valuable information related to that that needs to be saved
 
   //if watson had a response, take best relevant prediction
   if (data.output.text.length > 0){
-    console.log("IN IF");
     response.msg = data.output.text[0];
   }
 

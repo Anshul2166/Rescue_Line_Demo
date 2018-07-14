@@ -3,7 +3,7 @@
   width: 100%;
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
   position: relative;
-  z-index: 3;
+  z-index: 200;
   line-height:70px;
 }
 .dash-logo {
@@ -27,7 +27,7 @@
   padding-top:90px;
   top:0;
   left:0;
-  z-index: 2;
+  z-index: 101;
   transition: width .5s;
 }
 .dash-side-group {
@@ -131,6 +131,32 @@
   width:100%;
   margin-top: 20px;
 }
+.dash-drop {
+  left:-80px;
+  width:170px;
+  line-height:20px;
+  height:50px;
+  bottom:-45px;
+}
+.noti-block {
+  height: 55px;
+  border-left: 2px solid #209e91 !important;
+  margin-bottom: 4px;
+  line-height: 12px;
+  font-size: 11px;
+  padding: 7px 5px 0px 10px;
+}
+#location_prompt>div {
+  width:320px;
+  height:400px;
+}
+#prompt_map {
+  height:300px;
+}
+#prompt_map canvas {
+  left:0;
+  top:0;
+}
 
 
 /* MOBILE RESPONSIVE */
@@ -151,7 +177,6 @@
   padding-top:90px;
   top:0;
   left:-180px;
-  z-index: 2;
   transition: width .5s , left .5s;
 }
 .ds-item span {

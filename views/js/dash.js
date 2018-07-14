@@ -14,6 +14,31 @@ function handleSuccess(msg){
   });
 }
 
+function Noti(viewManager){
+
+  var self = this;
+
+  //play alert sound
+  function playSound(filename){
+    $('#noti_sound').html('<audio autoplay="autoplay"><source src="/assets/' + filename + '.mp3" type="audio/mpeg" /><source src="/assets/' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="/assets/' + filename +'.mp3" /></audio>');
+  }
+
+  this.notify = function(info){
+    playSound('alert');
+    var notiBlock = document.createElement('div');
+    notiBlock.className = "noti-block tl paper rounded cl-med-gray cp";
+    $(notiBlock).html('<div class="roboto" style="margin-bottom:2px;">'+ info.name +'</div><span>'+ info.msg +'</span>');
+    $('#dh_noti .alert-dot').show();
+    $('#dh_noti .dropdown').prepend(notiBlock);
+
+    $(notiBlock).on('click',function(){
+      viewManager.load(info.view);
+    });
+
+  };
+
+}
+
 //animate loading button
 function loadingButton($button){
   var currentValue = $button.html();
@@ -234,9 +259,11 @@ $(document).on('ready',function(){
     //makes sure menu always functions right when switching between mobile and desktop multiple times
     $(window).on("resize", function(){
       var winWidth = $(document).width();
-      console.log(state);
       if (state == true && winWidth > 700 && $('.dash-sidebar').css('left') == '-180px'){
         $('.dash-sidebar').css('left','0px');
+        self.toggle();
+      } else if (winWidth < 700 && $('.dash-sidebar').css('left') == '0px') {
+        $('.dash-sidebar').css('left','-180px');
         self.toggle();
       }
     });
@@ -272,6 +299,10 @@ $(document).on('ready',function(){
     formData.append('image', file, file.name);
 
     updateProfilePic(formData,Cookies.get('token'));
+  });
+
+  $('#dh_noti').on('click',function(){
+    $('#dh_noti .alert-dot').hide();
   });
 
 });

@@ -13,7 +13,7 @@
   height:50px;
   width:100%;
   line-height:40px;
-  font-size: 20px;
+  font-size: 18px;
   position: relative;
   padding-left:10px;
   border-bottom:2px solid #f2f2f2;
@@ -53,6 +53,7 @@
   height:calc(100% - 115px);
   padding-top:10px;
   padding-bottom:20px;
+  position:relative;
 }
 .chat-input-cont {
   height:65px;
@@ -96,6 +97,7 @@
   position:relative;
   max-width: 400px;
   padding: 20px;
+  padding-bottom:25px;
   display: inline-block;
   border-radius: 8px;
   font-family: roboto;
@@ -106,13 +108,34 @@
   float:right;
   background-color: #eee;
 }
+.chat-row .sent {
+  float:right;
+  background-color: #eee;
+}
 .chat-row .ts {
   font-size:11px;
+  bottom:5px !important;
+}
+.ch-head-item {
+  height:100%;
+  display:inline-block;
+  padding: 0px 10px;
+}
+.chi-active {
+  border-bottom:3px solid #209e91;
 }
 
 /* MOBILE RESPONSIVE: */
 @media only screen and (max-width: 700px) {
   .chat-area {
     padding-top:0px;
+  }
+  .chat-history {
+    position: absolute;
+    z-index: 100;
+    width: 100%;
+    top:0;
+    left:0;
+    display: none;
   }
 }

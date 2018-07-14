@@ -1,12 +1,12 @@
 const dbh = require('../server.js').dbh; //import db instance from server.js
 
-//Gets profile by username
- module.exports.getProfile = async (username) => {
+//Gets profile by username, you can pass an array of specific fields
+ module.exports.getProfile = async (username, fields = []) => {
    var dbName = 'users_db';
 
    //prepare query
    var query =   {
-       "fields": [ "_id","_rev","username","name","password","email","phone","type","code","blood_type","profile_pic","contact" ],
+       "fields" : fields,
        "selector": { "username": { "$eq": username } },
        "sort": [ { "username": "asc" } ]
      };
@@ -47,4 +47,15 @@ module.exports.updateProfile = async (newProfile) => {
   });
 
   return db_response;
+}
+
+//builds a very simple error payload
+function buildError(code,message){
+  return {
+    "status" : "error",
+    "error" : {
+      "code" : code,
+      "message" : message
+    }
+  };
 }

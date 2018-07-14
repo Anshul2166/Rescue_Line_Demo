@@ -1,17 +1,32 @@
 <script src="/js/dash.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
 
+<div id="location_prompt" class="overlay">
+  <div class="bg-white c-align-abs rounded">
+    <div class="roboto-thin f-med-sm" style="height:40px;padding-top:10px;">Click <img src="/assets/locate_me.png" style="height:18px;"/> then drag <i class="fas fa-map-marker-alt" style="color:#c74b3b;"></i> to refine location</div>
+    <div id="prompt_map">
+    </div>
+    <div id="prompt_done" class="bt-lg bg-light cl-white" style="margin-top:7px;">Done</div>
+  </div>
+</div>
 <div class="dash-header bg-dark cl-white">
   <a href="/"><img class="dash-logo v-align-abs" src="/assets/logo/rescueline-white.png"/></a>
   <i class="fas fa-bars ds-toggle v-align-abs cp"></i>
   <div class="dash-side-group">
     <i id="dh_noti" class="far fa-bell dd-toggle v-align-abs a-b f17 cp">
-      <div class="alert-dot"></div><div class="dropdown" style="left:-170px;bottom:-210px;"></div>
+      <div class="alert-dot"></div>
+      <div class="dropdown touch-scroll no-cp" style="left:-170px;bottom:-210px;padding:5px;">
+        <div class="noti-block tl paper rounded cl-med-gray cp">
+          <div class="roboto" style="margin-bottom:2px;">Learn more</div>
+          <span>Click here to learn more about how our platform works.</span>
+        </div>
+      </div>
     </i>
     <span class="inva dd-toggle">
       <div class="dh-profile v-align-abs tc">
         <img id="dash_pic" src="/assets/placeholder.jpg" style="width:100%;" />
       </div>
-      <div class="dropdown signup-drop cl-med-gray roboto-thin cp" style="left:-100px;line-height:20px;height:50px;bottom:-45px;">
+      <div class="dropdown signup-drop dash-drop cl-med-gray roboto-thin cp">
         <div id="logout" class="a-b"><a class="inva wh100"><i class="fas fa-sign-out-alt cl-light"></i> Logout</a></div>
       </div>
     </span>

@@ -27,9 +27,11 @@
     "moment": "^2.22.2",
     "multer": "^1.3.1",
     "multer-s3": "^2.7.0",
+    "multer-s3-transform": "^2.3.2",
     "nodemailer": "^4.6.7",
     "nunjucks": "^3.1.3",
     "request": "^2.87.0",
+    "sharp": "^0.20.5",
     "socket.io": "^2.1.1",
     "twilio": "^3.17.5",
     "watson-developer-cloud": "^3.5.3"
