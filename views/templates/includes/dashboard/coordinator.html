@@ -35,18 +35,27 @@
   <div id="dashboard_view" class="dash-view">
     <div class="tip rounded">
       <i class="far fa-lightbulb" style="margin-top: 14px;"></i>
-      <span class="inva">Click and drag to reposition boxes</span>
+      <span class="inva">Click and drag top of box to move</span>
     </div>
-    <div style="position:relative;"><h3>EMERGENCY COORDINATOR</h3><div class="add-view top-right">ADD VIEW</div></div>
+    <div style="position:relative;">
+      <h3>COORDINATOR</h3>
+      <div class="abs top-right-0 cp f17">
+        <div class="basic-drop add-view-drop bg-white tc abs">
+          <div id="bd-reports_trend" class="a-b">Reports Trend</div>
+          <div id="bd-tasks_completed" class="a-b">Tasks Completed</div>
+          <div id="bd-live_feed" class="a-b">Live Feed</div>
+          <div id="bd-breakdown" class="a-b">Breakdown</div>
+          <div id="bd-map" class="a-b">Map</div>
+        </div>
+        <div class="tooltip-bottom inva rel grid-add" data-tooltip="Add View" style="margin-right:10px;">
+          <i class="fas fa-plus" style="height:17px;width:17px;"></i>
+        </div>
+        <div class="tooltip-left inva rel grid-save" data-tooltip="Save View">
+          <i class="fas fa-save" style="height:17px;width:17px;"></i>
+        </div>
+      </div>
+    </div>
     <div class="dash-grid">
-      <div class="grid-item gi-critical paper rounded"></div>
-      <div class="grid-item gi-critical paper rounded"></div>
-      <div class="grid-item gi-critical paper rounded"></div>
-      <div class="grid-item gi-critical paper rounded"></div>
-      <div class="grid-item paper rounded"></div>
-      <div class="grid-item paper rounded"></div>
-      <div class="grid-item paper rounded"></div>
-      <div class="grid-item paper rounded"></div>
     </div>
   </div>
   <div id="get_help_view" class="dash-view wh100">

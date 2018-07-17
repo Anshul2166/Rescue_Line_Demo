@@ -390,7 +390,7 @@ const insertChat = async (chat) => {
  });
 
  return db_response;
-}
+};
 
 /*
  * Marks a chat as read
@@ -418,7 +418,7 @@ const readChat = async (docId) => {
 
   return db_response;
 
-}
+};
 
 //takes in timestamp and returns meaningful string such as "3 mins ago"
 function processStamp(timestamp){

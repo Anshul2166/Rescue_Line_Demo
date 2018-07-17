@@ -14,6 +14,29 @@ function handleSuccess(msg){
   });
 }
 
+//handles a specific button's hover effect
+function hoverEffect(element){
+
+  $(element).on('mouseover',function(){
+    if ($(this).hasClass('no-a-b'))
+      return;
+    var winWidth = $(document).width();
+    if (winWidth < 700)
+      return;
+    var $btn = $(this);
+    $btn.css('background-color','rgba(155,155,155,0.2)');
+  });
+  $(element).on('mouseout',function(){
+    if ($(this).hasClass('no-a-b'))
+      return;
+    var $btn = $(this);
+    $btn.css('background-color','transparent');
+  });
+
+  return element;
+
+}
+
 function Noti(viewManager){
 
   var self = this;
@@ -159,8 +182,6 @@ function showTip(parent){
   },3000);
 }
 
-var $grid;
-
 $(document).on('ready',function(){
   //code to run at page load
 
@@ -191,87 +212,6 @@ $(document).on('ready',function(){
       $('.dropdown').hide();
     }
   });
-
-
-  $grid = $('.dash-grid').packery({
-    itemSelector: '.grid-item',
-    gutter: 15,
-    columnWidth: $('.grid-item')[0],
-    rowWidth: $('.grid-item')[0],
-  });
-
-  $grid.find('.grid-item').each( function( i, gridItem ) {
-    var draggie = new Draggabilly( gridItem );
-    // bind drag events to Packery
-    $grid.packery( 'bindDraggabillyEvents', draggie );
-  });
-
-  //handles the sidebar shrinking
-  function SideHandler(){
-
-    var self = this;
-    var state = true; //not shrinked
-
-    this.getState = function(){
-      return self.state;
-    };
-
-    this.toggle = function(){
-      if ($(document).width() < 700){
-        if (state == true){
-          $('.dash-sidebar').css('left','0px');
-          state = false;
-        } else {
-          $('.dash-sidebar').css('left','-180px');
-          state = true;
-        }
-      } else {
-        if (state == true){
-          $('.dash-sidebar').css('width','56px');
-          $('.dash-sidebar').css('left','0px');
-          $('.ds-item span').hide();
-          $('.dash-container').css('padding-left','80px');
-          $('#sb_logo').hide();
-          $grid.packery();
-          state = false;
-        } else {
-          $('.dash-sidebar').css('width','180px');
-          $('.dash-sidebar').css('left','0px');
-          $('.ds-item span').show();
-          $('.dash-container').css('padding-left','200px');
-          $('#sb_logo').show();
-          $grid.packery();
-          state = true;
-        }
-      }
-    };
-
-    //set toggle on click
-    $('.ds-toggle').on('click',function(){
-      self.toggle();
-    });
-
-    //set toggle on click if mobile
-    $('.ds-item').on('click',function(){
-      if ($(document).width() < 700)
-        self.toggle();
-    });
-
-    //makes sure menu always functions right when switching between mobile and desktop multiple times
-    $(window).on("resize", function(){
-      var winWidth = $(document).width();
-      if (state == true && winWidth > 700 && $('.dash-sidebar').css('left') == '-180px'){
-        $('.dash-sidebar').css('left','0px');
-        self.toggle();
-      } else if (winWidth < 700 && $('.dash-sidebar').css('left') == '0px') {
-        $('.dash-sidebar').css('left','-180px');
-        self.toggle();
-      }
-    });
-
-  }
-
-  sideHandler = new SideHandler();
 
   $('#logout').on('click',function(){
     Cookies.remove('token');

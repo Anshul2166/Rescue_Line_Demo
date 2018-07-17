@@ -77,16 +77,46 @@
 }
 .grid-item {
   width: 47%;
-  height: 400px;
+  height: 415px;
 }
-.gi-critical {
+.gi-mini {
   width:23%;
-  height:150px;
+  height:200px;
 }
-.add-view {
-  position: absolute;
-  top:1px;
-  right:1px;
+.gi-mini>.gi-head {
+  height: 40px;
+  font-size: 14px;
+  line-height: 40px;
+}
+.gi-mini>.gi-body {
+  height: calc(100% - 40px);
+}
+.gi-close {
+  width:18px;
+  height:18px;
+}
+.gi-head {
+  height:50px;
+  border-bottom: 1px solid #e6e6e6;
+  font-size:17px;
+  line-height: 50px;
+  padding:0px 20px;
+  width:100%;
+}
+.gi-body {
+  height: calc(100% - 50px);
+  width:100%;
+  padding:10px;
+  display:flex;
+  align-items: center;
+}
+.gih-options {
+  position:absolute;
+  top:0;
+  right:0;
+  height:50px;
+  padding-right:10px;
+  font-size:12px;
 }
 .grid-item.is-dragging,
 .grid-item.is-positioning-post-drag {
@@ -138,6 +168,30 @@
   height:50px;
   bottom:-45px;
 }
+.add-view-drop {
+  top:25px;
+  left:-115px;
+}
+.basic-drop {
+  width: 140px;
+  height: auto;
+  border: 1px solid #eee;
+  border-radius:4px;
+  font-size:12px;
+  z-index: 101;
+  display: none;
+}
+.basic-drop>div {
+  height:30px;
+  width:100%;
+  line-height: 30px;
+}
+.basic-drop>div {
+  border-bottom: 1px solid #f2f2f2;
+}
+.basic-drop>div:last-child {
+  border-bottom:none;
+}
 .noti-block {
   height: 55px;
   border-left: 2px solid #209e91 !important;
@@ -158,8 +212,18 @@
   top:0;
 }
 
+/* MOBILE RESPONSIVE < 1000px */
+@media only screen and (max-width: 1000px) {
 
-/* MOBILE RESPONSIVE */
+  .gi-mini {
+    width:47% !important;
+    height:200px;
+  }
+
+} /* END MOBILE RESPONSIVE < 1000px */
+
+
+/* MOBILE RESPONSIVE < 700px */
 @media only screen and (max-width: 700px) {
 
 .ds-toggle {
@@ -187,11 +251,21 @@
 }
 .grid-item {
   width: 100% !important;
-  height: 400px;
+  height: 415px;
 }
-.gi-critical {
+.gi-mini {
   width:47% !important;
-  height:150px;
+  height:200px;
 }
 
-} /* END MOBILE RESPONSIVE */
+} /* END MOBILE RESPONSIVE < 700px */
+
+/* MOBILE RESPONSIVE < 500px */
+@media only screen and (max-width: 500px) {
+
+  .gi-mini {
+    width:100% !important;
+    height:200px;
+  }
+
+} /* END MOBILE RESPONSIVE < 500px */

@@ -29,10 +29,12 @@ var accountAPI = require('./api/account/endpoints.js');
 var profileAPI = require('./api/profile/endpoints.js');
 var watsonAPI = require('./api/ai/endpoints.js');
 var chatAPI = require('./api/chat/endpoints.js');
+var dashboardAPI = require('./api/dashboard/endpoints.js');
 app.use(accountAPI);
 app.use(profileAPI);
 app.use(watsonAPI);
 app.use(chatAPI);
+app.use(dashboardAPI);
 
 nunjucks.configure('views', {
     autoescape: true,

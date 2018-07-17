@@ -376,6 +376,9 @@ p {
   margin: 0;
   display: inline-block;
 }
+.rel {
+	position:relative;
+}
 .abs {
 	position:absolute;
 }

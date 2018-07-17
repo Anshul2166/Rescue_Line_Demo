@@ -468,6 +468,41 @@ POST /api/ai/speech
 
 **Speech to text capabilities coming soon**
 
+#WEBSOCKET
+##  
+###Connection
+
+Preferably use socketIO client. Connect to "https://rl-node-shy-okapi.mybluemix.net/" . Note that the user's access token must be included as a query parameter. Below is the basics of my implementation in javascript. It should look pretty similar in whatever language you are using if you use the socketIO client.
+
+```javascript
+function SocketHandler(){
+
+  var socket = null;
+
+  //connects to the socket
+  this.connect = function(){
+
+    //makes connection request, note token is in query
+    socket = io("https://rl-node-shy-okapi.mybluemix.net/",{ query: "token="+ token });
+
+    //set events below. These are the basic events needed for a citizen. More events will be added for responder soon
+    socket.on('chat',function(msg){
+      //received a chat, do something with it
+    });
+
+    socket.on('invalid_token',function(msg){
+      //if you send an invalid access token, you will receive this event. Handle it here
+    });
+
+  };
+
+  //initialize own self
+  this.connect();
+
+}
+```
+
+
 #DATA TYPES
 ##  
 ###LatLng
