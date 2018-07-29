@@ -1,6 +1,6 @@
 
 //add some structure to socket connections and keep it in a local scope
-function SocketHandler(chatHandler, noti){
+function SocketHandler(chatHandler, noti, customEvents){
 
   var self = this;
   var socket = null;
@@ -22,6 +22,10 @@ function SocketHandler(chatHandler, noti){
     socket.on('invalid_token',function(msg){
       handleError({message: "Invalid token. Socket could not connect. Please refresh page, and re-login if problem persists."});
     });
+
+    //set custom events
+    if (typeof customEvents != "undefined")
+      customEvents(socket);
 
   };
 

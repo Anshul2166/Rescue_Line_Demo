@@ -38,6 +38,9 @@ module.exports = class IO {
       if (tokenInfo == null)
         return false;
 
+      if (tokenInfo.type == "coordinator" && typeof tokenInfo.country != "undefined")
+        socket.join(tokenInfo.country);
+
       //store socket.id by username, for easy lookup
       self.connections[tokenInfo.user] = socket.id;
 

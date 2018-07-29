@@ -1,5 +1,39 @@
 {% include 'templates/includes/dash_header.html' %}
 
+<div class="share-modal overlay" style="top:0;left:0;z-index:102;">
+  <div class="share-box bg-light-gray rounded abs c-align-abs">
+    <div class="gi-head" style="cursor: auto !important;">
+      <span class="gih-header">RESPONDERS NEAR INCIDENT</span>
+      <div class="gih-options">
+        <i class="fas fa-times-circle cp"></i>
+      </div>
+    </div>
+    <div class="share-message"><input type="text" placeholder="Attach a message.."></div>
+    <div class="gi-body touch-scroll" style="display:block;">
+      <div class="ch-item no-cp rel tl">
+        <div class="ch-item-pic inva">
+          <img src="/assets/placeholder.jpg">
+        </div>
+        <div class="ch-item-preview inva" style="margin:3px 0px 0px 10px;">
+          <div class="ch-item-name f-med">Rogi Solorzano</div>
+          <span class="ch-msg roboto-thin cl-light-gray">0.43 miles away</span>
+        </div>
+        <i class="tooltip-left top-right abs" data-tooltip="Send" style="font-size:20px;top:21px;"><i class="fab fa-telegram-plane cl-light"></i></i>
+      </div>
+      <div class="ch-item no-cp rel tl">
+        <div class="ch-item-pic inva">
+          <img src="/assets/placeholder.jpg">
+        </div>
+        <div class="ch-item-preview inva" style="margin:3px 0px 0px 10px;">
+          <div class="ch-item-name f-med">Rogi Solorzano</div>
+          <span class="ch-msg roboto-thin cl-light-gray">0.63 miles away</span>
+        </div>
+        <i class="tooltip-left top-right abs " data-tooltip="Send" style="font-size:20px;top:21px;"><i class="fab fa-telegram-plane cl-light"></i></i>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="dash-sidebar bg-dark">
   <img id="sb_logo" class="dash-logo" src="/assets/logo/rescueline-white.png" style="top:20px;"/>
   <div id="profile" class="ds-item ds-active a-b no-a-b"><i class="fas fa-user"></i><span>Profile</span></div>
@@ -40,6 +74,12 @@
     <div style="position:relative;">
       <h3>COORDINATOR</h3>
       <div class="abs top-right-0 cp f17">
+        <div class="tooltip-bottom inva rel" data-tooltip="Receive Incidents In" style="margin-right:10px;">
+          <select>
+            <option>Entire country</option>
+            <option>100 mile radius</option>
+          </select>
+        </div>
         <div class="basic-drop add-view-drop bg-white tc abs">
           <div id="bd-reports_trend" class="a-b">Reports Trend</div>
           <div id="bd-tasks_completed" class="a-b">Tasks Completed</div>

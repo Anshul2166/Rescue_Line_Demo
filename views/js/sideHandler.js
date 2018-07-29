@@ -13,7 +13,8 @@ function SideHandler(){
     gridHandler = gh;
   };
 
-  this.toggle = function(){
+  //target can be shrink or expand
+  this.toggle = function(target){
     if ($(document).width() < 700){
       if (state == true){
         $('.dash-sidebar').css('left','0px');
@@ -23,13 +24,14 @@ function SideHandler(){
         state = true;
       }
     } else {
-      if (state == true){
+      if (state == true || target == "shrink"){
         $('.dash-sidebar').css('width','56px');
         $('.dash-sidebar').css('left','0px');
         $('.ds-item span').hide();
         $('.dash-container').css('padding-left','80px');
         $('#sb_logo').hide();
-        gridHandler.refresh();
+        if (gridHandler != null)
+          gridHandler.refresh();
         state = false;
       } else {
         $('.dash-sidebar').css('width','180px');
@@ -37,7 +39,8 @@ function SideHandler(){
         $('.ds-item span').show();
         $('.dash-container').css('padding-left','200px');
         $('#sb_logo').show();
-        gridHandler.refresh();
+        if (gridHandler != null)
+          gridHandler.refresh();
         state = true;
       }
     }

@@ -246,4 +246,8 @@ $(document).on('ready',function(){
     $('#dh_noti .alert-dot').hide();
   });
 
+  $('.share-modal .fa-times-circle').on('click',function(){
+    $('.share-modal').hide();
+  });
+
 });

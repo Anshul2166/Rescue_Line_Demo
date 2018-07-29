@@ -1,3 +1,8 @@
+/*
+ * Pretty lengthy file with the GridHandler and other classes & functions directly related to the dashboard grid.
+ * I will look into separating these into simpler files when I have time.
+ */
+
 //loads and manages the dashboard grid
 function GridHandler(){
 
@@ -6,6 +11,9 @@ function GridHandler(){
   this.charts = new GridChart();
   this.mapHandler = null;
   this.addViewManager = null;
+  this.chatHandler = null;
+  this.viewManager = null;
+  this.feed = {};
 
   this.$grid = null;
 
@@ -19,10 +27,18 @@ function GridHandler(){
     return smallestWidth;
   };
 
+  this.setChatHandler = function(ch){
+    self.chatHandler = ch;
+  };
+
+  this.setViewManager = function(vm){
+    self.viewManager = vm;
+  };
+
   this.getCurrentOrder = function(){
     var $el = null;
     var itemOrder = [];
-    $.each(gridHandler.$grid.packery('getItemElements'),function(index,element){
+    $.each(self.$grid.packery('getItemElements'),function(index,element){
       $el = $(element);
     	itemOrder.push({
     		type : $el.attr('id'),
@@ -55,25 +71,6 @@ function GridHandler(){
       // bind drag events to Packery
       self.$grid.packery( 'bindDraggabillyEvents', draggie );
     });
-
-    //
-    // if (self.$grid[0].childElementCount == 1){
-    //   self.$grid = $('.dash-grid').packery({
-    //     itemSelector: '.grid-item',
-    //     gutter: 15,
-    //     columnWidth: self.getSmallestColumn(),
-    //     rowWidth: 200,
-    //   });
-    // }
-
-    // // var draggie = new Draggabilly( gridItem, {
-    // //   handle: '.gi-head'
-    // // });
-    // //
-    // // self.$grid.packery( 'bindDraggabillyEvents', draggie );
-    //
-    // if (gridHandler.$grid[0].childElementCount > 1)
-    //   self.refresh();
 
   };
 
@@ -290,14 +287,217 @@ function GridChart(){
 
 }
 
+var intentPhrases = {
+  "fire" : "reported a fire",
+  "earthquake" : "reported an earthquake",
+  "avalanche" : "reported an avalanche",
+  "tornado" : "reported a tornado",
+  "volcano" : "reported experiencing the effects of a volcano",
+  "flood" : "reported flooding",
+  "landslide" : "reported a landslide",
+  "tsunami" : "reported a tsunami",
+  "sandstorm" : "reported a sandstorm",
+  "need_medic" : "needs medical attention",
+  "trapped" : "is trapped",
+  "needs_supplies" : "needs supplies",
+  "reported_incident" : "reported a safety hazard"
+};
+
+var specialKeyProcessing = {
+  "address_geocoded" : function(val,gridHandler,eventId){
+    var link = document.createElement('span');
+    link.className = "cp cl-light";
+    $(link).html("<div class='inva rel tooltip-right' data-tooltip='View on map' style='margin:5px 0px 0px 5px'><i class='fas fa-map-marked-alt' style='font-size: 25px;'></i></div>");
+    $(link).on('click',function(){
+      //will open on map
+      var addPopup = function(){
+
+        //mm is for map marker
+        var markerId = "mm_"+eventId ;
+        gridHandler.mapHandler.map.setZoom(15);
+        //start panning to marker
+        gridHandler.mapHandler.map.panTo(val.geometry.coordinates);
+
+        var exists = false;
+        //check if marker already exists
+        $.each(gridHandler.mapHandler.map._canvasContainer.children,function(index,item){
+          console.log("ITEM.ID",item.id);
+          if (item.id == markerId)
+            exists = true;
+        });
+
+        console.log("EXISTS",exists);
+        if (exists)
+          return false;
+
+        // create the popup
+        var popup = new mapboxgl.Popup()
+            .setText('Info here');
+
+        // create the marker
+        var marker = new mapboxgl.Marker();
+        marker._element.id = markerId;
+        console.log(markerId);
+        console.log("MARKER",marker);
+
+        //attach popup and add to map
+        marker.setLngLat(val.geometry.coordinates)
+            .setPopup(popup)
+            .addTo(gridHandler.mapHandler.map);
+
+      };
+
+      if (gridHandler.mapHandler === null){
+        gridHandler.addView('map');
+        setTimeout(addPopup,1000);
+      } else {
+        addPopup();
+      }
+
+    });
+    return { key: "Address Coordinates", val: link };
+  },
+  "user_country" : function(val){
+    return { key: "User Country", val: val.toUpperCase() };
+  },
+  "identifier" : function(val,gridHandler,eventId){
+    var link = document.createElement('span');
+    link.className = "cp cl-light";
+    $(link).html("<div class='inva rel tooltip-right' data-tooltip='Start chat' style='margin:5px 0px 0px 5px'><i class='fas fa-comments' style='font-size: 25px;'></i></div>");
+    //start chat
+    $(link).on('click',function(){
+      gridHandler.viewManager.load('get_help');
+      $('.ch-head-name').html(val);
+      gridHandler.chatHandler.startChat(val,Cookies.get('token'));
+    });
+
+    return { key: "Chat", val: link };
+  }
+};
+
+//This class builds a live_feed item and sets relevant clicks
+//TODO: implement a 'refresh' method where you input new data received from websocket, and it refreshes that FeedItem
+function FeedItem(itemInfo, gridHandler){
+
+  var self = this;
+
+  this.feedItem = document.createElement('div');
+
+  //builder is refresher, so we can conveniently refresh when needed
+  this.refresh = function(itemInfo){
+
+    var priority = { text: "LOW", class: "" };
+    var keyToText = function(key){ return key.split("_").map(function(item,index){ return item.charAt(0).toUpperCase() + item.slice(1); }).join(" "); };
+
+    //format intent. Example: needs_medic -> Needs Medic
+    var processedIntent = {
+      text: keyToText(itemInfo.verified_intent),
+      phrase: intentPhrases[itemInfo.verified_intent]
+    };
+
+    //lf_ is live_feed, + docID
+    self.feedItem.id = "lf_"+itemInfo._id;
+
+    if (itemInfo.priority_weight > 0.8){
+      priority = { text: "HIGH", class: "prio-red" };
+    } else if (itemInfo.priority_weight > 0.5) {
+      priority = { text: "MEDIUM", class: "prio-yellow" };
+    }
+
+    //TODO: have similiar_nearby field, will have to get in DB
+
+    self.feedItem.className = "feed-item rel " + priority.class;
+    $(self.feedItem).html(
+          '<img src="/assets/placeholder.jpg">'
+    +     '<div class="fi-info inva">'
+    +       '<div class="fi-header inva">'+ processedIntent.text +'</div>'
+    +       '<div class="blinker inva tooltip-bottom" data-tooltip="Collecting info realtime"><i class="fas fa-circle Blink inva" style="margin:4px 0px 0px 5px;"></i></div><br>'
+    +       '<div class="fi-description roboto-thin">'+itemInfo.identifier +' '+ processedIntent.phrase +'. 5 others might be involved. Estimated priority: '+ priority.text +'</div>'
+    +     '</div>'
+    +     '<div class="fi-i fii-share inva rel tooltip-left" data-tooltip="Send to responder" style="margin-top:12px;"><i class="fas fa-share-square c-align-abs"></i></div>'
+    +     '<div class="fi-i fii-details inva rel tooltip-left" data-tooltip="Details" style="margin-top:12px;"><i class="fas fa-info-circle c-align-abs"></i></div>'
+    +     '<div class="fi-details">'
+    +     '</div>');
+
+    var $fi = $(self.feedItem);
+    var $fid = $fi.find('.fi-details');
+
+    //if this item is old, don't show realtime blinker
+    if (( Date.now() - itemInfo.timestamp ) > 120000)
+      $fi.find('.blinker').hide();
+
+    //set minimize & maximize
+    $fi.find('.fii-details').on('click',function(){
+      console.log($fid.css('height'));
+      if ($fid.css('height') == "0px"){
+        //if is minimized, then maximize
+        $fid.animate({
+          height: $fid.get(0).scrollHeight
+        }, 400, function(){
+          $fid.height('auto');
+        });
+      } else {
+        //if is maximized, minimize
+        $fid.animate({
+            height: '0px'
+        }, 400);
+      }
+
+    });
+
+    //open share-modal to send event directly to a responder
+    $fi.find('.fii-share').on('click',function(){
+      console.log("open share modal");
+      $('.share-modal').show();
+    });
+
+    itemInfo.timestamp = new Date(itemInfo.timestamp).toLocaleString();
+    itemInfo.verified_intent = keyToText(itemInfo.verified_intent);
+    var eventId = itemInfo._id;
+
+    delete itemInfo._id;
+    delete itemInfo._rev;
+    delete itemInfo.current_state;
+    delete itemInfo.is_live;
+    delete itemInfo.priority_weight;
+    delete itemInfo.verified_intent;
+
+    //build details
+    $.each(itemInfo,function(key,val){
+      var div = document.createElement('div');
+      var pair = {};
+      pair.key = key;
+      pair.val = val;
+
+      if (typeof specialKeyProcessing[key] != "undefined")
+        pair = specialKeyProcessing[key](val,gridHandler,eventId);
+
+      $(div).html('<div>'+ keyToText(pair.key) +'</div><span></span>');
+      $(div).find('span').append(pair.val);
+      $fid.append(div);
+    });
+
+    //hide blinker that says "Collecting info realtime" after 30 secs
+    setTimeout(function(){ $(self.feedItem).find('.blinker').hide(); },30000);
+
+    gridHandler.feed[eventId] = self;
+
+    return self.feedItem;
+  };
+
+  return this.refresh(itemInfo);
+
+}
+
 //all the possible grid items, and their HTML.
 var gridItemLookup = {
   "reports_trend" : {
     html: '<div class="gi-head">'
           + ' <span class="gih-header">REPORTS TREND</span>'
           + ' <div class="gih-options">'
-          + '   <i class="fas fa-expand gi-close cp"></i>'
-          + '   <i class="fas fa-times-circle gi-close cp"></i>'
+          + '   <i data-tooltip="Snapshot" class="tooltip-bottom rel"><i class="fas fa-camera cp"></i></i>'
+          + '   <i class="fas fa-expand cp"></i>'
+          + '   <i class="fas fa-times-circle cp"></i>'
           + ' </div>'
           + ' </div>'
           + ' <div class="gi-body">'
@@ -324,14 +524,19 @@ var gridItemLookup = {
             }
         })
       );
+
+      $(item).find('.fa-camera').on('click',function(){
+        window.open(window.URL.createObjectURL(base64toBlob(self.charts.charts.reports_trend.toBase64Image().slice(22),"image/png")),'_blank');
+      });
+
     }
   },
   "tasks_completed" : {
     html: '<div class="gi-head">'
           + ' <span class="gih-header">TASKS COMPLETED</span>'
           + ' <div class="gih-options">'
-          + '   <i class="fas fa-expand gi-close cp"></i>'
-          + '   <i class="fas fa-times-circle gi-close cp"></i>'
+          + '   <i class="fas fa-expand cp"></i>'
+          + '   <i class="fas fa-times-circle cp"></i>'
           + ' </div>'
           + ' </div>'
           + ' <div class="gi-body">'
@@ -345,21 +550,60 @@ var gridItemLookup = {
     html : '<div class="gi-head">'
           + ' <span class="gih-header">LIVE FEED</span>'
           + ' <div class="gih-options">'
-          + '   <i class="fas fa-expand gi-close cp"></i>'
-          + '   <i class="fas fa-times-circle gi-close cp"></i>'
+          + '   <!-- Will be able to sort by: Priority, Newest, Oldest -->'
+          + '   <i data-tooltip="Filter" class="tooltip-bottom rel"><i class="fas fa-filter cp" style="font-size:11px;"></i></i>'
+          + '   <i data-tooltip="Sort" class="tooltip-bottom rel"><i class="fas fa-sort cp"></i></i>'
+          + '   <i class="fas fa-expand cp"></i>'
+          + '   <i class="fas fa-times-circle cp"></i>'
           + '   </div>'
           + ' </div>'
-          + '<div class="gi-body"></div>',
-    init : function(item){
+          + '<div class="gi-body touch-scroll" style="display:block;padding-top:0;overflow-x:visible;">'
+          + '</div>',
+    init : function(item,self){
       console.log('initialized feed for',item);
+      //$.get(/api/data/feed)
+      var feedData = [
+        {
+          "_id":"24de0a4756bac004d4d7c0ac061e8b1d",
+          "_rev":"12-a52bf1ff6da542dd5be427cfd60976a1",
+          "first_explanation":"There is serious flooding, houses in the area are being hit pretty bad.",
+          "timestamp":1532584460097,
+          "verified_intent":"flood",
+          "priority_weight":0.7,
+          "address":"11105 NW Jones dr, parkville MO",
+          "address_geocoded": {"geometry":{"type":"Point","coordinates":[-94.709746,39.209394]}},
+          "user_country":"us",
+          "is_live":true,
+          "identifier":"rogisolo",
+          "current_state":"serious_injury_yesno"
+        },
+        {
+          "_id":"24de0a4756bac098327c0ac061e8b1d",
+          "_rev":"12-a52bf1ff6da542dd5be427cfd60976a1",
+          "first_explanation":"My house is on fire help",
+          "timestamp":1532636396294,
+          "verified_intent":"fire",
+          "priority_weight":0.9,
+          "address":"11105 NW Jones dr, parkville MO",
+          "address_geocoded": {"geometry":{"type":"Point","coordinates":[-94.709746,39.209394]}},
+          "user_country":"us",
+          "is_live":true,
+          "identifier":"markjacobs",
+          "current_state":"serious_injury_yesno"
+        }
+      ];
+      $fb = $('#live_feed .gi-body');
+      for (var i = 0; i < feedData.length; i++)
+        $fb.append(new FeedItem(feedData[i],self));
+
     }
   },
   "map" : {
     html : '<div class="gi-head">'
           + ' <span class="gih-header">MAP</span>'
           + ' <div class="gih-options">'
-          + '   <i class="fas fa-expand gi-close cp"></i>'
-          + '   <i class="fas fa-times-circle gi-close cp"></i>'
+          + '   <i class="fas fa-expand cp"></i>'
+          + '   <i class="fas fa-times-circle cp"></i>'
           + '   </div>'
           + ' </div>'
           + '<div class="gi-body">'
@@ -374,8 +618,9 @@ var gridItemLookup = {
     html: '<div class="gi-head">'
           + ' <span class="gih-header">BREAKDOWN</span>'
           + ' <div class="gih-options">'
-          + '   <i class="fas fa-expand gi-close cp"></i>'
-          + '   <i class="fas fa-times-circle gi-close cp"></i>'
+          + '   <i data-tooltip="Snapshot" class="tooltip-bottom rel"><i class="fas fa-camera cp"></i></i>'
+          + '   <i class="fas fa-expand cp"></i>'
+          + '   <i class="fas fa-times-circle cp"></i>'
           + ' </div>'
           + ' </div>'
           + ' <div class="gi-body">'
@@ -397,14 +642,18 @@ var gridItemLookup = {
             }
         })
       );
+
+      $(item).find('.fa-camera').on('click',function(){
+        window.open(window.URL.createObjectURL(base64toBlob(self.charts.charts.breakdown.toBase64Image().slice(22),"image/png")),'_blank');
+      });
     }
   },
   "unknown" : {
     html: '<div class="gi-head">'
           + ' <span class="gih-header">UNKNOWN</span>'
           + ' <div class="gih-options">'
-          + '   <i class="fas fa-expand gi-close cp"></i>'
-          + '   <i class="fas fa-times-circle gi-close cp"></i>'
+          + '   <i class="fas fa-expand cp"></i>'
+          + '   <i class="fas fa-times-circle cp"></i>'
           + ' </div>'
           + ' </div>'
           + ' <div class="gi-body">'
@@ -435,6 +684,27 @@ function shuffleArray(array) {
         array[i] = array[j];
         array[j] = temp;
     }
+}
+
+function base64toBlob(base64Data, contentType) {
+    contentType = contentType || '';
+    var sliceSize = 1024;
+    var byteCharacters = atob(base64Data);
+    var bytesLength = byteCharacters.length;
+    var slicesCount = Math.ceil(bytesLength / sliceSize);
+    var byteArrays = new Array(slicesCount);
+
+    for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+        var begin = sliceIndex * sliceSize;
+        var end = Math.min(begin + sliceSize, bytesLength);
+
+        var bytes = new Array(end - begin);
+        for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
+            bytes[i] = byteCharacters[offset].charCodeAt(0);
+        }
+        byteArrays[sliceIndex] = new Uint8Array(bytes);
+    }
+    return new Blob(byteArrays, { type: contentType });
 }
 
 //sample data for charts

@@ -1,18 +1,17 @@
-
-//handles mapbox map, will be different for everyone so not in its own file, for now
-function MapHandler(){
+//handles mapbox map for responder, will be different for everyone so not in its own file, for now
+function MapHandler(element,$container){
   var self = this;
   this.loaded = false;
   this.map = null;
 
   this.load = function(){
     console.log("in load");
-    $('#mapbox').css('width',$('.dash-container').width()+'px');
-    $('#mapbox').css('height',$('.dash-container').height()+'px');
+    $(element).css('width',$container.width()+'px');
+    $(element).css('height',$container.height()+'px');
     setTimeout(function(){
       mapboxgl.accessToken = 'pk.eyJ1Ijoicm9naTU1NSIsImEiOiJjajh1MjJnYTYwdXU4MzNtYnZ5NHl1dGhpIn0.CBUJUe_M8sLWykZgHIpfIw';
       self.map = new mapboxgl.Map({
-        container: 'mapbox',
+        container: element,
         style: 'mapbox://styles/mapbox/streets-v10',
         center: [-74.50, 40], // starting position [lng, lat]
         zoom: 9 // starting zoom
@@ -24,6 +23,13 @@ function MapHandler(){
           trackUserLocation: false
       }));
 
+      self.map.addControl(new mapboxgl.FullscreenControl());
+      $(window).on('resize',function(){
+        setTimeout(function(){
+          self.map.resize();
+        },1000);
+      });
+
     },200);
     self.loaded = true;
   };
@@ -32,9 +38,15 @@ function MapHandler(){
 
 $(document).on('ready',function(){
 
-  var mapHandler = new MapHandler();
+  var dashMapHandler = new MapHandler($('#mapbox')[0],$('.dash-container'));
   var chatHandler = new ChatHandler({ type : "notcitizen" });
   var locationHandler = new LocationHandler();
+  var gridHandler = new GridHandler();
+
+  var sideHandler = new SideHandler();
+  sideHandler.setGridHandler(gridHandler);
+
+  gridHandler.initialize();
 
   //load views into viewManager programmatically
   var viewManager = new ViewManager({
@@ -44,9 +56,18 @@ $(document).on('ready',function(){
     },
     "dashboard" : function(){
       console.log("Loaded dashboard view");
+      if ($(document).width() > 700)
+        sideHandler.toggle('shrink');
+
+      gridHandler.$grid.one('layoutComplete', function(){
+        console.log('layout event');
+        if (gridHandler.mapHandler != null)
+          gridHandler.mapHandler.map.resize();
+      });
+
       setTimeout(function(){
-        $grid.packery();
-      },300);
+        gridHandler.refresh();
+      },100);
     },
     "get_help" : function(){
       //get_help is actually chat view
@@ -58,8 +79,8 @@ $(document).on('ready',function(){
     },
     "map" : function(){
       console.log("map view");
-      if (!mapHandler.loaded)
-        mapHandler.load();
+      if (!dashMapHandler.loaded)
+        dashMapHandler.load();
     }
   });
 

@@ -34,6 +34,7 @@ $(document).on('ready',function(){
   var mapHandler = new MapHandler();
   var chatHandler = new ChatHandler();
   var locationHandler = new LocationHandler();
+  var sideHandler = new SideHandler();
 
   //load views into viewManager programmatically
   var viewManager = new ViewManager({
@@ -44,6 +45,8 @@ $(document).on('ready',function(){
     "get_help" : function(){
       console.log("Loaded get help view");
       chatHandler.getHistory(Cookies.get('token'));
+      if (!locationHandler.recentPrompt())
+        locationHandler.precisePrompt();
     },
     "map" : function(){
       console.log("map view");
@@ -52,6 +55,9 @@ $(document).on('ready',function(){
     },
     "safe_place" : function(){
       console.log("safe_place view");
+    },
+    "missing" : function(){
+      console.log("missing view");
     }
   });
 

@@ -60,7 +60,7 @@
 [data-tooltip]:after {
   z-index: 1000;
   padding: 8px;
-  width: 70px;
+  width: 90px;
   background-color: #000;
   background-color: hsla(0, 0%, 20%, 0.9);
   color: #fff;
@@ -96,7 +96,8 @@
 [data-tooltip]:after,
 .tooltip:after,
 .tooltip-top:after {
-  margin-left: -44px;
+  margin-left: -53px;
+  border-radius: 4px;
 }
 
 [data-tooltip]:hover:before,
@@ -194,7 +195,7 @@
 /* Move directional arrows down a bit for left/right tooltips */
 .tooltip-left:before,
 .tooltip-right:before {
-  top: 3px;
+  top: 10px;
 }
 
 /* Vertically center tooltip content for left/right tooltips */

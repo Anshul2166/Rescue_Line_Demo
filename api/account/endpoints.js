@@ -15,6 +15,7 @@ const profileManager = require('../../util/profile_manager.js');
 app.post('/api/account/create', async (req, res) => {
   console.log(req.body);
   var userData = req.body;
+  var codeInfo = null;
 
   //makes sure there is a code for user types that aren't citizens
   if (userData.type != 'citizen' && userData.code == "none" ){
@@ -39,7 +40,33 @@ app.post('/api/account/create', async (req, res) => {
     res.json(buildError(400,"Error verifying that username."));
   }
 
-  //TODO: method to check that organizational code is a valid code
+  if (userData.type == "coordinator" || userData.type == "responder"){
+    //check that organizational code is a valid code
+    const codeDoc = await getCode(userData.code);
+    if (codeDoc.status == "success"){
+      //check if code exists
+      if (codeDoc.data.length == 0){
+        res.json(buildError(403,"Invalid organizational code. Please recheck code, or contact your organization admin for a new code."));
+        return false;
+      }
+
+      codeInfo = codeDoc.data[0];
+      var codeExpiry = codeInfo.timestamp + codeInfo.lifetime;
+      //check if code has expired
+      if ( codeExpiry < Date.now() ){
+        res.json(buildError(403,"Code has expired. Please contact your organization admin for a new code."));
+        return false;
+      }
+    } else {
+      res.json(buildError(400,"Database error. Please try again in a while and contact support if the problem persists."));
+    }
+
+    //make sure type provided by user matches with type in code
+    if (userData.type != codeInfo.type){
+      res.json(buildError(403,"This code does not authorize you to make this type of account."));
+      return false;
+    }
+  }
 
   //hash password and insert into DB
   bcrypt.hash(userData.password, 10, function(err, hash) {
@@ -47,9 +74,17 @@ app.post('/api/account/create', async (req, res) => {
       "name" : userData.name,
       "username" : userData.username,
       "password" : hash,
-      "type" : userData.type,
-      "code" : userData.code
+      "type" : userData.type
     };
+
+    if (typeof userData.code != "undefined" && userData.code !== "none")
+      userDoc.code = userData.code;
+
+    if (codeInfo !== null){
+      userDoc.country = codeInfo.country;
+      userDoc.privilege = codeInfo.privilege;
+    }
+
     dbh.db.insert(userDoc).then(function(body){
       console.log(body);
     }).catch(function(err){
@@ -57,8 +92,16 @@ app.post('/api/account/create', async (req, res) => {
     });
   });
 
+  var tokenOptions = {
+    user: userData.username,
+    type: userData.type
+  };
+
+  if (codeInfo != null)
+    tokenOptions.country = codeInfo.country;
+
   //create JWT using username, account type, expiresIn
-  jwt.sign({user: userData.username, type: userData.type },"MkREMTk1RTExN0ZFNUE5MkYxNDE2NDYwNzFFNTI2N0JCQQ==", { expiresIn : '7d' }, (err,token) => {
+  jwt.sign(tokenOptions,"MkREMTk1RTExN0ZFNUE5MkYxNDE2NDYwNzFFNTI2N0JCQQ==", { expiresIn : '7d' }, (err,token) => {
     res.json({
       status : "success",
       data : {
@@ -89,7 +132,13 @@ app.post('/api/account/login', async (req, res) => {
   bcrypt.compare(loginInfo.password, accountDetails[0].password, function(err, result) {
     if(result) {
       //success, so create access token
-      jwt.sign({user: accountDetails[0].username, type: accountDetails[0].type },"MkREMTk1RTExN0ZFNUE5MkYxNDE2NDYwNzFFNTI2N0JCQQ==", { expiresIn : '7d' }, (err,token) => {
+
+      var tokenOptions = {user: accountDetails[0].username, type: accountDetails[0].type };
+
+      if (typeof accountDetails[0].country == "undefined")
+        tokenOptions.country = accountDetails[0].country;
+
+      jwt.sign(tokenOptions,"MkREMTk1RTExN0ZFNUE5MkYxNDE2NDYwNzFFNTI2N0JCQQ==", { expiresIn : '7d' }, (err,token) => {
         res.json({
           status : "success",
           data : {
@@ -246,7 +295,7 @@ const getAccountDetails = async (toFind,getBy) => {
 
   //prepare query
   var query =   {
-      "fields": [ "username","password","type" ],
+      "fields": [ "username","password","type","country" ],
       "selector": { [getBy] : { "$eq": toFind } },
       "sort": [ { "username": "asc" } ]
     };
@@ -259,6 +308,36 @@ const getAccountDetails = async (toFind,getBy) => {
     body: query
   }).then(function(data) {
     return data.docs;
+  }).catch(function(err) {
+    console.log('something went wrong', err);
+    return buildError(400,"There was a database error. Please try again in a while.");
+  });
+
+  return db_response;
+}
+
+/*
+ * Get info on an organizational code
+ */
+const getCode = async (code) => {
+  var dbName = 'codes';
+
+  //prepare query
+  var query =   {
+      "selector": { "code" : { "$eq": code } }
+    };
+
+  //make request to DB
+  const db_response = dbh.cloudant.request({
+    db: dbName,
+    method: 'POST',
+    doc: '_find',
+    body: query
+  }).then(function(data) {
+    return {
+      status : "success",
+      data : data.docs
+    };
   }).catch(function(err) {
     console.log('something went wrong', err);
     return buildError(400,"There was a database error. Please try again in a while.");

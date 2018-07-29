@@ -78,6 +78,7 @@ app.get('/api/profile/:token', async (req, res) => {
       delete db_response.data["password"];
       delete db_response.data["location"];
       delete db_response.data["location_timestamp"];
+      delete db_response.data["code"];
     }
     if (typeof db_response.data["profile_pic"] != "undefined"){
       //get signed url for profile pic. Expiry time is set to 120 seconds
@@ -116,10 +117,16 @@ app.post('/api/profile', async (req, res) => {
   if (tokenInfo == null)
     return false;
 
-  //make sure user isn't updating username
-  if (typeof profile.username != "undefined"){
+  //make sure user isn't updating username, privilege level, country code, or account type
+  if (typeof profile.username != "undefined")
     delete profile.username;
-  }
+  if (typeof profile.privilege != "undefined")
+    delete profile.privilege;
+  if (typeof profile.country != "undefined")
+    delete profile.country;
+  if (typeof profile.type != "undefined")
+    delete profile.type;
+
 
   //get profile from DB
   let db_profile = await profileManager.getProfile(tokenInfo.user);
