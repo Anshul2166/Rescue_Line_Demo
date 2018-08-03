@@ -42,6 +42,7 @@ function SignupHandler(type){
 
   //send request to sign user up
   function signUp(name, username, password, code){
+
     if (typeof code == "undefined")
       code = "none";
 
@@ -52,13 +53,16 @@ function SignupHandler(type){
       data: JSON.stringify({ name: name, username: username, password: password, type : userType, code: code })
     }).done(function(response){
       console.log(response);
+
       if (response.status == "success"){
         Cookies.set('token', response.data.token, { expires: 7 });
         window.location.href = '/dashboard';
       } else {
         handleError(response.error);
       }
+
     });
+
   }
 
   //reset any errors on inputs

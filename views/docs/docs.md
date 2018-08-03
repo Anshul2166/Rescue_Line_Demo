@@ -18,7 +18,7 @@ POST /api/account/create
 |username | String | Required. User name used to log in. |
 |password | String | Required. |
 |type | String | Required. Account type. Can be "responder", "coordinator", "citizen", or "hospital"|
-|code | String | Optional. Will be required if account type is not citizen. An org will be assigned a code to share with their staff.|
+|code | String | Optional. Will be required if account type is not citizen. NOTE: use code "TEST" for debugging purposes |
 
 **Successful Response**
 ```

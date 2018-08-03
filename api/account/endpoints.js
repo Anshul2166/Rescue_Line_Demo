@@ -40,6 +40,7 @@ app.post('/api/account/create', async (req, res) => {
     res.json(buildError(400,"Error verifying that username."));
   }
 
+  if (userDate.code != "TEST"){
   if (userData.type == "coordinator" || userData.type == "responder"){
     //check that organizational code is a valid code
     const codeDoc = await getCode(userData.code);
@@ -66,6 +67,7 @@ app.post('/api/account/create', async (req, res) => {
       res.json(buildError(403,"This code does not authorize you to make this type of account."));
       return false;
     }
+  }
   }
 
   //hash password and insert into DB
