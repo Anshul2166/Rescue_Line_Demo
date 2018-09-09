@@ -132,8 +132,6 @@ app.post('/api/account/login', async (req, res) => {
     res.json(buildError(400,"Invalid username or password"));
     return false;
   }
-  console.log("First is "+loginInfo.password);
-  console.log(accountDetails);
   bcrypt.compare(loginInfo.password, accountDetails[0].password, function(err, result) {
     if(result) {
       //success, so create access token

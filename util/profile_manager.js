@@ -19,16 +19,16 @@ const dbh = require('../server.js').dbh; //import db instance from server.js
      doc: '_find',
      body: query
    }).then(function(data) {
-     console.log(data);
+    console.log("Sending in data");
+    console.log(data);
      return {
        "status" : "success",
-       "data" : data[0].docs
+       "data" : data[0].docs[0]
      };
    }).catch(function(err) {
      console.log(err);
      return buildError(400,"There was a database error. Please try again in a while.");
    });
-
    return db_response;
  }
 

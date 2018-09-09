@@ -4,10 +4,10 @@ const moment = require('moment');
 //signs a url
 //expiration time is in seconds
 module.exports.signUrl = function(bucket,objectKey,expiration){
-const accessKey = "a594301954304f71bced5d4f2e4cf96d";
-const secretKey = "0663508d70d7618707b309a4110ddda9b07e0e857c668942";
+const accessKey = "9cfe9f27c9bd44e9b1f0ecb4966cb82b";
+const secretKey = "7be84bf13252ee98bc2b55345855b7100366805be8c45cb2";
 const httpMethod = 'GET';
-const host = 's3-api.us-geo.objectstorage.softlayer.net';
+const host = 's3.hkg-ap-geo.objectstorage.softlayer.net';
 const region = '';
 const endpoint = 'https://' + host;
 

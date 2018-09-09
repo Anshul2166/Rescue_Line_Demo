@@ -14,7 +14,7 @@ var awsConfig = {
     endpoint: 's3.hkg-ap-geo.objectstorage.softlayer.net',
     apiKeyId: process.env.COS_API_KEY,
     ibmAuthEndpoint: 'https://iam.ng.bluemix.net/oidc/token',
-    serviceInstanceId: 'crn:v1:bluemix:public:iam-identity::a/09d967f2761a48b5ad7f87eb0b675302::serviceid:ServiceId-4c3aaead-e53f-4101-b8df-c8e5a0d59c1d'
+    serviceInstanceId: 'crn:v1:bluemix:public:iam-identity::a/09d967f2761a48b5ad7f87eb0b675302::serviceid:ServiceId-f7e1c675-cd6e-4b7a-af85-7c5e321f8aff'
 };
 
 var s3 = new AWS.S3(awsConfig);
@@ -55,6 +55,7 @@ var upload = multer({
 app.get('/api/profile/:token', async (req, res) => {
   var tokenInfo = null;
   var token = req.params.token;
+
   jwt.verify(token, "MkREMTk1RTExN0ZFNUE5MkYxNDE2NDYwNzFFNTI2N0JCQQ==", function(err, decoded) {
     if (!err){
       //token is valid
@@ -71,6 +72,8 @@ app.get('/api/profile/:token', async (req, res) => {
   });
   if (tokenInfo != null ){
     const db_response = await profileManager.getProfile(tokenInfo.user);
+    console.log("Getting in user");
+    console.log(db_response);
     //delete sensitive data before sending to client
     if (db_response.status == "success"){
       delete db_response.data["_id"];
@@ -82,7 +85,9 @@ app.get('/api/profile/:token', async (req, res) => {
     }
     if (typeof db_response.data["profile_pic"] != "undefined"){
       //get signed url for profile pic. Expiry time is set to 120 seconds
-      db_response.data["profile_pic"] = signer.signUrl("rl-profile",db_response.data["profile_pic"],120);
+      console.log("Getting the pic data");
+      db_response.data["profile_pic"] = signer.signUrl("rescueline",db_response.data["profile_pic"],120);
+      console.log(db_response.data["profile_pic"]);
     }
     res.json(db_response);
   }
@@ -95,7 +100,8 @@ app.get('/api/profile/:token', async (req, res) => {
  */
 app.post('/api/profile', async (req, res) => {
   var profile = req.body.profile;
-
+  console.log("Getting profile");
+  console.log(profile);
   var tokenInfo = null;
   var token = req.body.token;
 
