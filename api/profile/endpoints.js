@@ -11,15 +11,15 @@ const sharp = require('sharp');
 var multer  = require('multer');
 var multerS3 = require('multer-s3-transform');
 var awsConfig = {
-    endpoint: 's3-api.us-geo.objectstorage.softlayer.net',
+    endpoint: 's3.hkg-ap-geo.objectstorage.softlayer.net',
     apiKeyId: process.env.COS_API_KEY,
     ibmAuthEndpoint: 'https://iam.ng.bluemix.net/oidc/token',
-    serviceInstanceId: 'crn:v1:bluemix:public:iam-identity::a/36bf5424ec774ea0b849445b3240d473::serviceid:ServiceId-f2756543-ccef-4fb5-bf6a-32dddfe00bab'
+    serviceInstanceId: 'crn:v1:bluemix:public:iam-identity::a/09d967f2761a48b5ad7f87eb0b675302::serviceid:ServiceId-4c3aaead-e53f-4101-b8df-c8e5a0d59c1d'
 };
 
 var s3 = new AWS.S3(awsConfig);
 
-var myBucket = 'rl-profile';
+var myBucket = 'rescueline';
 
 var upload = multer({
     storage: multerS3({
