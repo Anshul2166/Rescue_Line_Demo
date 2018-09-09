@@ -130,16 +130,17 @@ app.post('/api/profile', async (req, res) => {
 
   //get profile from DB
   let db_profile = await profileManager.getProfile(tokenInfo.user);
-
+  console.log("Here is the profile");
+  console.log(db_profile);
   db_profile = db_profile.data;
-
+  console.log("Ends here");
   //update db_profile with any keys that were included
   for (var key in profile){
-    db_profile[key] = profile[key];
+    db_profile[0][key] = profile[key];
   }
 
   //update profile
-  const updateStatus = await profileManager.updateProfile(db_profile);
+  const updateStatus = await profileManager.updateProfile(db_profile[0]);
 
   res.json(updateStatus);
 });
@@ -150,6 +151,7 @@ app.post('/api/profile', async (req, res) => {
  *************************************
  */
 app.post('/api/profile/image', upload.single('image'), async (req, res) => {
+  console.log("------Here inside");
   var fileLocation = req.file.transforms[0].key;
   var token = req.body.token;
 
@@ -179,17 +181,18 @@ app.post('/api/profile/image', upload.single('image'), async (req, res) => {
   let db_profile = await profileManager.getProfile(tokenInfo.user);
 
   db_profile = db_profile.data;
-
-  if (typeof db_profile["profile_pic"] != "undefined"){
+  console.log("Changing pic");
+  console.log(db_profile);
+  if (typeof db_profile[0]["profile_pic"] != "undefined"){
     //delete old profile pic if exists
     deleteObject('rl-profile',db_profile["profile_pic"]);
   }
 
   //update db_profile with new profile_pic nam
-  db_profile["profile_pic"] = fileLocation;
+  db_profile[0]["profile_pic"] = fileLocation;
 
   //save profile in DB
-  const updateStatus = await profileManager.updateProfile(db_profile);
+  const updateStatus = await profileManager.updateProfile(db_profile[0]);
 
   //create signed url so we have the picture URL and can update profile pic on client side
   updateStatus.data["profile_pic"] = signer.signUrl('rl-profile',fileLocation,120);

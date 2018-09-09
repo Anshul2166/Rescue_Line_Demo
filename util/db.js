@@ -1,5 +1,5 @@
 var cfenv = require("cfenv");
-var Cloudant = require('cloudant');
+var Cloudant = require('cloudant-promise');
 
 //handles DB connection to Cloudant
 module.exports = class DB {
@@ -29,7 +29,7 @@ module.exports = class DB {
       // Initialize database with credentials
       if (appEnv.services['cloudantNoSQLDB']) {
          // CF service named 'cloudantNoSQLDB'
-         this.cloudant = Cloudant(appEnv.services['cloudantNoSQLDB'][0].credentials);
+         this.cloudant = Cloudant({url:appEnv.services['cloudantNoSQLDB'][0].credentials.url,plugins: 'promises'});
       } else {
          // user-provided service with 'cloudant' in its name
          this.cloudant = Cloudant(appEnv.getService(/cloudant/).credentials);
@@ -47,13 +47,20 @@ module.exports = class DB {
   use(dbName){
     // Specify the database we are going to use e.g 'users'
     // Create database if it doesn't exist
+ //    this.cloudant.db.create(dbName, function(err, data) {
+ //    	console.log("Inside");
+ //    	if(err)
+	//     	console.log("Database exists. Error : ", err); 
+ //  		else
+	//     	console.log("Created database.");
+	// });
     this.cloudant.db.create(dbName).then(function(data){
       console.log('created database');
     }).catch(function(err){
-      //console.log(err);
-      //will throw error, DB already exists
+      console.log("Some error- Already created in use");
     });
     this.db = this.cloudant.db.use(dbName);
+    console.log("Done");
   }
 
 }

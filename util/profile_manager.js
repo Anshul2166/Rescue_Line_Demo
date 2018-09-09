@@ -7,8 +7,8 @@ const dbh = require('../server.js').dbh; //import db instance from server.js
    //prepare query
    var query =   {
        "fields" : fields,
-       "selector": { "username": { "$eq": username } },
-       "sort": [ { "username": "asc" } ]
+       "selector": { "username": { "$eq": username } }
+       // "sort": [ { "username": "asc" } ]
      };
 
    //make request to DB
@@ -19,9 +19,10 @@ const dbh = require('../server.js').dbh; //import db instance from server.js
      doc: '_find',
      body: query
    }).then(function(data) {
+     console.log(data);
      return {
        "status" : "success",
-       "data" : data.docs[0]
+       "data" : data[0].docs
      };
    }).catch(function(err) {
      console.log(err);
@@ -34,15 +35,20 @@ const dbh = require('../server.js').dbh; //import db instance from server.js
  //Updates profile by username
 module.exports.updateProfile = async (newProfile) => {
   var dbName = 'users_db';
-
+  console.log("Showing new profile");
+  console.log(newProfile);
   dbh.use(dbName);
   //make request to DB
+  console.log("Updating profile");
   const db_response = dbh.db.insert(newProfile).then(function(data) {
+    console.log(data);
     return {
       "status" : "success",
       "data" : data
     };
   }).catch(function(err) {
+    console.log("Error in update profile");
+    console.log(err);
     return buildError(400,"There was a database error. Please try again in a while.");
   });
 

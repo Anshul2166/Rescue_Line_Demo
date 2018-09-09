@@ -40,7 +40,7 @@ app.post('/api/account/create', async (req, res) => {
     res.json(buildError(400,"Error verifying that username."));
   }
 
-  if (userDate.code != "TEST"){
+  if (userData.code != "TEST"){
   if (userData.type == "coordinator" || userData.type == "responder"){
     //check that organizational code is a valid code
     const codeDoc = await getCode(userData.code);
@@ -121,16 +121,19 @@ app.post('/api/account/create', async (req, res) => {
  */
 app.post('/api/account/login', async (req, res) => {
   var loginInfo = req.body;
-  console.log(req.body);
   if (typeof loginInfo.username == "undefined" || typeof loginInfo.password == "undefined" ){
     res.json(buildError(400,"Invalid username or password"));
     return false;
   }
   const accountDetails = await getAccountDetails(loginInfo.username, "username");
-  if (accountDetails.length == 0){
+  console.log("Here is the accountDetails");
+  console.log(accountDetails);
+  if (accountDetails==undefined||accountDetails.length == 0){
     res.json(buildError(400,"Invalid username or password"));
     return false;
   }
+  console.log("First is "+loginInfo.password);
+  console.log(accountDetails);
   bcrypt.compare(loginInfo.password, accountDetails[0].password, function(err, result) {
     if(result) {
       //success, so create access token
@@ -264,8 +267,8 @@ const checkName = async (username) => {
   //prepare query
   var query =   {
       "fields": [ "username" ],
-      "selector": { "username": { "$eq": username } },
-      "sort": [ { "username": "asc" } ]
+      "selector": { "username": { "$eq": username } }
+      // "sort": [ { "username": "asc" } ]
     };
 
   //make request to DB
@@ -275,14 +278,16 @@ const checkName = async (username) => {
     doc: '_find',
     body: query
   }).then(function(data) {
+    console.log("Here in checkName");
+    console.log(data);
     return {
       "status" : "success",
       "data" : {
-        "is_available" : ( data.docs.length == 0)
+        "is_available" : ( data[0].docs.length == 0)
       }
     };
   }).catch(function(err) {
-    console.log('something went wrong', err);
+    console.log('something went wrong with name check', err);
     return buildError(400,"There was a database error. Please try again in a while.");
   });
 
@@ -298,8 +303,8 @@ const getAccountDetails = async (toFind,getBy) => {
   //prepare query
   var query =   {
       "fields": [ "username","password","type","country" ],
-      "selector": { [getBy] : { "$eq": toFind } },
-      "sort": [ { "username": "asc" } ]
+      "selector": { [getBy] : { "$eq": toFind } }
+      // "sort": [ { "username": "asc" } ]
     };
 
   //make request to DB
@@ -309,9 +314,10 @@ const getAccountDetails = async (toFind,getBy) => {
     doc: '_find',
     body: query
   }).then(function(data) {
-    return data.docs;
+    console.log(data);
+    return data[0].docs;
   }).catch(function(err) {
-    console.log('something went wrong', err);
+    console.log('something went wrong in getting account details', err);
     return buildError(400,"There was a database error. Please try again in a while.");
   });
 

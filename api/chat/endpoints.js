@@ -82,7 +82,7 @@ app.get('/api/chat/history/:token', async (req, res) => {
   const db_response = await getChatHistory(tokenInfo.user);
 
   //reduce chat logs to only most recent
-  if (db_response.data.length > 0){
+  if (db_response[0].data.length > 0){
     for (var i = 0; i < db_response.data.length; i++){
       if (typeof history[db_response.data[i].chat_id] == "undefined" || history[db_response.data[i].chat_id].timestamp < db_response.data[i].timestamp)
         history[db_response.data[i].chat_id] = db_response.data[i];
@@ -277,8 +277,8 @@ const getChatLogs = async (chatId) => {
       "selector": {
         "chat_id": { "$eq": chatId },
         "timestamp": { "$gt": dayAgo }
-      },
-      "sort": [ { "timestamp": "asc" } ]
+      }
+      // "sort": [ { "timestamp": "asc" } ]
     };
 
   //make request to DB
@@ -348,8 +348,8 @@ const getChatHistory = async (username) => {
            { "sender": { "$eq": username } },
            { "receiver": { "$eq": username } }
          ]
-      },
-      "sort": [ { "timestamp": "asc" } ]
+      }
+      // "sort": [ { "timestamp": "asc" } ]
     };
 
   //make request to DB
