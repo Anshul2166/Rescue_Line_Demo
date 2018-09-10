@@ -87,9 +87,10 @@ function LocationHandler(){
       contentType: "application/json",
       data: JSON.stringify({ location : latLng, token: token })
     }).done(function(response){
+      console.log("Updating the user's location");
       console.log(response);
       if (response.status == "success"){
-        //success
+        console.log("Updated location successfully");
       } else {
         handleError(response.error);
       }

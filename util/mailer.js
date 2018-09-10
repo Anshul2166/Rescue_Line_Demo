@@ -5,12 +5,15 @@ module.exports.sendMail = function(email,subject,msg,html){
   var status = { "status" : "success" };
 
   var transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 465,
-    secure: true, // secure:true for port 465, secure:false for port 587
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // secure:true for port 465, secure:false for port 587
     auth: {
       user: process.env.EMAIL_USERNAME,
       pass: process.env.EMAIL_PASSWORD
+    },
+    tls: {
+        secureProtocol: "TLSv1_method"
     }
   });
   
