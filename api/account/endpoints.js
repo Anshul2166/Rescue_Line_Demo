@@ -181,13 +181,16 @@ app.post('/api/account/recover', async (req, res) => {
     var email_text = "Hello "+ accountDetails[0].username +", you can reset your password at this link: https://rl-node-shy-okapi.mybluemix.net/reset/"+ token +". This link expires in 5 minutes. Thanks, RescueLine Team";
     var email_html = "Hello "+ accountDetails[0].username +",<br><br>You can reset your password <a target='_blank' href='https://rl-node-shy-okapi.mybluemix.net/reset/"+ token +"'>here</a> . This link expires in 5 minutes.<br><br>Thanks,<br><br>RescueLine Team";
     var mailStatus = mailer.sendMail(email,"Your RescueLine Account",email_text, email_html);
+    console.log("Sending mail");
     console.log(mailStatus);
     if (mailStatus.status == "success"){
+      console.log("Inside");
       res.json({
         status : "success",
         data : {}
       });
     } else {
+      console.log("Not success");
       res.json(buildError(400,"Could not send email. That email might not be valid."));
     }
   });
