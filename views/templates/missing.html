@@ -30,12 +30,16 @@
     <div class="width_wrapper">
       <div class="signup-box inva rounded c-align-abs bg-white pad tc">
         <h1 style="margin:5px 0px;" class="roboto-thin">Report a missing person</h1>
-        <div class="f17 lh30 thin">
-            Our system is powered by the latest techniques in Artificial Intelligence to manage finding your missing ones. You just need to upload an image of the one you are trying to find and we will take care of the rest. Please make sure that the image shows the complete image of the person and also try to give as many details as possible in the form provided below. We will notify you, once the results are ready.
+        <div class="dash-profile-pic inva">
+          <span class="v-align"></span><img id="profile_img" class="invm" src="/assets/placeholder.jpg" style="width:100%;" />
+          <form id="profile_pic_form" enctype="multipart/form-data">
+            <input id="profile_pic" name="profile_pic" type="file" style="display:none;"/>
+          </form>
+          <div class="dash-profile-pic-edit cl-white tc"><label for="profile_pic" class="inva wh100 cp"><i class="fas fa-edit"></i> Change</label></div>
         </div>
         <form id="recover_form">
-          <input name="email" type="text" class="line-input" placeholder="Please enter your email here" required>
-          <input name="address" type="text" class="line-input" placeholder="Last sighted" required>
+          <input name="email" type="email" class="line-input" placeholder="Please enter your email here" required>
+          <input name="address" type="text" class="line-input" placeholder="Last sighted location" required>
           <input name="name" type="text" class="line-input" placeholder="Name of missing person" required>
         </form>
         <br>
