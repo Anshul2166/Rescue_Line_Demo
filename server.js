@@ -89,6 +89,10 @@ app.get('/recover', function(req, res) {
     res.render('templates/recover.html',{type: "recover"});
 });
 
+//Report a missing person
+app.get('/report_missing', function(req, res) {
+    res.render('templates/missing.html');
+});
 
 //checks if reset token is valid, then loads the reset password page if it is
 app.get('/reset/:token', function(req, res) {

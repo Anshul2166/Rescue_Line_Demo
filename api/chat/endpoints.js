@@ -83,7 +83,7 @@ app.get('/api/chat/history/:token', async (req, res) => {
   console.log("Getting chat history");
   console.log(db_response);
   //reduce chat logs to only most recent
-  if (db_response[0].data.length > 0){
+  if (db_response.data.length > 0){
     for (var i = 0; i < db_response.data.length; i++){
       if (typeof history[db_response.data[i].chat_id] == "undefined" || history[db_response.data[i].chat_id].timestamp < db_response.data[i].timestamp)
         history[db_response.data[i].chat_id] = db_response.data[i];

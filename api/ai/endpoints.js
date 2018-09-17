@@ -461,8 +461,8 @@ const getContext = async (identifier, db) => {
       "selector": {
         "identifier" : { "$eq": identifier },
         "timestamp": { "$gt": halfdayAgo }
-      },
-      "sort":[{ "timestamp":"desc" }],
+      }
+      // "sort":[{ "timestamp":"desc" }],
     };
 
   //make request to DB
@@ -473,8 +473,12 @@ const getContext = async (identifier, db) => {
     body: query
   }).then(function(data) {
     //[0] to return latest / most relevant
-    return data.docs[0];
+    console.log("====================================Logging the data");
+    console.log(data);
+    return data[0].docs[0];
+    // return data.docs;
   }).catch(function(err) {
+  	console.log("================Error in data");
     console.log('something went wrong', err);
     return buildError(400,"There was a database error. Please try again in a while.");
   });
