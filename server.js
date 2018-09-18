@@ -94,6 +94,11 @@ app.get('/report_missing', function(req, res) {
     res.render('templates/missing.html');
 });
 
+//Get the tips and tricks page
+app.get('/tips_and_tricks', function(req, res) {
+    res.render('templates/helps.html');
+});
+
 //checks if reset token is valid, then loads the reset password page if it is
 app.get('/reset/:token', function(req, res) {
     var token = req.params.token;

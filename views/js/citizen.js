@@ -58,6 +58,9 @@ $(document).on('ready',function(){
     },
     "missing" : function(){
       console.log("missing view");
+    },
+    "tips" : function(){
+      console.log("Tips and tricks view");
     }
   });
 
