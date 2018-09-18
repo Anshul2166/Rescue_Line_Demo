@@ -1,35 +1,50 @@
 <style>
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
+.navbar ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #333;
 }
 
-li {
-    float: left;
+.navbar li {
+	float: left;
 }
 
-li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
+.navbar li a {
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
 }
 
-li a:hover:not(.active) {
-    background-color: #111;
+.navbar li a:hover:not(.active) {
+	background-color: #111;
 }
 
 .active {
-    background-color: #4CAF50;
+	background-color: #4CAF50;
 }
 </style>
+<script src="/js/helps.js"></script>
+<div class="navbar">
 <ul>
-  <li><a class="active" href="#home">Home</a></li>
-  <li><a href="#news">News</a></li>
-  <li><a href="#contact">Contact</a></li>
-  <li><a href="#about">About</a></li>
+	<li id="fire" class="ds-item ds-active a-b no-a-b"><a>Fire</a></li>
+	<li id="earthquake" class="ds-item a-b"><a>Earthquake</a></li>
+	<li id="flood" class="ds-item a-b"><a>Flood</a></li>
+	<li id="sandstorm" class="ds-item a-b"><a>Sandstorm</a></li>
 </ul>
+</div>
+<div id="fire_view" class="dash-view active-view">
+	{% include 'templates/includes/tips/fire.html' %}
+</div>
+<div id="earthquake_view" class="dash-view">
+	{% include 'templates/includes/tips/earthquake.html' %}
+</div>
+<div id="flood_view" class="dash-view">
+	{% include 'templates/includes/tips/flood.html' %}
+</div>
+<div id="sandstorm_view" class="dash-view">
+	{% include 'templates/includes/tips/sandstorm.html' %}
+</div>
