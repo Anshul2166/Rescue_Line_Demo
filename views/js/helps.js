@@ -43,6 +43,9 @@ function TipsManager(allViews){
     $("#"+view+"_view").addClass('active-view');
 
     currView = view;
+    $('#mySidenav').css("width","0");
+    $('.dash-sidebar').css("left","-180px");
+    $('.dash-sidebar').css("width","0px");
   };
 
   this.load(currView);
@@ -50,5 +53,6 @@ function TipsManager(allViews){
   $('.ds-item').on('click',function(){
     self.load($(this).attr('id'));
   });
+
 
 }
