@@ -44,8 +44,6 @@ function TipsManager(allViews){
 
     currView = view;
     $('#mySidenav').css("width","0");
-    $('.dash-sidebar').css("left","-180px");
-    $('.dash-sidebar').css("width","0px");
   };
 
   this.load(currView);
