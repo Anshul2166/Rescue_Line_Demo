@@ -1,6 +1,9 @@
+//This js file manages the tips section of the webpage where the user is able to see the tips in fire, earthquake and all.
+
+//When document is ready, initialise the tips manager which will take care of actions on navbar containing the various disasters:- fire, earthquake etc.
 $(document).on('ready',function(){
   console.log("Here in helps.js");
-  //load views into viewManager programmatically
+  //load views into tipsManager programmatically
   var tipsManager = new TipsManager({
     "fire" : function(){
       console.log("Loaded fire");
@@ -16,6 +19,9 @@ $(document).on('ready',function(){
     }
   });
 });
+
+//This provides the functionality for the tips manager
+//Logic is same as for view manager for dashboard sidebar
 function TipsManager(allViews){
 
   var self = this;
