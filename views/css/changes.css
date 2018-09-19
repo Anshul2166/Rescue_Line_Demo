@@ -1,3 +1,19 @@
 .signup-box{
 	height: fit-content;
 }
+.blog-text{
+	font-family: tahoma;
+	font-style: normal;
+}
+.blog-text li{
+	font-family: tahoma;
+	font-size:1rem;
+	line-height: 1.75;
+}
+.blog-heading{
+	font-family:Arial;	
+	color:black;
+}
+.center-text{
+	text-align: center;
+}
