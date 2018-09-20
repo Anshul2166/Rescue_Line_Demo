@@ -4,8 +4,7 @@
  */
 
 //loads and manages the dashboard grid
-function GridHandler(){
-
+function GridHandler() {
   var self = this;
 
   this.charts = new GridChart();
@@ -17,108 +16,125 @@ function GridHandler(){
 
   this.$grid = null;
 
-  this.getSmallestColumn = function(){
+  this.getSmallestColumn = function() {
     var smallestWidth = 1000;
     var thisWidth = null;
-    $('.grid-item').each(function(index,el){
+    $(".grid-item").each(function(index, el) {
       thisWidth = $(el).width();
       if (thisWidth < smallestWidth) smallestWidth = thisWidth;
     });
     return smallestWidth;
   };
 
-  this.setChatHandler = function(ch){
+  this.setChatHandler = function(ch) {
     self.chatHandler = ch;
   };
 
-  this.setViewManager = function(vm){
+  this.setViewManager = function(vm) {
     self.viewManager = vm;
   };
 
-  this.getCurrentOrder = function(){
+  this.getCurrentOrder = function() {
     var $el = null;
     var itemOrder = [];
-    $.each(self.$grid.packery('getItemElements'),function(index,element){
+    $.each(self.$grid.packery("getItemElements"), function(index, element) {
       $el = $(element);
-    	itemOrder.push({
-    		type : $el.attr('id'),
-    		mini : $el.hasClass('gi-mini')
-    	});
+      itemOrder.push({
+        type: $el.attr("id"),
+        mini: $el.hasClass("gi-mini")
+      });
     });
     return itemOrder;
   };
 
-  this.addView = function(type){
+  this.addView = function(type) {
+    var gridItem = new GridItem(
+      { type: type, mini: false },
+      function() {
+        self.refresh();
+      },
+      self
+    );
 
-    var gridItem = new GridItem({ type: type , mini : false },function(){ self.refresh(); }, self);
+    $(".dash-grid").append(gridItem);
+    self.$grid.packery("appended", gridItem);
 
-    $('.dash-grid').append(gridItem);
-    self.$grid.packery( 'appended', gridItem );
+    self.$grid.packery("destroy");
 
-    self.$grid.packery('destroy');
-
-    self.$grid = $('.dash-grid').packery({
-      itemSelector: '.grid-item',
+    self.$grid = $(".dash-grid").packery({
+      itemSelector: ".grid-item",
       gutter: 15,
       columnWidth: self.getSmallestColumn(),
-      rowWidth: 200,
+      rowWidth: 200
     });
 
-    self.$grid.find('.grid-item').each( function( i, gridItem ) {
-      var draggie = new Draggabilly( gridItem, {
-        handle: '.gi-head'
+    self.$grid.find(".grid-item").each(function(i, gridItem) {
+      var draggie = new Draggabilly(gridItem, {
+        handle: ".gi-head"
       });
       // bind drag events to Packery
-      self.$grid.packery( 'bindDraggabillyEvents', draggie );
+      self.$grid.packery("bindDraggabillyEvents", draggie);
     });
-
   };
 
-  this.initialize = function(){
-
+  this.initialize = function() {
     self.addViewManager = new AddViewManager();
 
     //get save order & settings from database
-    $.get('/api/dashboard/settings/'+ Cookies.get('token'))
-      .done(function(response) {
-        var layout = [{"type" : "reports_trend","mini" : true},{"type" : "tasks_completed","mini" : true},
-          {"type" : "unknown","mini" : true},{"type" : "unknown","mini" : true},{"type" : "live_feed","mini" : false},
-          {"type" : "map","mini" : false},{"type" : "breakdown","mini" : false },{"type" : "unknown","mini" : false }];
+    $.get("/api/dashboard/settings/" + Cookies.get("token")).done(function(
+      response
+    ) {
+      var layout = [
+        { type: "reports_trend", mini: true },
+        { type: "tasks_completed", mini: true },
+        { type: "unknown", mini: true },
+        { type: "unknown", mini: true },
+        { type: "live_feed", mini: false },
+        { type: "map", mini: false },
+        { type: "breakdown", mini: false },
+        { type: "unknown", mini: false }
+      ];
 
-        if (response.status == "success" && !$.isEmptyObject(response.data)){
-          layout = response.data.settings;
-        }
+      if (response.status == "success" && !$.isEmptyObject(response.data)) {
+        layout = response.data.settings;
+      }
 
-        for (var i = 0; i < layout.length; i++)
-          $('.dash-grid').append(new GridItem(layout[i],function(){ self.refresh(); }, self));
+      for (var i = 0; i < layout.length; i++)
+        $(".dash-grid").append(
+          new GridItem(
+            layout[i],
+            function() {
+              self.refresh();
+            },
+            self
+          )
+        );
 
-        self.$grid = $('.dash-grid').packery({
-          itemSelector: '.grid-item',
-          gutter: 15,
-          columnWidth: self.getSmallestColumn(),
-          rowWidth: 200,
-        });
-
-        self.$grid.find('.grid-item').each( function( i, gridItem ) {
-          var draggie = new Draggabilly( gridItem, {
-            handle: '.gi-head'
-          });
-          // bind drag events to Packery
-          self.$grid.packery( 'bindDraggabillyEvents', draggie );
-        });
-
-        self.addViewManager.build(layout);
-
+      self.$grid = $(".dash-grid").packery({
+        itemSelector: ".grid-item",
+        gutter: 15,
+        columnWidth: self.getSmallestColumn(),
+        rowWidth: 200
       });
 
-    $(window).on("resize", function(){
+      self.$grid.find(".grid-item").each(function(i, gridItem) {
+        var draggie = new Draggabilly(gridItem, {
+          handle: ".gi-head"
+        });
+        // bind drag events to Packery
+        self.$grid.packery("bindDraggabillyEvents", draggie);
+      });
+
+      self.addViewManager.build(layout);
+    });
+
+    $(window).on("resize", function() {
       self.refresh();
     });
 
     //set clicks
 
-    $('.grid-save').on('click',function(){
-
+    $(".grid-save").on("click", function() {
       var order = self.getCurrentOrder();
 
       //make a post request to save settings
@@ -126,74 +142,75 @@ function GridHandler(){
         method: "POST",
         url: "/api/dashboard/settings",
         contentType: "application/json",
-        data: JSON.stringify({ settings: order, token: Cookies.get('token') })
-      }).done(function(response){
+        data: JSON.stringify({ settings: order, token: Cookies.get("token") })
+      }).done(function(response) {
         console.log(response);
-        if (response.status == "success"){
+        if (response.status == "success") {
           handleSuccess("Saved");
         } else {
           handleError(response.error);
         }
       });
-
     });
 
-    $('.grid-add').on('click',function(){
-      $('.add-view-drop').toggle();
+    $(".grid-add").on("click", function() {
+      $(".add-view-drop").toggle();
     });
-
   };
 
-  this.refresh = function(){
+  this.refresh = function() {
     self.$grid.packery({
-      columnWidth : self.getSmallestColumn()
+      columnWidth: self.getSmallestColumn()
     });
   };
 
   //nested class that handles add-view-drop
-  function AddViewManager(){
-
+  function AddViewManager() {
     var thisSelf = this;
 
-    $addViewDrop = $('.add-view-drop');
+    $addViewDrop = $(".add-view-drop");
 
-    this.build = function(layout){
-      $addViewDrop.html('');
-      var defaults = { "reports_trend": true,"tasks_completed": true,"live_feed": true,"breakdown": true,"map": true };
+    this.build = function(layout) {
+      $addViewDrop.html("");
+      var defaults = {
+        reports_trend: true,
+        tasks_completed: true,
+        live_feed: true,
+        breakdown: true,
+        map: true
+      };
       var inMenu = {};
-      for (var i = 0; i < layout.length; i++)
-        delete defaults[layout[i].type];
+      for (var i = 0; i < layout.length; i++) delete defaults[layout[i].type];
 
-      $.each(defaults,function(key,value){
-        console.log("inserting ",key);
+      $.each(defaults, function(key, value) {
+        console.log("inserting ", key);
         thisSelf.insert(key);
       });
 
       if ($addViewDrop.children().length == 0)
         $addViewDrop.append('<div id="bd-empty">Empty</div>');
-
     };
 
-    this.insert = function(type){
+    this.insert = function(type) {
       $addViewDrop.append(buildDropItem(type));
     };
 
-    this.clear = function(){
-      $addViewDrop.html('');
+    this.clear = function() {
+      $addViewDrop.html("");
     };
 
-    function buildDropItem(type){
-      var item = document.createElement('div');
-      var name = type.split('_');
-      for (var i=0; i < name.length; i++)
+    function buildDropItem(type) {
+      var item = document.createElement("div");
+      var name = type.split("_");
+      for (var i = 0; i < name.length; i++)
         name[i] = name[i].charAt(0).toUpperCase() + name[i].slice(1);
       name = name.join(" ");
 
-      item.id = "bd-"+type;
+      item.id = "bd-" + type;
       item.className = "a-b";
       item.innerHTML = name;
 
-      $(item).on('click',function(){
+      $(item).on("click", function() {
         self.addView(type);
         $(this).remove();
         $addViewDrop.hide();
@@ -203,20 +220,17 @@ function GridHandler(){
 
       return hoverEffect(item);
     }
-
   }
-
 }
 
 //Creates a GridItem and sets event handlers for resizing and exiting
 //onSizeChange is the callback for when a gridItem changes size (is resized or exited)
 //This will typically be gridHandler.refresh() function
-function GridItem(itemInfo, onSizeChange, self){
-  var gridItem = document.createElement('div');
+function GridItem(itemInfo, onSizeChange, self) {
+  var gridItem = document.createElement("div");
 
   var classString = "grid-item paper rounded";
-  if (itemInfo.mini)
-    classString += " gi-mini";
+  if (itemInfo.mini) classString += " gi-mini";
 
   gridItem.className = classString;
   gridItem.id = itemInfo.type;
@@ -226,149 +240,152 @@ function GridItem(itemInfo, onSizeChange, self){
   $(gridItem).html(itemBuilder.html);
 
   //set clicks for minimizing and closing
-  $(gridItem).find('.fa-expand').on('click',function(){
-    console.log('in resize');
-    if($(gridItem).hasClass('gi-mini')){
-      $(gridItem).removeClass('gi-mini');
-    } else {
-      $(gridItem).addClass('gi-mini');
-    }
-    onSizeChange();
-  });
+  $(gridItem)
+    .find(".fa-expand")
+    .on("click", function() {
+      console.log("in resize");
+      if ($(gridItem).hasClass("gi-mini")) {
+        $(gridItem).removeClass("gi-mini");
+      } else {
+        $(gridItem).addClass("gi-mini");
+      }
+      onSizeChange();
+    });
 
-  $(gridItem).find('.fa-times-circle').on('click',function(e){
-    console.log("in remove");
-    self.$grid.packery('remove', gridItem );
-    if ($('#bd-empty').length == 1)
-      self.addViewManager.clear();
-    self.addViewManager.insert(itemInfo.type);
-    onSizeChange();
-  });
+  $(gridItem)
+    .find(".fa-times-circle")
+    .on("click", function(e) {
+      console.log("in remove");
+      self.$grid.packery("remove", gridItem);
+      if ($("#bd-empty").length == 1) self.addViewManager.clear();
+      self.addViewManager.insert(itemInfo.type);
+      onSizeChange();
+    });
 
-  setTimeout(function(){
-    itemBuilder.init(gridItem,self);
-  },400);
+  setTimeout(function() {
+    itemBuilder.init(gridItem, self);
+  }, 400);
 
   return gridItem;
 }
 
 //class that handles all charts in a grid
-function GridChart(){
-
+function GridChart() {
   var self = this;
 
   this.charts = {};
 
-  this.insert = function(name,chart){
+  this.insert = function(name, chart) {
     self.charts[name] = chart;
   };
 
-  this.remove = function(name){
+  this.remove = function(name) {
     delete self.charts[name];
   };
 
   //redraw all charts
-  this.renderAll = function(){
-    $.each( self.charts, function(key, value){
+  this.renderAll = function() {
+    $.each(self.charts, function(key, value) {
       value.render();
     });
   };
 
   //redraw specific chart
-  this.render = function(name){
+  this.render = function(name) {
     self.charts[name].render();
   };
 
   //update a chart
-  this.update = function(name,dataset){
+  this.update = function(name, dataset) {
     self.charts[name].data.datasets[0] = dataset;
     self.charts[name].update();
   };
-
 }
 
 var intentPhrases = {
-  "fire" : "reported a fire",
-  "earthquake" : "reported an earthquake",
-  "avalanche" : "reported an avalanche",
-  "tornado" : "reported a tornado",
-  "volcano" : "reported experiencing the effects of a volcano",
-  "flood" : "reported flooding",
-  "landslide" : "reported a landslide",
-  "tsunami" : "reported a tsunami",
-  "sandstorm" : "reported a sandstorm",
-  "need_medic" : "needs medical attention",
-  "trapped" : "is trapped",
-  "needs_supplies" : "needs supplies",
-  "reported_incident" : "reported a safety hazard"
+  fire: "reported a fire",
+  earthquake: "reported an earthquake",
+  avalanche: "reported an avalanche",
+  tornado: "reported a tornado",
+  volcano: "reported experiencing the effects of a volcano",
+  flood: "reported flooding",
+  landslide: "reported a landslide",
+  tsunami: "reported a tsunami",
+  sandstorm: "reported a sandstorm",
+  need_medic: "needs medical attention",
+  trapped: "is trapped",
+  needs_supplies: "needs supplies",
+  reported_incident: "reported a safety hazard"
 };
 
 var specialKeyProcessing = {
-  "address_geocoded" : function(val,gridHandler,eventId){
-    var link = document.createElement('span');
+  address_geocoded: function(val, gridHandler, eventId) {
+    var link = document.createElement("span");
     link.className = "cp cl-light";
-    $(link).html("<div class='inva rel tooltip-right' data-tooltip='View on map' style='margin:5px 0px 0px 5px'><i class='fas fa-map-marked-alt' style='font-size: 25px;'></i></div>");
-    $(link).on('click',function(){
+    $(link).html(
+      "<div class='inva rel tooltip-right' data-tooltip='View on map' style='margin:5px 0px 0px 5px'><i class='fas fa-map-marked-alt' style='font-size: 25px;'></i></div>"
+    );
+    $(link).on("click", function() {
       //will open on map
-      var addPopup = function(){
-
+      var addPopup = function() {
         //mm is for map marker
-        var markerId = "mm_"+eventId ;
+        var markerId = "mm_" + eventId;
         gridHandler.mapHandler.map.setZoom(15);
         //start panning to marker
         gridHandler.mapHandler.map.panTo(val.geometry.coordinates);
 
         var exists = false;
         //check if marker already exists
-        $.each(gridHandler.mapHandler.map._canvasContainer.children,function(index,item){
-          console.log("ITEM.ID",item.id);
-          if (item.id == markerId)
-            exists = true;
+        $.each(gridHandler.mapHandler.map._canvasContainer.children, function(
+          index,
+          item
+        ) {
+          console.log("ITEM.ID", item.id);
+          if (item.id == markerId) exists = true;
         });
 
-        console.log("EXISTS",exists);
-        if (exists)
-          return false;
+        console.log("EXISTS", exists);
+        if (exists) return false;
 
         // create the popup
-        var popup = new mapboxgl.Popup()
-            .setText('Info here');
+        var popup = new mapboxgl.Popup().setText("Info here");
 
         // create the marker
         var marker = new mapboxgl.Marker();
         marker._element.id = markerId;
         console.log(markerId);
-        console.log("MARKER",marker);
+        console.log("MARKER", marker);
 
         //attach popup and add to map
-        marker.setLngLat(val.geometry.coordinates)
-            .setPopup(popup)
-            .addTo(gridHandler.mapHandler.map);
-
+        marker
+          .setLngLat(val.geometry.coordinates)
+          .setPopup(popup)
+          .addTo(gridHandler.mapHandler.map);
       };
 
-      if (gridHandler.mapHandler === null){
-        gridHandler.addView('map');
-        setTimeout(addPopup,1000);
+      if (gridHandler.mapHandler === null) {
+        gridHandler.addView("map");
+        setTimeout(addPopup, 1000);
       } else {
         addPopup();
       }
-
     });
     return { key: "Address Coordinates", val: link };
   },
-  "user_country" : function(val){
+  user_country: function(val) {
     return { key: "User Country", val: val.toUpperCase() };
   },
-  "identifier" : function(val,gridHandler,eventId){
-    var link = document.createElement('span');
+  identifier: function(val, gridHandler, eventId) {
+    var link = document.createElement("span");
     link.className = "cp cl-light";
-    $(link).html("<div class='inva rel tooltip-right' data-tooltip='Start chat' style='margin:5px 0px 0px 5px'><i class='fas fa-comments' style='font-size: 25px;'></i></div>");
+    $(link).html(
+      "<div class='inva rel tooltip-right' data-tooltip='Start chat' style='margin:5px 0px 0px 5px'><i class='fas fa-comments' style='font-size: 25px;'></i></div>"
+    );
     //start chat
-    $(link).on('click',function(){
-      gridHandler.viewManager.load('get_help');
-      $('.ch-head-name').html(val);
-      gridHandler.chatHandler.startChat(val,Cookies.get('token'));
+    $(link).on("click", function() {
+      gridHandler.viewManager.load("get_help");
+      $(".ch-head-name").html(val);
+      gridHandler.chatHandler.startChat(val, Cookies.get("token"));
     });
 
     return { key: "Chat", val: link };
@@ -377,17 +394,22 @@ var specialKeyProcessing = {
 
 //This class builds a live_feed item and sets relevant clicks
 //TODO: implement a 'refresh' method where you input new data received from websocket, and it refreshes that FeedItem
-function FeedItem(itemInfo, gridHandler){
-
+function FeedItem(itemInfo, gridHandler) {
   var self = this;
 
-  this.feedItem = document.createElement('div');
+  this.feedItem = document.createElement("div");
 
   //builder is refresher, so we can conveniently refresh when needed
-  this.refresh = function(itemInfo){
-
+  this.refresh = function(itemInfo) {
     var priority = { text: "LOW", class: "" };
-    var keyToText = function(key){ return key.split("_").map(function(item,index){ return item.charAt(0).toUpperCase() + item.slice(1); }).join(" "); };
+    var keyToText = function(key) {
+      return key
+        .split("_")
+        .map(function(item, index) {
+          return item.charAt(0).toUpperCase() + item.slice(1);
+        })
+        .join(" ");
+    };
 
     //format intent. Example: needs_medic -> Needs Medic
     var processedIntent = {
@@ -396,9 +418,9 @@ function FeedItem(itemInfo, gridHandler){
     };
 
     //lf_ is live_feed, + docID
-    self.feedItem.id = "lf_"+itemInfo._id;
+    self.feedItem.id = "lf_" + itemInfo._id;
 
-    if (itemInfo.priority_weight > 0.8){
+    if (itemInfo.priority_weight > 0.8) {
       priority = { text: "HIGH", class: "prio-red" };
     } else if (itemInfo.priority_weight > 0.5) {
       priority = { text: "MEDIUM", class: "prio-yellow" };
@@ -408,47 +430,61 @@ function FeedItem(itemInfo, gridHandler){
 
     self.feedItem.className = "feed-item rel " + priority.class;
     $(self.feedItem).html(
-          '<img src="/assets/placeholder.jpg">'
-    +     '<div class="fi-info inva">'
-    +       '<div class="fi-header inva">'+ processedIntent.text +'</div>'
-    +       '<div class="blinker inva tooltip-bottom" data-tooltip="Collecting info realtime"><i class="fas fa-circle Blink inva" style="margin:4px 0px 0px 5px;"></i></div><br>'
-    +       '<div class="fi-description roboto-thin">'+itemInfo.identifier +' '+ processedIntent.phrase +'. 5 others might be involved. Estimated priority: '+ priority.text +'</div>'
-    +     '</div>'
-    +     '<div class="fi-i fii-share inva rel tooltip-left" data-tooltip="Send to responder" style="margin-top:12px;"><i class="fas fa-share-square c-align-abs"></i></div>'
-    +     '<div class="fi-i fii-details inva rel tooltip-left" data-tooltip="Details" style="margin-top:12px;"><i class="fas fa-info-circle c-align-abs"></i></div>'
-    +     '<div class="fi-details">'
-    +     '</div>');
+      '<img src="/assets/placeholder.jpg">' +
+        '<div class="fi-info inva">' +
+        '<div class="fi-header inva">' +
+        processedIntent.text +
+        "</div>" +
+        '<div class="blinker inva tooltip-bottom" data-tooltip="Collecting info realtime"><i class="fas fa-circle Blink inva" style="margin:4px 0px 0px 5px;"></i></div><br>' +
+        '<div class="fi-description roboto-thin">' +
+        itemInfo.identifier +
+        " " +
+        processedIntent.phrase +
+        ". 5 others might be involved. Estimated priority: " +
+        priority.text +
+        "</div>" +
+        "</div>" +
+        '<div class="fi-i fii-share inva rel tooltip-left" data-tooltip="Send to responder" style="margin-top:12px;"><i class="fas fa-share-square c-align-abs"></i></div>' +
+        '<div class="fi-i fii-details inva rel tooltip-left" data-tooltip="Details" style="margin-top:12px;"><i class="fas fa-info-circle c-align-abs"></i></div>' +
+        '<div class="fi-details">' +
+        "</div>"
+    );
 
     var $fi = $(self.feedItem);
-    var $fid = $fi.find('.fi-details');
+    var $fid = $fi.find(".fi-details");
 
     //if this item is old, don't show realtime blinker
-    if (( Date.now() - itemInfo.timestamp ) > 120000)
-      $fi.find('.blinker').hide();
+    if (Date.now() - itemInfo.timestamp > 120000) $fi.find(".blinker").hide();
 
     //set minimize & maximize
-    $fi.find('.fii-details').on('click',function(){
-      console.log($fid.css('height'));
-      if ($fid.css('height') == "0px"){
+    $fi.find(".fii-details").on("click", function() {
+      console.log($fid.css("height"));
+      if ($fid.css("height") == "0px") {
         //if is minimized, then maximize
-        $fid.animate({
-          height: $fid.get(0).scrollHeight
-        }, 400, function(){
-          $fid.height('auto');
-        });
+        $fid.animate(
+          {
+            height: $fid.get(0).scrollHeight
+          },
+          400,
+          function() {
+            $fid.height("auto");
+          }
+        );
       } else {
         //if is maximized, minimize
-        $fid.animate({
-            height: '0px'
-        }, 400);
+        $fid.animate(
+          {
+            height: "0px"
+          },
+          400
+        );
       }
-
     });
 
     //open share-modal to send event directly to a responder
-    $fi.find('.fii-share').on('click',function(){
+    $fi.find(".fii-share").on("click", function() {
       console.log("open share modal");
-      $('.share-modal').show();
+      $(".share-modal").show();
     });
 
     itemInfo.timestamp = new Date(itemInfo.timestamp).toLocaleString();
@@ -463,22 +499,28 @@ function FeedItem(itemInfo, gridHandler){
     delete itemInfo.verified_intent;
 
     //build details
-    $.each(itemInfo,function(key,val){
-      var div = document.createElement('div');
+    $.each(itemInfo, function(key, val) {
+      var div = document.createElement("div");
       var pair = {};
       pair.key = key;
       pair.val = val;
 
       if (typeof specialKeyProcessing[key] != "undefined")
-        pair = specialKeyProcessing[key](val,gridHandler,eventId);
+        pair = specialKeyProcessing[key](val, gridHandler, eventId);
 
-      $(div).html('<div>'+ keyToText(pair.key) +'</div><span></span>');
-      $(div).find('span').append(pair.val);
+      $(div).html("<div>" + keyToText(pair.key) + "</div><span></span>");
+      $(div)
+        .find("span")
+        .append(pair.val);
       $fid.append(div);
     });
 
     //hide blinker that says "Collecting info realtime" after 30 secs
-    setTimeout(function(){ $(self.feedItem).find('.blinker').hide(); },30000);
+    setTimeout(function() {
+      $(self.feedItem)
+        .find(".blinker")
+        .hide();
+    }, 30000);
 
     gridHandler.feed[eventId] = self;
 
@@ -486,191 +528,279 @@ function FeedItem(itemInfo, gridHandler){
   };
 
   return this.refresh(itemInfo);
-
 }
 
 //all the possible grid items, and their HTML.
 var gridItemLookup = {
-  "reports_trend" : {
-    html: '<div class="gi-head">'
-          + ' <span class="gih-header">REPORTS TREND</span>'
-          + ' <div class="gih-options">'
-          + '   <i data-tooltip="Snapshot" class="tooltip-bottom rel"><i class="fas fa-camera cp"></i></i>'
-          + '   <i class="fas fa-expand cp"></i>'
-          + '   <i class="fas fa-times-circle cp"></i>'
-          + ' </div>'
-          + ' </div>'
-          + ' <div class="gi-body">'
-          + '   <canvas id="reports_trend_chart"></canvas>'
-          + '</div>',
-    init: function(item,self){
+  reports_trend: {
+    html:
+      '<div class="gi-head">' +
+      ' <span class="gih-header">REPORTS TREND</span>' +
+      ' <div class="gih-options">' +
+      '   <i data-tooltip="Snapshot" class="tooltip-bottom rel"><i class="fas fa-camera cp"></i></i>' +
+      '   <i class="fas fa-expand cp"></i>' +
+      '   <i class="fas fa-times-circle cp"></i>' +
+      " </div>" +
+      " </div>" +
+      ' <div class="gi-body">' +
+      '   <canvas id="reports_trend_chart"></canvas>' +
+      "</div>",
+    init: function(item, self) {
       //$.get(/api/data/reports-trend-data/)
       //hourly
       var view = "Hourly";
-      var ctx = $("#reports_trend_chart")[0].getContext('2d');
-      self.charts.insert( "reports_trend" , new Chart(ctx, {
-            type: 'line',
-            data: reports_trend_data,
-            options: {
-              responsive : true,
-              scales: {
-                xAxes: [{
+      var ctx = $("#reports_trend_chart")[0].getContext("2d");
+      self.charts.insert(
+        "reports_trend",
+        new Chart(ctx, {
+          type: "line",
+          data: reports_trend_data,
+          options: {
+            responsive: true,
+            scales: {
+              xAxes: [
+                {
                   scaleLabel: {
                     display: true,
                     labelString: view
                   }
-                }]
-              }
+                }
+              ]
             }
+          }
         })
       );
 
-      $(item).find('.fa-camera').on('click',function(){
-        window.open(window.URL.createObjectURL(base64toBlob(self.charts.charts.reports_trend.toBase64Image().slice(22),"image/png")),'_blank');
-      });
-
+      $(item)
+        .find(".fa-camera")
+        .on("click", function() {
+          window.open(
+            window.URL.createObjectURL(
+              base64toBlob(
+                self.charts.charts.reports_trend.toBase64Image().slice(22),
+                "image/png"
+              )
+            ),
+            "_blank"
+          );
+        });
     }
   },
-  "tasks_completed" : {
-    html: '<div class="gi-head">'
-          + ' <span class="gih-header">TASKS COMPLETED</span>'
-          + ' <div class="gih-options">'
-          + '   <i class="fas fa-expand cp"></i>'
-          + '   <i class="fas fa-times-circle cp"></i>'
-          + ' </div>'
-          + ' </div>'
-          + ' <div class="gi-body">'
-          + '   <canvas id="n_reports_chart"></canvas>'
-          + '</div>',
-    init: function(item){
-
-    }
+  tasks_completed: {
+    html:
+      '<div class="gi-head">' +
+      ' <span class="gih-header">TASKS COMPLETED</span>' +
+      ' <div class="gih-options">' +
+      '   <i class="fas fa-expand cp"></i>' +
+      '   <i class="fas fa-times-circle cp"></i>' +
+      " </div>" +
+      " </div>" +
+      ' <div class="gi-body">' +
+      '   <canvas id="n_reports_chart"></canvas>' +
+      "</div>",
+    init: function(item) {}
   },
-  "live_feed" : {
-    html : '<div class="gi-head">'
-          + ' <span class="gih-header">LIVE FEED</span>'
-          + ' <div class="gih-options">'
-          + '   <!-- Will be able to sort by: Priority, Newest, Oldest -->'
-          + '   <i data-tooltip="Filter" class="tooltip-bottom rel"><i class="fas fa-filter cp" style="font-size:11px;"></i></i>'
-          + '   <i data-tooltip="Sort" class="tooltip-bottom rel"><i class="fas fa-sort cp"></i></i>'
-          + '   <i class="fas fa-expand cp"></i>'
-          + '   <i class="fas fa-times-circle cp"></i>'
-          + '   </div>'
-          + ' </div>'
-          + '<div class="gi-body touch-scroll" style="display:block;padding-top:0;overflow-x:visible;">'
-          + '</div>',
-    init : function(item,self){
-      console.log('initialized feed for',item);
-      //$.get(/api/data/feed)
-      var feedData = [
-        {
-          "_id":"24de0a4756bac004d4d7c0ac061e8b1d",
-          "_rev":"12-a52bf1ff6da542dd5be427cfd60976a1",
-          "first_explanation":"There is serious flooding, houses in the area are being hit pretty bad.",
-          "timestamp":1532584460097,
-          "verified_intent":"flood",
-          "priority_weight":0.7,
-          "address":"11105 NW Jones dr, parkville MO",
-          "address_geocoded": {"geometry":{"type":"Point","coordinates":[-94.709746,39.209394]}},
-          "user_country":"us",
-          "is_live":true,
-          "identifier":"rogisolo",
-          "current_state":"serious_injury_yesno"
-        },
-        {
-          "_id":"24de0a4756bac098327c0ac061e8b1d",
-          "_rev":"12-a52bf1ff6da542dd5be427cfd60976a1",
-          "first_explanation":"My house is on fire help",
-          "timestamp":1532636396294,
-          "verified_intent":"fire",
-          "priority_weight":0.9,
-          "address":"11105 NW Jones dr, parkville MO",
-          "address_geocoded": {"geometry":{"type":"Point","coordinates":[-94.709746,39.209394]}},
-          "user_country":"us",
-          "is_live":true,
-          "identifier":"markjacobs",
-          "current_state":"serious_injury_yesno"
+  live_feed: {
+    html:
+      '<div class="gi-head">' +
+      ' <span class="gih-header">LIVE FEED</span>' +
+      ' <div class="gih-options">' +
+      "   <!-- Will be able to sort by: Priority, Newest, Oldest -->" +
+      '   <i data-tooltip="Filter" class="tooltip-bottom rel"><i class="fas fa-filter cp" style="font-size:11px;"></i></i>' +
+      '   <i data-tooltip="Sort" class="tooltip-bottom rel"><i class="fas fa-sort cp"></i></i>' +
+      '   <i class="fas fa-expand cp"></i>' +
+      '   <i class="fas fa-times-circle cp"></i>' +
+      "   </div>" +
+      " </div>" +
+      '<div class="gi-body touch-scroll" style="display:block;padding-top:0;overflow-x:visible;">' +
+      "</div>",
+    init: function(item, self) {
+      var feedData = [];
+      var finalInfo = [];
+      console.log("initialized feed for", item);
+      $.ajax({
+        method: "POST",
+        url: "/api/data/feed",
+        contentType: "application/json",
+        data: JSON.stringify({ token: Cookies.get("token") })
+      }).done(function(response) {
+        console.log("Got the response");
+        console.log(response);
+        feedData = response.data.feed;
+        // if (response.status == "success") {
+          if(response!=undefined){
+          console.log("success");
+          for (var i = 0; i < feedData.length; i++) {
+            var curInfo = {};
+            curInfo._id = feedData[i]._id;
+            curInfo._rev = feedData[i]._rev;
+            curInfo.first_explanation = "There is a big fire in the house";
+            curInfo.verified_intent = "fire";
+            curInfo.priority_weight = 0.7;
+            curInfo.address = feedData[i].context.address;
+            curInfo.address_geocoded = {
+              geometry: { type: "Point", coordinates: [-94.709746, 39.209394] }
+            };
+            curInfo.user_country = "us";
+            curInfo.is_live = true;
+            curInfo.identifier = feedData[i].identifier;
+            curInfo.current_state = "serious_injury_yesno";
+            finalInfo.push(curInfo);
+          }
+          console.log("Here is the final info");
+          console.log(finalInfo);
+          $fb = $("#live_feed .gi-body");
+          for (var i = 0; i < finalInfo.length; i++)
+            $fb.append(new FeedItem(finalInfo[i], self));
+        } else {
+          handleError(response.error);
         }
-      ];
-      $fb = $('#live_feed .gi-body');
-      for (var i = 0; i < feedData.length; i++)
-        $fb.append(new FeedItem(feedData[i],self));
-
+      });
+      // var feedData = [
+      // {
+      //   "_id":"24de0a4756bac004d4d7c0ac061e8b1d",
+      //   "_rev":"12-a52bf1ff6da542dd5be427cfd60976a1",
+      //   "first_explanation":"There is serious flooding, houses in the area are being hit pretty bad.",
+      //   "timestamp":1532584460097,
+      //   "verified_intent":"flood",
+      //   "priority_weight":0.7,
+      //   "address":"11105 NW Jones dr, parkville MO",
+      //   "address_geocoded": {"geometry":{"type":"Point","coordinates":[-94.709746,39.209394]}},
+      //   "user_country":"us",
+      //   "is_live":true,
+      //   "identifier":"rogisolo",
+      //   "current_state":"serious_injury_yesno"
+      // },
+      // {
+      //   "_id":"24de0a4756bac098327c0ac061e8b1d",
+      //   "_rev":"12-a52bf1ff6da542dd5be427cfd60976a1",
+      //   "first_explanation":"My house is on fire help",
+      //   "timestamp":1532636396294,
+      //   "verified_intent":"fire",
+      //   "priority_weight":0.9,
+      //   "address":"11105 NW Jones dr, parkville MO",
+      //   "address_geocoded": {"geometry":{"type":"Point","coordinates":[-94.709746,39.209394]}},
+      //   "user_country":"us",
+      //   "is_live":true,
+      //   "identifier":"markjacobs",
+      //   "current_state":"serious_injury_yesno"
+      // }
+      // ];
     }
   },
-  "map" : {
-    html : '<div class="gi-head">'
-          + ' <span class="gih-header">MAP</span>'
-          + ' <div class="gih-options">'
-          + '   <i class="fas fa-expand cp"></i>'
-          + '   <i class="fas fa-times-circle cp"></i>'
-          + '   </div>'
-          + ' </div>'
-          + '<div class="gi-body">'
-          +   '<div class="grid-map wh100"></div>'
-          + '</div>',
-    init : function(item,self){
-      self.mapHandler = new MapHandler($(item).find('.grid-map').get(0),$(item).find('.gi-body'));
+  map: {
+    html:
+      '<div class="gi-head">' +
+      ' <span class="gih-header">MAP</span>' +
+      ' <div class="gih-options">' +
+      '   <i class="fas fa-expand cp"></i>' +
+      '   <i class="fas fa-times-circle cp"></i>' +
+      "   </div>" +
+      " </div>" +
+      '<div class="gi-body">' +
+      '<div class="grid-map wh100"></div>' +
+      "</div>",
+    init: function(item, self) {
+      self.mapHandler = new MapHandler(
+        $(item)
+          .find(".grid-map")
+          .get(0),
+        $(item).find(".gi-body")
+      );
       self.mapHandler.load();
     }
   },
-  "breakdown" : {
-    html: '<div class="gi-head">'
-          + ' <span class="gih-header">BREAKDOWN</span>'
-          + ' <div class="gih-options">'
-          + '   <i data-tooltip="Snapshot" class="tooltip-bottom rel"><i class="fas fa-camera cp"></i></i>'
-          + '   <i class="fas fa-expand cp"></i>'
-          + '   <i class="fas fa-times-circle cp"></i>'
-          + ' </div>'
-          + ' </div>'
-          + ' <div class="gi-body">'
-          + '   <canvas id="breakdown_chart"></canvas>'
-          + '</div>',
-    init: function(item,self){
+  breakdown: {
+    html:
+      '<div class="gi-head">' +
+      ' <span class="gih-header">BREAKDOWN</span>' +
+      ' <div class="gih-options">' +
+      '   <i data-tooltip="Snapshot" class="tooltip-bottom rel"><i class="fas fa-camera cp"></i></i>' +
+      '   <i class="fas fa-expand cp"></i>' +
+      '   <i class="fas fa-times-circle cp"></i>' +
+      " </div>" +
+      " </div>" +
+      ' <div class="gi-body">' +
+      '   <canvas id="breakdown_chart"></canvas>' +
+      "</div>",
+    init: function(item, self) {
       //$.get(/api/data/breakdown-chart-data/)
-      var ctx = $("#breakdown_chart")[0].getContext('2d');
-      breakdown_data.datasets[0].backgroundColor = getColors(breakdown_data.datasets[0].data.length);
-      self.charts.insert( "breakdown" , new Chart(ctx, {
-            type: 'doughnut',
-            data: breakdown_data,
-            options: {
-              responsive : true,
-              title: {
-                display: true,
-                text: 'Reports by Type'
-              }
+      var ctx = $("#breakdown_chart")[0].getContext("2d");
+      breakdown_data.datasets[0].backgroundColor = getColors(
+        breakdown_data.datasets[0].data.length
+      );
+      self.charts.insert(
+        "breakdown",
+        new Chart(ctx, {
+          type: "doughnut",
+          data: breakdown_data,
+          options: {
+            responsive: true,
+            title: {
+              display: true,
+              text: "Reports by Type"
             }
+          }
         })
       );
 
-      $(item).find('.fa-camera').on('click',function(){
-        window.open(window.URL.createObjectURL(base64toBlob(self.charts.charts.breakdown.toBase64Image().slice(22),"image/png")),'_blank');
-      });
+      $(item)
+        .find(".fa-camera")
+        .on("click", function() {
+          window.open(
+            window.URL.createObjectURL(
+              base64toBlob(
+                self.charts.charts.breakdown.toBase64Image().slice(22),
+                "image/png"
+              )
+            ),
+            "_blank"
+          );
+        });
     }
   },
-  "unknown" : {
-    html: '<div class="gi-head">'
-          + ' <span class="gih-header">UNKNOWN</span>'
-          + ' <div class="gih-options">'
-          + '   <i class="fas fa-expand cp"></i>'
-          + '   <i class="fas fa-times-circle cp"></i>'
-          + ' </div>'
-          + ' </div>'
-          + ' <div class="gi-body">'
-          + '   <canvas id="n_reports_chart"></canvas>'
-          + '</div>',
-    init: function(item){
-
-    }
+  unknown: {
+    html:
+      '<div class="gi-head">' +
+      ' <span class="gih-header">UNKNOWN</span>' +
+      ' <div class="gih-options">' +
+      '   <i class="fas fa-expand cp"></i>' +
+      '   <i class="fas fa-times-circle cp"></i>' +
+      " </div>" +
+      " </div>" +
+      ' <div class="gi-body">' +
+      '   <canvas id="n_reports_chart"></canvas>' +
+      "</div>",
+    init: function(item) {}
   }
 };
 
-
 //get n colors for chart, colors used are taken from a top 20 chart colors list on Google
-function getColors(nColors){
-  var colors = ['#3366CC','#DC3912','#FF9900','#109618','#990099','#3B3EAC','#0099C6','#DD4477','#66AA00','#B82E2E','#316395','#994499','#22AA99','#AAAA11','#6633CC','#E67300','#8B0707','#329262','#5574A6','#3B3EAC'];
+function getColors(nColors) {
+  var colors = [
+    "#3366CC",
+    "#DC3912",
+    "#FF9900",
+    "#109618",
+    "#990099",
+    "#3B3EAC",
+    "#0099C6",
+    "#DD4477",
+    "#66AA00",
+    "#B82E2E",
+    "#316395",
+    "#994499",
+    "#22AA99",
+    "#AAAA11",
+    "#6633CC",
+    "#E67300",
+    "#8B0707",
+    "#329262",
+    "#5574A6",
+    "#3B3EAC"
+  ];
   shuffleArray(colors);
-  return colors.splice(0,nColors);
+  return colors.splice(0, nColors);
 }
 
 /**
@@ -678,50 +808,54 @@ function getColors(nColors){
  * Using Durstenfeld shuffle algorithm.
  */
 function shuffleArray(array) {
-    for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-    }
+  for (var i = array.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
 }
 
 function base64toBlob(base64Data, contentType) {
-    contentType = contentType || '';
-    var sliceSize = 1024;
-    var byteCharacters = atob(base64Data);
-    var bytesLength = byteCharacters.length;
-    var slicesCount = Math.ceil(bytesLength / sliceSize);
-    var byteArrays = new Array(slicesCount);
+  contentType = contentType || "";
+  var sliceSize = 1024;
+  var byteCharacters = atob(base64Data);
+  var bytesLength = byteCharacters.length;
+  var slicesCount = Math.ceil(bytesLength / sliceSize);
+  var byteArrays = new Array(slicesCount);
 
-    for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
-        var begin = sliceIndex * sliceSize;
-        var end = Math.min(begin + sliceSize, bytesLength);
+  for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+    var begin = sliceIndex * sliceSize;
+    var end = Math.min(begin + sliceSize, bytesLength);
 
-        var bytes = new Array(end - begin);
-        for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
-            bytes[i] = byteCharacters[offset].charCodeAt(0);
-        }
-        byteArrays[sliceIndex] = new Uint8Array(bytes);
+    var bytes = new Array(end - begin);
+    for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
+      bytes[i] = byteCharacters[offset].charCodeAt(0);
     }
-    return new Blob(byteArrays, { type: contentType });
+    byteArrays[sliceIndex] = new Uint8Array(bytes);
+  }
+  return new Blob(byteArrays, { type: contentType });
 }
 
 //sample data for charts
 
 var breakdown_data = {
-  datasets : [{
-    data : [30,12,192,93,10]
-  }],
-  labels : ["Fire","Trapped","Flooding","Broken Bridge","Supplies Needed"]
-}
+  datasets: [
+    {
+      data: [30, 12, 192, 93, 10]
+    }
+  ],
+  labels: ["Fire", "Trapped", "Flooding", "Broken Bridge", "Supplies Needed"]
+};
 
 var reports_trend_data = {
-  datasets : [{
-    data : [30,121,100,93,50,30,21],
-    label: "# of Reports",
-    borderColor: "rgba(60,186,159,1)",
-    backgroundColor: "rgba(60,186,159,0.1)"
-  }],
-  labels : ["12:00","1:00","2:00","3:00","4:00","5:00","now"]
-}
+  datasets: [
+    {
+      data: [30, 121, 100, 93, 50, 30, 21],
+      label: "# of Reports",
+      borderColor: "rgba(60,186,159,1)",
+      backgroundColor: "rgba(60,186,159,0.1)"
+    }
+  ],
+  labels: ["12:00", "1:00", "2:00", "3:00", "4:00", "5:00", "now"]
+};
