@@ -46,6 +46,8 @@ app.post('/api/account/create', async (req, res) => {
     const codeDoc = await getCode(userData.code);
     if (codeDoc.status == "success"){
       //check if code exists
+      console.log("Loggin codeDoc");
+      console.log(codeDoc);
       if (codeDoc.data.length == 0){
         res.json(buildError(403,"Invalid organizational code. Please recheck code, or contact your organization admin for a new code."));
         return false;
@@ -343,9 +345,11 @@ const getCode = async (code) => {
     doc: '_find',
     body: query
   }).then(function(data) {
+    console.log("Sending data in");
+    console.log(data);
     return {
       status : "success",
-      data : data.docs
+      data : data[0].docs
     };
   }).catch(function(err) {
     console.log('something went wrong', err);
