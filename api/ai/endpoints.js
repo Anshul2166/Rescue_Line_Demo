@@ -46,7 +46,7 @@ const intentLookup = {
 app.post('/api/ai/chat', async (req, res) => {
 
   if (req.body.location !== null)
-    console.log("PRECISE LOCATION",req.body.location);
+    // console.log("PRECISE LOCATION",req.body.location);
 
   var contextDoc,
       identifier,
@@ -157,8 +157,6 @@ app.post('/api/ai/chat', async (req, res) => {
 
     //will still need previous intent
     if (data.intents.length > 0){
-      console.log("==========Taking the previous intent");
-      console.log(data);
       contextDoc.previous_intent = data.intents[0].intent;
     }
 
@@ -166,7 +164,6 @@ app.post('/api/ai/chat', async (req, res) => {
     if (req.body.location !== null)
       response.info.device_location = { "geometry" : { type: 'Point', coordinates: [ req.body.location.lng, req.body.location.lat ] } };
 
-    console.log('INFO BEFORE INSERT');
     //either insert info into reports DB or into context DB
     if (contextDoc.is_live)
       var reportInsertStatus = await updateContext(response.info,"reports");
@@ -237,6 +234,8 @@ const analyzeResponse = async (data,prevContext) => {
    response.msg = data.output.text[0];
 
   //pass on to relevant state handler so we can process the data in context to convo
+  console.log("The current state is");
+  console.log(response.info.current_state);
   if (typeof stateHandlers[response.info.current_state] != "undefined"){
     processedState = await stateHandlers[response.info.current_state](chatData);
     console.log("PROCESSEDSTATE",processedState);
@@ -332,15 +331,12 @@ var stateHandlers = {
 
       }
       console.log("===============Identifying intent with "+chatData.current_state);
-      console.log(data);
       return { new_state : chatData.current_state, info : [data] };
   },
   "intent_verification" : async (chatData) => {
     console.log("=================Verifying intent");
-    console.log(chatData);
     if (chatData.intent == "yes"){
       //successfully guessed intent
-      console.log("Showing yes");
       return {
         new_state : "address_query",
         info : [{ key: "verified_intent" , value: chatData.previous_intent },{ key: "priority_weight" , value: intentDict[chatData.previous_intent].base_weight }]
@@ -359,7 +355,6 @@ var stateHandlers = {
 
       var address_geocoded = await request.get('https://api.mapbox.com/geocoding/v5/mapbox.places/'+ chatData.input +'.json?access_token='+ mapboxToken +'&limit=1', { json:true })
       .then(function(response,body){
-        console.log(response);
         if (response.features.length > 0){
           var country = null;
           for (var i = 0; i < response.features[0].context.length; i++){
@@ -389,7 +384,7 @@ var stateHandlers = {
 
       //mark as is_live so we know that we are inserting it into reports
       allInfo.push({ key: "is_live", value: true });
-
+      console.log("Changing the state now");
       return { new_state : "injury_yesno", info : allInfo , push : true };
     } else {
       return {};
@@ -409,6 +404,7 @@ var stateHandlers = {
     var newData = [];
     var injuryCount = 0;
     if (typeof chatData.entity != "undefined"){
+      console.log("================Checking entity data");
       if (chatData.entity.entity == "sys-number"){
         injuryCount = parseInt(chatData.entity.value);
         //calculate new weight
