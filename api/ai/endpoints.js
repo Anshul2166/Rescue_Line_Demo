@@ -156,8 +156,11 @@ app.post('/api/ai/chat', async (req, res) => {
       contextDoc.is_finalized = response.info.is_finalized;
 
     //will still need previous intent
-    if (data.intents.length > 0)
+    if (data.intents.length > 0){
+      console.log("==========Taking the previous intent");
+      console.log(data);
       contextDoc.previous_intent = data.intents[0].intent;
+    }
 
     //if precise location is available in request, update that into info variable
     if (req.body.location !== null)
@@ -328,12 +331,16 @@ var stateHandlers = {
         //TODO: will focus on "d" for now then come to this
 
       }
-
+      console.log("===============Identifying intent with "+chatData.current_state);
+      console.log(data);
       return { new_state : chatData.current_state, info : [data] };
   },
   "intent_verification" : async (chatData) => {
+    console.log("=================Verifying intent");
+    console.log(chatData);
     if (chatData.intent == "yes"){
       //successfully guessed intent
+      console.log("Showing yes");
       return {
         new_state : "address_query",
         info : [{ key: "verified_intent" , value: chatData.previous_intent },{ key: "priority_weight" , value: intentDict[chatData.previous_intent].base_weight }]
@@ -343,6 +350,7 @@ var stateHandlers = {
     }
   },
   "address_query" : async (chatData) => {
+    console.log("===================Getting the address");
     var allInfo = [];
     if (chatData.intent == "address"){
       allInfo.push({ key: "address", value: chatData.input });
@@ -388,6 +396,7 @@ var stateHandlers = {
     }
   },
   "injury_yesno" : async (chatData) => {
+    console.log("===============================Taking the yes or no for injury");
     if (chatData.intent == "yes"){
       chatData.current_state = "serious_injury_query";
     } else if (chatData.intent == "no") {
@@ -395,15 +404,8 @@ var stateHandlers = {
     }
     return { new_state : chatData.current_state };
   },
-  "serious_injury_yesno" : async (chatData) => {
-    if (chatData.intent == "yes"){
-      chatData.current_state = "serious_injury_query";
-    } else if (chatData.intent == "no") {
-      chatData.current_state = "regular_injury_query";
-    }
-    return { new_state : chatData.current_state };
-  },
   "serious_injury_query" : async (chatData) => {
+    console.log("=======================Getting the serious injury count");
     var newData = [];
     var injuryCount = 0;
     if (typeof chatData.entity != "undefined"){
@@ -420,6 +422,7 @@ var stateHandlers = {
     }
   },
   "regular_injury_query" : async (chatData) => {
+    console.log("========================Getting the regular injury count");
     var newData = [];
     var injuryCount = 0;
     if (typeof chatData.entity != "undefined"){
@@ -437,6 +440,7 @@ var stateHandlers = {
 
   },
   "more_info_query" : async (chatData) => {
+    console.log("========================More info query");
     return { info: [{ key: "additional_info" , value: chatData.input }, {key: "is_finalized", value: true }] };
   }
 };
@@ -481,8 +485,6 @@ const getContext = async (identifier, db) => {
     body: query
   }).then(function(data) {
     //[0] to return latest / most relevant
-    console.log("====================================Logging the data");
-    console.log(data);
     return data[0].docs[0];
     // return data.docs;
   }).catch(function(err) {

@@ -80,8 +80,6 @@ app.get('/api/chat/history/:token', async (req, res) => {
     return false;
 
   const db_response = await getChatHistory(tokenInfo.user);
-  console.log("Getting chat history");
-  console.log(db_response);
   //reduce chat logs to only most recent
   if (db_response.data.length > 0){
     for (var i = 0; i < db_response.data.length; i++){
@@ -158,8 +156,6 @@ app.get('/api/chat/nearby', async (req, res) => {
     return false;
 
   const db_response = await getNearby(location);
-
-  console.log(db_response);
 
   db_response.data = await Promise.all(db_response.data.filter(function(obj) {
 
@@ -363,7 +359,7 @@ const getChatHistory = async (username) => {
   }).then(function(data) {
     return {
       "status" : "success",
-      "data" : data.docs
+      "data" : data[0].docs
     };
   }).catch(function(err) {
     console.log(err);
