@@ -382,10 +382,18 @@ var stateHandlers = {
       //mark as is_live so we know that we are inserting it into reports
       allInfo.push({ key: "is_live", value: true });
 
-      return { new_state : "serious_injury_yesno", info : allInfo , push : true };
+      return { new_state : "injury_yesno", info : allInfo , push : true };
     } else {
       return {};
     }
+  },
+  "injury_yesno" : async (chatData) => {
+    if (chatData.intent == "yes"){
+      chatData.current_state = "serious_injury_query";
+    } else if (chatData.intent == "no") {
+      chatData.current_state = "more_info_query";
+    }
+    return { new_state : chatData.current_state };
   },
   "serious_injury_yesno" : async (chatData) => {
     if (chatData.intent == "yes"){
