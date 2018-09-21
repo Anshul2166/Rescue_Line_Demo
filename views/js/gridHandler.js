@@ -318,6 +318,16 @@ var intentPhrases = {
   reported_incident: "reported a safety hazard"
 };
 
+
+var breakdown_data = {
+  datasets: [
+    {
+      data: []
+    }
+  ],
+  labels: []
+};
+
 var specialKeyProcessing = {
   address_geocoded: function(val, gridHandler, eventId) {
     var link = document.createElement("span");
@@ -617,7 +627,6 @@ var gridItemLookup = {
     init: function(item, self) {
       var feedData = [];
       var finalInfo = [];
-      console.log("initialized feed for", item);
       $.ajax({
         method: "POST",
         url: "/api/data/feed",
@@ -628,7 +637,7 @@ var gridItemLookup = {
         console.log(response);
         feedData = response.data.feed;
         // if (response.status == "success") {
-          if(response!=undefined){
+        if (response != undefined) {
           console.log("success");
           for (var i = 0; i < feedData.length; i++) {
             var curInfo = {};
@@ -636,6 +645,18 @@ var gridItemLookup = {
             curInfo._rev = feedData[i]._rev;
             curInfo.first_explanation = "There is a big fire in the house";
             curInfo.verified_intent = "fire";
+            let index = breakdown_data.labels.indexOf(curInfo.verified_intent);
+            if (index == -1) {
+              //element is not found, then push the intent in labels
+              breakdown_data.labels.push(curInfo.verified_intent);
+              //push the number in dataset
+              breakdown_data.datasets[0].data.push(1);
+            } else {
+              //intent is already registered, then add another incident to that, i.e, simply increment the value in it
+              breakdown_data.datasets[0].data[index] =
+                breakdown_data.datasets[0].data[index] + 1;
+            }
+
             curInfo.priority_weight = 0.7;
             curInfo.address = feedData[i].context.address;
             curInfo.address_geocoded = {
@@ -650,6 +671,7 @@ var gridItemLookup = {
           console.log("Here is the final info");
           console.log(finalInfo);
           $fb = $("#live_feed .gi-body");
+          gridItemLookup.breakdown.init(true,self);
           for (var i = 0; i < finalInfo.length; i++)
             $fb.append(new FeedItem(finalInfo[i], self));
         } else {
@@ -726,37 +748,44 @@ var gridItemLookup = {
     init: function(item, self) {
       //$.get(/api/data/breakdown-chart-data/)
       var ctx = $("#breakdown_chart")[0].getContext("2d");
-      breakdown_data.datasets[0].backgroundColor = getColors(
-        breakdown_data.datasets[0].data.length
-      );
-      self.charts.insert(
-        "breakdown",
-        new Chart(ctx, {
-          type: "doughnut",
-          data: breakdown_data,
-          options: {
-            responsive: true,
-            title: {
-              display: true,
-              text: "Reports by Type"
-            }
-          }
-        })
-      );
+      if (breakdown_data.datasets.length == 0) {
+        console.log("Nothing here");
+      } else {
+        console.log("Finally getting here");
+        console.log(breakdown_data);
+        breakdown_data.datasets[0].backgroundColor = getColors(
+          breakdown_data.datasets[0].data.length
+        );
 
-      $(item)
-        .find(".fa-camera")
-        .on("click", function() {
-          window.open(
-            window.URL.createObjectURL(
-              base64toBlob(
-                self.charts.charts.breakdown.toBase64Image().slice(22),
-                "image/png"
-              )
-            ),
-            "_blank"
-          );
-        });
+        self.charts.insert(
+          "breakdown",
+          new Chart(ctx, {
+            type: "doughnut",
+            data: breakdown_data,
+            options: {
+              responsive: true,
+              title: {
+                display: true,
+                text: "Reports by Type"
+              }
+            }
+          })
+        );
+
+        $(item)
+          .find(".fa-camera")
+          .on("click", function() {
+            window.open(
+              window.URL.createObjectURL(
+                base64toBlob(
+                  self.charts.charts.breakdown.toBase64Image().slice(22),
+                  "image/png"
+                )
+              ),
+              "_blank"
+            );
+          });
+      }
     }
   },
   unknown: {
@@ -839,14 +868,14 @@ function base64toBlob(base64Data, contentType) {
 
 //sample data for charts
 
-var breakdown_data = {
-  datasets: [
-    {
-      data: [30, 12, 192, 93, 10]
-    }
-  ],
-  labels: ["Fire", "Trapped", "Flooding", "Broken Bridge", "Supplies Needed"]
-};
+// var breakdown_data = {
+//   datasets: [
+//     {
+//       data: [30, 12, 192, 93, 10]
+//     }
+//   ],
+//   labels: ["Fire", "Trapped", "Flooding", "Broken Bridge", "Supplies Needed"]
+// };
 
 var reports_trend_data = {
   datasets: [
