@@ -274,8 +274,8 @@ const getChatLogs = async (chatId) => {
       "selector": {
         "chat_id": { "$eq": chatId },
         "timestamp": { "$gt": dayAgo }
-      }
-      // "sort": [ { "timestamp": "asc" } ]
+      },
+      "sort": [ { "timestamp": "asc" } ]
     };
 
   //make request to DB
