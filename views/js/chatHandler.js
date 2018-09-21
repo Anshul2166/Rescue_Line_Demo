@@ -297,6 +297,7 @@ function ChatHandler(options){
         chatInfo.read = true;
         $.get("/api/chat/read/"+ chatInfo._id)
             .done(function(response) {
+              console.log("Read the chat");
               console.log(response);
               if (response.status == "success"){
                 console.log("Marked chat as read");

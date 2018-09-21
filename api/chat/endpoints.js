@@ -43,11 +43,11 @@ app.get('/api/chat/logs', async (req, res) => {
   chatId = (username < tokenInfo.user) ? username+":"+tokenInfo.user : tokenInfo.user+":"+username;
 
   const db_response = await getChatLogs(chatId);
-
+  console.log("====================Sending in the dresponse");
+  console.log(db_response);
   for (var i = 0; i < db_response.data.length; i++){
     db_response.data[i].timestamp = processStamp(db_response.data[i].timestamp);
   }
-
   res.json(db_response);
 });
 
@@ -250,7 +250,7 @@ app.get('/api/chat/read/:id', async (req, res) => {
 
   const db_response = await readChat(docId);
 
-  return res.json(db_response);
+  res.json(db_response);
 
 });
 
@@ -286,12 +286,15 @@ const getChatLogs = async (chatId) => {
     doc: '_find',
     body: query
   }).then(function(data) {
+    console.log("Sending the data");
+    console.log(data);
     return {
       "status" : "success",
-      "data" : data.docs
+      "data" : data[0].docs
     };
   }).catch(function(err) {
-    console.log("getChatLogs ERROR",err);
+    console.log("Error in getChatLogs");
+    console.log(err);
     return buildError(400,"There was a database error. Please try again in a while.");
   });
 
@@ -394,25 +397,29 @@ const insertChat = async (chat) => {
  */
 const readChat = async (docId) => {
   var dbName = "chat_logs";
-
+  console.log("===================================Inside chat reading");
   dbh.use(dbName);
 
   const db_response = dbh.db.get(docId).then(function (existing, err) {
     if(!err) existing.read = true;
-    return dbh.db.insert(existing).then(function(data){
+    console.log("====================Entering existing");
+    console.log(existing);
+    let db_req={docs:existing};
+    return dbh.db.insert(db_req).then(function(data){
+      console.log("Sending the chat data")
+      console.log(data);
       return {
         "status" : "success",
         "data" : data
       };
     }).catch(function(err){
       console.log(err);
-      return buildError(400,"There was a database error. Please try again in a while.");
+      return buildError(400,"There was a database error due to chat reading 1. Please try again in a while.");
     });
   }).catch(function(err){
     console.log(err);
-    return buildError(400,"There was a database error. Please try again in a while.");
+    return buildError(400,"There was a database error due to chat reading 2. Please try again in a while.");
   });
-
   return db_response;
 
 };
