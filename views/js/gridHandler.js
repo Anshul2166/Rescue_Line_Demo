@@ -318,7 +318,6 @@ var intentPhrases = {
   reported_incident: "reported a safety hazard"
 };
 
-
 var breakdown_data = {
   datasets: [
     {
@@ -326,6 +325,36 @@ var breakdown_data = {
     }
   ],
   labels: []
+};
+
+function getTimefromDate(timestamp) {
+  return new Date(timestamp * 1000).getTime();
+}
+
+var date = new Date();
+var d1 = new Date(new Date() * 1 - 1000 * 3600 * 1);
+var d2 = new Date(new Date() * 1 - 1000 * 3600 * 2);
+var d3 = new Date(new Date() * 1 - 1000 * 3600 * 3);
+var d4 = new Date(new Date() * 1 - 1000 * 3600 * 4);
+var d5 = new Date(new Date() * 1 - 1000 * 3600 * 5);
+// var d6=new Date((new Date)*1 - 1000*3600*6);
+var reports_trend_data = {
+  datasets: [
+    {
+      data: [0,0,0,0,0,0],
+      label: "# of Reports",
+      borderColor: "rgba(60,186,159,1)",
+      backgroundColor: "rgba(60,186,159,0.1)"
+    }
+  ],
+  labels: [
+    d5.getHours(),
+    d4.getHours(),
+    d3.getHours(),
+    d2.getHours(),
+    d1.getHours(),
+    "now"
+  ]
 };
 
 var specialKeyProcessing = {
@@ -558,6 +587,8 @@ var gridItemLookup = {
     init: function(item, self) {
       //$.get(/api/data/reports-trend-data/)
       //hourly
+      console.log("Getting the data");
+      console.log(reports_trend_data);
       var view = "Hourly";
       var ctx = $("#reports_trend_chart")[0].getContext("2d");
       self.charts.insert(
@@ -662,6 +693,13 @@ var gridItemLookup = {
             curInfo.address_geocoded = {
               geometry: { type: "Point", coordinates: [-94.709746, 39.209394] }
             };
+            curInfo.timestamp = feedData[i].timestamp;
+
+            //get the time from timestamp
+            let cur_date=new Date(curInfo.timestamp);
+            let time_diff =Math.abs(date - cur_date) / 36e5;
+            time_diff=Math.floor(time_diff);
+            reports_trend_data.datasets[0].data[5-time_diff]=1+reports_trend_data.datasets[0].data[5-time_diff];
             curInfo.user_country = "us";
             curInfo.is_live = true;
             curInfo.identifier = feedData[i].identifier;
@@ -671,7 +709,8 @@ var gridItemLookup = {
           console.log("Here is the final info");
           console.log(finalInfo);
           $fb = $("#live_feed .gi-body");
-          gridItemLookup.breakdown.init(true,self);
+          gridItemLookup.breakdown.init(true, self);
+          gridItemLookup.reports_trend.init(true, self);
           for (var i = 0; i < finalInfo.length; i++)
             $fb.append(new FeedItem(finalInfo[i], self));
         } else {
@@ -877,14 +916,14 @@ function base64toBlob(base64Data, contentType) {
 //   labels: ["Fire", "Trapped", "Flooding", "Broken Bridge", "Supplies Needed"]
 // };
 
-var reports_trend_data = {
-  datasets: [
-    {
-      data: [30, 121, 100, 93, 50, 30, 21],
-      label: "# of Reports",
-      borderColor: "rgba(60,186,159,1)",
-      backgroundColor: "rgba(60,186,159,0.1)"
-    }
-  ],
-  labels: ["12:00", "1:00", "2:00", "3:00", "4:00", "5:00", "now"]
-};
+// var reports_trend_data = {
+//   datasets: [
+//     {
+//       data: [30, 121, 100, 93, 50, 30, 21],
+//       label: "# of Reports",
+//       borderColor: "rgba(60,186,159,1)",
+//       backgroundColor: "rgba(60,186,159,0.1)"
+//     }
+//   ],
+//   labels: ["12:00", "1:00", "2:00", "3:00", "4:00", "5:00", "now"]
+// };
