@@ -79,7 +79,7 @@ app.get('/api/profile/:token', async (req, res) => {
       delete db_response.data["_id"];
       delete db_response.data["_rev"];
       delete db_response.data["password"];
-      delete db_response.data["location"];
+      // delete db_response.data["location"];
       delete db_response.data["location_timestamp"];
       delete db_response.data["code"];
     }

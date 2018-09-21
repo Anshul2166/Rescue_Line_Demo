@@ -26,7 +26,7 @@ const TwilioResponse = require('twilio').twiml.MessagingResponse;
 
 //for watson assistant
 var assistant;
-
+var device_location;
 assistant = new watson.AssistantV1({
   'version': '2018-02-16',
   'username': process.env.ASSISTANT_USERNAME || '<username>',
@@ -159,10 +159,11 @@ app.post('/api/ai/chat', async (req, res) => {
     if (data.intents.length > 0){
       contextDoc.previous_intent = data.intents[0].intent;
     }
-
+    console.log("Input the value of location");
+    let location=JSON.parse(req.body.location);
     //if precise location is available in request, update that into info variable
-    if (req.body.location !== null)
-      response.info.device_location = { "geometry" : { type: 'Point', coordinates: [ req.body.location.lng, req.body.location.lat ] } };
+    if (location !== null)
+      response.info.device_location = { "geometry" : { type: 'Point', coordinates: [ location.lng, location.lat ] } };
 
     //either insert info into reports DB or into context DB
     if (contextDoc.is_live)
@@ -171,7 +172,6 @@ app.post('/api/ai/chat', async (req, res) => {
       contextDoc.info = response.info;
 
     var contextStatus = await updateContext(contextDoc);
-
     if (requestType == "SMS"){
       const twiml = new TwilioResponse();
 

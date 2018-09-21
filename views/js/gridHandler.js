@@ -690,8 +690,9 @@ var gridItemLookup = {
 
             curInfo.priority_weight = 0.7;
             curInfo.address = feedData[i].context.address;
+            let location=feedData[i].info.device_location.geometry.coordinates;
             curInfo.address_geocoded = {
-              geometry: { type: "Point", coordinates: [-94.709746, 39.209394] }
+              geometry: { type: "Point", coordinates: [location[0],location[1]] }
             };
             curInfo.timestamp = feedData[i].timestamp;
 
