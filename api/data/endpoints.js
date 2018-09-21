@@ -49,15 +49,13 @@ app.post("/api/data/feed", async (req, res) => {
 });
 
 const get_feed = async () => {
-	var dbName = "context_db";
+	var dbName = "reports";
 	var halfdayAgo = Date.now() - 43200000;
 	dbh.use(dbName);
 	var query = {
 		selector: {
-			// is_finalized: "true"
-			// timestamp: { $gt: halfdayAgo }
+			is_finalized: true
 		}
-		// "sort":[{ "timestamp":"desc" }],
 	};
 
 	const db_response = dbh.cloudant
@@ -83,12 +81,12 @@ const get_feed = async () => {
 	return db_response;
 };
 
-function buildError(code,message){
-  return {
-    "status" : "error",
-    "error" : {
-      "code" : code,
-      "message" : message
-    }
-  };
+function buildError(code, message) {
+	return {
+		status: "error",
+		error: {
+			code: code,
+			message: message
+		}
+	};
 }

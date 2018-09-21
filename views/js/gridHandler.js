@@ -674,8 +674,8 @@ var gridItemLookup = {
             var curInfo = {};
             curInfo._id = feedData[i]._id;
             curInfo._rev = feedData[i]._rev;
-            curInfo.first_explanation = "There is a big fire in the house";
-            curInfo.verified_intent = feedData[i].context.disaster;
+            curInfo.first_explanation = feedData[i].first_explanation;
+            curInfo.verified_intent = feedData[i].verified_intent;
             let index = breakdown_data.labels.indexOf(curInfo.verified_intent);
             if (index == -1) {
               //element is not found, then push the intent in labels
@@ -688,9 +688,9 @@ var gridItemLookup = {
                 breakdown_data.datasets[0].data[index] + 1;
             }
 
-            curInfo.priority_weight = 0.7;
-            curInfo.address = feedData[i].context.address;
-            let location=feedData[i].info.device_location.geometry.coordinates;
+            curInfo.priority_weight = feedData[i].priority_weight;
+            curInfo.address = feedData[i].address;
+            let location=feedData[i].address_geocoded.geometry.coordinates;
             curInfo.address_geocoded = {
               geometry: { type: "Point", coordinates: [location[0],location[1]] }
             };

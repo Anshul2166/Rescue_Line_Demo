@@ -160,7 +160,9 @@ app.post('/api/ai/chat', async (req, res) => {
       contextDoc.previous_intent = data.intents[0].intent;
     }
     console.log("Input the value of location");
+
     let location=JSON.parse(req.body.location);
+    console.log(location);
     //if precise location is available in request, update that into info variable
     if (location !== null)
       response.info.device_location = { "geometry" : { type: 'Point', coordinates: [ location.lng, location.lat ] } };
@@ -392,7 +394,7 @@ var stateHandlers = {
   },
   "injury_yesno" : async (chatData) => {
     console.log("===============================Taking the yes or no for injury");
-    if (chatData.intent == "yes"){
+    if (chatData.intent == "yes"){ 
       chatData.current_state = "serious_injury_query";
     } else if (chatData.intent == "no") {
       chatData.current_state = "more_info_query";
