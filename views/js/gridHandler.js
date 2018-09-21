@@ -675,7 +675,7 @@ var gridItemLookup = {
             curInfo._id = feedData[i]._id;
             curInfo._rev = feedData[i]._rev;
             curInfo.first_explanation = "There is a big fire in the house";
-            curInfo.verified_intent = "fire";
+            curInfo.verified_intent = feedData[i].context.disaster;
             let index = breakdown_data.labels.indexOf(curInfo.verified_intent);
             if (index == -1) {
               //element is not found, then push the intent in labels
