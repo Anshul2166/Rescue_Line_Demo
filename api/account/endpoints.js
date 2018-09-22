@@ -80,7 +80,7 @@ app.post('/api/account/create', async (req, res) => {
       "password" : hash,
       "type" : userData.type
     };
-
+    console.log("==========Hashing password and sending to db");
     if (typeof userData.code != "undefined" && userData.code !== "none")
       userDoc.code = userData.code;
 
@@ -90,8 +90,10 @@ app.post('/api/account/create', async (req, res) => {
     }
 
     dbh.db.insert(userDoc).then(function(body){
+    	console.log("Successful insertion");
       console.log(body);
     }).catch(function(err){
+    	console.log("Error in insertion");
       console.log(err);
     });
   });
