@@ -471,8 +471,8 @@ const getContext = async (identifier, db) => {
       "selector": {
         "identifier" : { "$eq": identifier },
         "timestamp": { "$gt": halfdayAgo }
-      }
-      // "sort":[{ "timestamp":"desc" }],
+      },
+      "sort":[{ "timestamp":"desc" }]
     };
 
   //make request to DB

@@ -119,8 +119,8 @@ const getSettings = async (username) => {
 
   //prepare query
   var query =   {
-      "selector": { "username": { "$eq": username } }
-      // "sort": [ { "username": "asc" } ]
+      "selector": { "username": { "$eq": username } },
+      "sort": [ { "username": "asc" } ]
     };
 
   //make request to DB

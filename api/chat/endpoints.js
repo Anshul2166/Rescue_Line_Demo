@@ -348,8 +348,8 @@ const getChatHistory = async (username) => {
            { "sender": { "$eq": username } },
            { "receiver": { "$eq": username } }
          ]
-      }
-      // "sort": [ { "timestamp": "asc" } ]
+      },
+      "sort": [ { "timestamp": "asc" } ]
     };
 
   //make request to DB

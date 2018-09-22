@@ -270,8 +270,8 @@ const checkName = async (username) => {
   //prepare query
   var query =   {
       "fields": [ "username" ],
-      "selector": { "username": { "$eq": username } }
-      // "sort": [ { "username": "asc" } ]
+      "selector": { "username": { "$eq": username } },
+      "sort": [ { "username": "asc" } ]
     };
 
   //make request to DB
@@ -306,8 +306,8 @@ const getAccountDetails = async (toFind,getBy) => {
   //prepare query
   var query =   {
       "fields": [ "username","password","type","country" ],
-      "selector": { [getBy] : { "$eq": toFind } }
-      // "sort": [ { "username": "asc" } ]
+      "selector": { [getBy] : { "$eq": toFind } },
+      "sort": [ { "username": "asc" } ]
     };
 
   //make request to DB

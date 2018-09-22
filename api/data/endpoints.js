@@ -55,7 +55,8 @@ const get_feed = async () => {
 	var query = {
 		selector: {
 			is_finalized: true
-		}
+		},
+		"sort": [ { "timestamp": "desc" } ]
 	};
 
 	const db_response = dbh.cloudant
