@@ -46,7 +46,7 @@ app.get('/api/chat/logs', async (req, res) => {
   console.log("====================Sending in the dresponse");
   console.log(db_response);
   for (var i = 0; i < db_response.data.length; i++){
-    db_response.data[i].timestamp = processStamp(db_response.data[i].timestamp);
+    db_response.data.timestamp = processStamp(db_response.data.timestamp);
   }
   res.json(db_response);
 });
@@ -156,9 +156,10 @@ app.get('/api/chat/nearby', async (req, res) => {
     return false;
 
   const db_response = await getNearby(location);
-
+  console.log("Getting the response for nearby");
+  console.log(db_response);
   db_response.data = await Promise.all(db_response.data.filter(function(obj) {
-
+  	
     if (obj.doc.type == "coordinator" || obj.doc.username == tokenInfo.user)
       return false; // skip
 
@@ -290,7 +291,7 @@ const getChatLogs = async (chatId) => {
     console.log(data);
     return {
       "status" : "success",
-      "data" : data[0].docs
+      "data" : data.docs
     };
   }).catch(function(err) {
     console.log("Error in getChatLogs");
@@ -308,17 +309,20 @@ const getChatLogs = async (chatId) => {
 const getNearby = async (coords) => {
   var dbName = 'users_db';
   dbh.use(dbName);
-
+ console.log("The locations are");
+ console.log(coords.lat);
+ console.log(coords.lng);
   // Find nearby users within 8km (~ 5 miles) radius
   var query = {
     lat: coords.lat,
     lon: coords.lng,
-    radius: 8000,
+    radius: 25000,
     relation: "contains",
     include_docs:true
   };
-
-  var db_response = dbh.db.geo('locationDoc', 'locationIndex', query).then(function(data) {
+  console.log("Inside getNearby");
+  var db_response = dbh.db.geo('geoDoc', 'geo', query).then(function(data) {
+  	console.log(data);
     return {
       "status" : "success",
       "data" : data.rows
@@ -326,8 +330,7 @@ const getNearby = async (coords) => {
   }).catch(function(err){
     console.log("getNearby ERROR",err);
     return buildError(400,"There was a database error. Please try again in a while.");
-  });
-
+	});
   return db_response;
 };
 
@@ -362,7 +365,7 @@ const getChatHistory = async (username) => {
   }).then(function(data) {
     return {
       "status" : "success",
-      "data" : data[0].docs
+      "data" : data.docs
     };
   }).catch(function(err) {
     console.log(err);

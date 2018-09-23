@@ -288,7 +288,7 @@ const checkName = async (username) => {
     return {
       "status" : "success",
       "data" : {
-        "is_available" : ( data[0].docs.length == 0)
+        "is_available" : ( data.docs.length == 0)
       }
     };
   }).catch(function(err) {
@@ -320,7 +320,7 @@ const getAccountDetails = async (toFind,getBy) => {
     body: query
   }).then(function(data) {
     console.log(data);
-    return data[0].docs;
+    return data.docs;
   }).catch(function(err) {
     console.log('something went wrong in getting account details', err);
     return buildError(400,"There was a database error. Please try again in a while.");
@@ -351,7 +351,7 @@ const getCode = async (code) => {
     console.log(data);
     return {
       status : "success",
-      data : data[0].docs
+      data : data.docs
     };
   }).catch(function(err) {
     console.log('something went wrong', err);

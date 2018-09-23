@@ -23,7 +23,7 @@ const dbh = require('../server.js').dbh; //import db instance from server.js
     console.log(data);
      return {
        "status" : "success",
-       "data" : data[0].docs[0]
+       "data" : data.docs[0]
      };
    }).catch(function(err) {
      console.log(err);

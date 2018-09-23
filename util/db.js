@@ -1,5 +1,6 @@
 var cfenv = require("cfenv");
-var Cloudant = require('cloudant-promise');
+// var Cloudant = require('cloudant-promise');
+var Cloudant = require('@cloudant/cloudant');
 
 //handles DB connection to Cloudant
 module.exports = class DB {
