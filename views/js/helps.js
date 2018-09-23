@@ -16,6 +16,18 @@ $(document).on('ready',function(){
     },
     "sandstorm" : function(){
       console.log("sandstorm view");
+    },
+    "avalanche" : function(){
+      console.log("avalanche view");
+    },
+    "tornado" : function(){
+      console.log("tornado view");
+    },
+    "tsunami" : function(){
+      console.log("tsunami view");
+    },
+    "volcano" : function(){
+      console.log("volcano view");
     }
   });
 });

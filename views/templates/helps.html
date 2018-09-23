@@ -96,6 +96,10 @@
 			<li id="earthquake" class="ds-item a-b">Earthquake</li>
 			<li id="flood" class="ds-item a-b">Flood</li>
 			<li id="sandstorm" class="ds-item a-b"><a>Sandstorm</a></li>
+			<li id="avalanche" class="ds-item a-b"><a>Avalanche</a></li>
+			<li id="tornado" class="ds-item a-b"><a>Tornado</a></li>
+			<li id="tsunami" class="ds-item a-b"><a>Tsunami</a></li>
+			<li id="volcano" class="ds-item a-b"><a>Volcano</a></li>
 		</ul>
 	</div>
 	<div class="sidenav-open">
@@ -104,10 +108,14 @@
 	<div id="mySidenav" class="sidenav">
 		<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 		<ul>
-			<li id="fire" class="ds-item ds-active">Fire</li>
-			<li id="earthquake" class="ds-item">Earthquake</li>
-			<li id="flood" class="ds-item">Flood</li>
-			<li id="sandstorm" class="ds-item"><a>Sandstorm</a></li>
+			<li id="fire" class="ds-item ds-active a-b no-a-b">Fire</li>
+			<li id="earthquake" class="ds-item a-b">Earthquake</li>
+			<li id="flood" class="ds-item a-b">Flood</li>
+			<li id="sandstorm" class="ds-item a-b"><a>Sandstorm</a></li>
+			<li id="avalanche" class="ds-item a-b"><a>Avalanche</a></li>
+			<li id="tornado" class="ds-item a-b"><a>Tornado</a></li>
+			<li id="tsunami" class="ds-item a-b"><a>Tsunami</a></li>
+			<li id="volcano" class="ds-item a-b"><a>Volcano</a></li>
 		</ul>
 	</div>
 </div>
@@ -122,4 +130,16 @@
 </div>
 <div id="sandstorm_view" class="dash-view">
 	{% include 'templates/includes/tips/sandstorm.html' %}
+</div>
+<div id="avalanche_view" class="dash-view">
+	{% include 'templates/includes/tips/avalanche.html' %}
+</div>
+<div id="tornado_view" class="dash-view">
+	{% include 'templates/includes/tips/tornado.html' %}
+</div>
+<div id="tsunami_view" class="dash-view">
+	{% include 'templates/includes/tips/tsunami.html' %}
+</div>
+<div id="volcano_view" class="dash-view">
+	{% include 'templates/includes/tips/volcano.html' %}
 </div>
