@@ -318,6 +318,22 @@ var intentPhrases = {
   reported_incident: "reported a safety hazard"
 };
 
+var colorDisaster = {
+  fire: "#e25822",
+  earthquake: "reported an earthquake",
+  avalanche: "#6F263D",
+  tornado: "reported a tornado",
+  volcano: "reported experiencing the effects of a volcano",
+  flood: "reported flooding",
+  landslide: "#236192",
+  tsunami: "reported a tsunami",
+  sandstorm: "reported a sandstorm",
+  need_medic: "needs medical attention",
+  trapped: "is trapped",
+  needs_supplies: "needs supplies",
+  reported_incident: "reported a safety hazard"
+};
+
 var breakdown_data = {
   datasets: [
     {
@@ -890,12 +906,7 @@ function base64toBlob(base64Data, contentType) {
 }
 
 function markOnMap(gridHandler, map_marks) {
-  // var link = document.createElement("span");
   console.log("Showing markOnMap");
-  // link.className = "cp cl-light";
-  // $(link).html(
-  //   "<div class='inva rel tooltip-right' data-tooltip='View on map' style='margin:5px 0px 0px 5px'><i class='fas fa-map-marked-alt' style='font-size: 25px;'></i></div>"
-  // );
   var addMarks = function() {
     //mm is for map marker
     for (let i = 0; i < map_marks.length; i++) {
@@ -924,7 +935,9 @@ function markOnMap(gridHandler, map_marks) {
       var popup = new mapboxgl.Popup().setText(disaster);
 
       // create the marker
-      var marker = new mapboxgl.Marker();
+      var marker = new mapboxgl.Marker({
+        color: colorDisaster[disaster]
+      });
       marker._element.id = markerId;
       console.log(markerId);
       console.log("MARKER", marker);
@@ -934,6 +947,7 @@ function markOnMap(gridHandler, map_marks) {
         .setLngLat(coordinates)
         .setPopup(popup)
         .addTo(gridHandler.mapHandler.map);
+      $("#mm_3>svg").css('fill', 'red');
     }
   };
   if(gridHandler.mapHandler==null){
