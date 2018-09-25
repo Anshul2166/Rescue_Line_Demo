@@ -1,31 +1,50 @@
-$(document).on('ready',function(){
-  //code to run at page load
-  $('#missing_pic').on('change',function(){
-    // Get the files from input, create new FormData.
-    var file = $('#missing_pic').get(0).files[0],
-        formData = new FormData();
-    formData.append('image', file, file.name);
-    updateProfilePic(formData,Cookies.get('token'));
-  });
+$(document).on("ready", function() {
+	//code to run at page load
+	var dataImage = localStorage.getItem("imgData");
+	if (dataImage != null) {
+		bannerImg = document.getElementById("missing_img");
+		bannerImg.src = "data:image/png;base64," + dataImage;
+	}
+	$("#missing_pic").on("change", function() {
+		// Get the files from input, create new FormData.
+		var file = $("#missing_pic").get(0).files[0],
+			formData = new FormData();
+		formData.append("image", file, file.name);
+		updateMissingPic(formData, Cookies.get("token"));
+	});
 });
 
+function updateMissingPic(formData, token) {
+	formData.append("token", token);
+	bannerImage = document.getElementById("missing_img");
+	imgData = getBase64Image(bannerImage);
+	localStorage.setItem("imgData", imgData);
+	// $.ajax({
+	//   method: "POST",
+	//   url: "/api/missing/image",
+	//   processData: false,
+	//   contentType: false,
+	//   data: formData
+	// }).done(function(response){
+	//   console.log(response);
+	//   if (response.status == "success"){
+	//     handleSuccess("Updated missing pic");
+	//     $('#missing_img').attr('src',response.data["missing_img"]);
+	//   } else {
+	//     handleError(response.error);
+	//   }
+	// });
+}
 
-function updateMissingPic(formData,token){
-  formData.append('token',token);
+function getBase64Image(img) {
+	var canvas = document.createElement("canvas");
+	canvas.width = img.width;
+	canvas.height = img.height;
 
-  $.ajax({
-    method: "POST",
-    url: "/api/missing/image",
-    processData: false,
-    contentType: false,
-    data: formData
-  }).done(function(response){
-    console.log(response);
-    if (response.status == "success"){
-      handleSuccess("Updated missing pic");
-      $('#missing_img').attr('src',response.data["missing_img"]);
-    } else {
-      handleError(response.error);
-    }
-  });
+	var ctx = canvas.getContext("2d");
+	ctx.drawImage(img, 0, 0);
+
+	var dataURL = canvas.toDataURL("image/png");
+
+	return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
 }

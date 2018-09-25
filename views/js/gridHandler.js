@@ -176,8 +176,8 @@ function GridHandler() {
         reports_trend: true,
         tasks_completed: true,
         live_feed: true,
-        breakdown: true,
-        map: true
+        breakdown: true
+        // map: true
       };
       var inMenu = {};
       for (var i = 0; i < layout.length; i++) delete defaults[layout[i].type];
@@ -341,7 +341,7 @@ var d5 = new Date(new Date() * 1 - 1000 * 3600 * 5);
 var reports_trend_data = {
   datasets: [
     {
-      data: [0,0,0,0,0,0],
+      data: [0, 0, 0, 0, 0, 0],
       label: "# of Reports",
       borderColor: "rgba(60,186,159,1)",
       backgroundColor: "rgba(60,186,159,0.1)"
@@ -360,6 +360,7 @@ var reports_trend_data = {
 var specialKeyProcessing = {
   address_geocoded: function(val, gridHandler, eventId) {
     var link = document.createElement("span");
+    console.log("Showing address geocoded");
     link.className = "cp cl-light";
     $(link).html(
       "<div class='inva rel tooltip-right' data-tooltip='View on map' style='margin:5px 0px 0px 5px'><i class='fas fa-map-marked-alt' style='font-size: 25px;'></i></div>"
@@ -372,7 +373,7 @@ var specialKeyProcessing = {
         gridHandler.mapHandler.map.setZoom(15);
         //start panning to marker
         gridHandler.mapHandler.map.panTo(val.geometry.coordinates);
-
+        
         var exists = false;
         //check if marker already exists
         $.each(gridHandler.mapHandler.map._canvasContainer.children, function(
@@ -658,24 +659,27 @@ var gridItemLookup = {
     init: function(item, self) {
       var feedData = [];
       var finalInfo = [];
+      let map_marks = [];
       $.ajax({
         method: "POST",
         url: "/api/data/feed",
         contentType: "application/json",
         data: JSON.stringify({ token: Cookies.get("token") })
       }).done(function(response) {
-        console.log("Got the response");
-        console.log(response);
         feedData = response.data.feed;
         // if (response.status == "success") {
         if (response != undefined) {
-          console.log("success");
           for (var i = 0; i < feedData.length; i++) {
             var curInfo = {};
+            let map_marks_element = {
+              disaster: "",
+              coordinates: { lat: "", lng: "" }
+            };
             curInfo._id = feedData[i]._id;
             curInfo._rev = feedData[i]._rev;
             curInfo.first_explanation = feedData[i].first_explanation;
             curInfo.verified_intent = feedData[i].verified_intent;
+            map_marks_element.disaster = curInfo.verified_intent;
             let index = breakdown_data.labels.indexOf(curInfo.verified_intent);
             if (index == -1) {
               //element is not found, then push the intent in labels
@@ -690,64 +694,42 @@ var gridItemLookup = {
 
             curInfo.priority_weight = feedData[i].priority_weight;
             curInfo.address = feedData[i].address;
-            let location=feedData[i].device_location.geometry.coordinates;
+            let location = feedData[i].device_location.geometry.coordinates;
             curInfo.address_geocoded = {
-              geometry: { type: "Point", coordinates: [location[0],location[1]] }
+              geometry: {
+                type: "Point",
+                coordinates: [location[0], location[1]]
+              }
             };
             curInfo.timestamp = feedData[i].timestamp;
-
+            map_marks_element.coordinates.lat = location[0];
+            map_marks_element.coordinates.lng = location[1];
+            console.log(map_marks_element);
+            map_marks.push(map_marks_element);
+            console.log(map_marks);
             //get the time from timestamp
-            let cur_date=new Date(curInfo.timestamp);
-            let time_diff =Math.abs(date - cur_date) / 36e5;
-            time_diff=Math.floor(time_diff);
-            reports_trend_data.datasets[0].data[5-time_diff]=1+reports_trend_data.datasets[0].data[5-time_diff];
+            let cur_date = new Date(curInfo.timestamp);
+            let time_diff = Math.abs(date - cur_date) / 36e5;
+            time_diff = Math.floor(time_diff);
+            reports_trend_data.datasets[0].data[5 - time_diff] =
+              1 + reports_trend_data.datasets[0].data[5 - time_diff];
             curInfo.user_country = "us";
             curInfo.is_live = true;
             curInfo.identifier = feedData[i].identifier;
             curInfo.current_state = "serious_injury_yesno";
             finalInfo.push(curInfo);
           }
-          console.log("Here is the final info");
-          console.log(finalInfo);
           $fb = $("#live_feed .gi-body");
           gridItemLookup.breakdown.init(true, self);
           gridItemLookup.reports_trend.init(true, self);
+          // gridItemLookup.map.init(true, self);
+          markOnMap(self, map_marks);
           for (var i = 0; i < finalInfo.length; i++)
             $fb.append(new FeedItem(finalInfo[i], self));
         } else {
           handleError(response.error);
         }
       });
-      // var feedData = [
-      // {
-      //   "_id":"24de0a4756bac004d4d7c0ac061e8b1d",
-      //   "_rev":"12-a52bf1ff6da542dd5be427cfd60976a1",
-      //   "first_explanation":"There is serious flooding, houses in the area are being hit pretty bad.",
-      //   "timestamp":1532584460097,
-      //   "verified_intent":"flood",
-      //   "priority_weight":0.7,
-      //   "address":"11105 NW Jones dr, parkville MO",
-      //   "address_geocoded": {"geometry":{"type":"Point","coordinates":[-94.709746,39.209394]}},
-      //   "user_country":"us",
-      //   "is_live":true,
-      //   "identifier":"rogisolo",
-      //   "current_state":"serious_injury_yesno"
-      // },
-      // {
-      //   "_id":"24de0a4756bac098327c0ac061e8b1d",
-      //   "_rev":"12-a52bf1ff6da542dd5be427cfd60976a1",
-      //   "first_explanation":"My house is on fire help",
-      //   "timestamp":1532636396294,
-      //   "verified_intent":"fire",
-      //   "priority_weight":0.9,
-      //   "address":"11105 NW Jones dr, parkville MO",
-      //   "address_geocoded": {"geometry":{"type":"Point","coordinates":[-94.709746,39.209394]}},
-      //   "user_country":"us",
-      //   "is_live":true,
-      //   "identifier":"markjacobs",
-      //   "current_state":"serious_injury_yesno"
-      // }
-      // ];
     }
   },
   map: {
@@ -769,6 +751,7 @@ var gridItemLookup = {
           .get(0),
         $(item).find(".gi-body")
       );
+      console.log("===================Loading map");
       self.mapHandler.load();
     }
   },
@@ -904,6 +887,65 @@ function base64toBlob(base64Data, contentType) {
     byteArrays[sliceIndex] = new Uint8Array(bytes);
   }
   return new Blob(byteArrays, { type: contentType });
+}
+
+function markOnMap(gridHandler, map_marks) {
+  var link = document.createElement("span");
+  console.log("Showing markOnMap");
+  link.className = "cp cl-light";
+  $(link).html(
+    "<div class='inva rel tooltip-right' data-tooltip='View on map' style='margin:5px 0px 0px 5px'><i class='fas fa-map-marked-alt' style='font-size: 25px;'></i></div>"
+  );
+  var addMarks = function() {
+    //mm is for map marker
+    for (let i = 0; i < map_marks.length; i++) {
+      let coordinates = map_marks[i].coordinates;
+      let disaster = map_marks[i].disaster;
+      let eventId = i;
+      var markerId = "mm_" + i;
+      gridHandler.mapHandler.map.setZoom(15);
+      //start panning to marker
+      gridHandler.mapHandler.map.panTo(coordinates);
+
+      var exists = false;
+      //check if marker already exists
+      $.each(gridHandler.mapHandler.map._canvasContainer.children, function(
+        index,
+        item
+      ) {
+        console.log("ITEM.ID", item.id);
+        if (item.id == markerId) exists = true;
+      });
+
+      console.log("EXISTS", exists);
+      if (exists) return false;
+
+      // create the popup
+      var popup = new mapboxgl.Popup().setText(disaster);
+
+      // create the marker
+      var marker = new mapboxgl.Marker();
+      marker._element.id = markerId;
+      console.log(markerId);
+      console.log("MARKER", marker);
+
+      //attach popup and add to map
+      marker
+        .setLngLat(coordinates)
+        .setPopup(popup)
+        .addTo(gridHandler.mapHandler.map);
+    }
+  };
+  if(gridHandler.mapHandler==null){
+    gridHandler.addView("map");
+    setTimeout(addMarks, 2000);
+  }
+  if(gridHandler.mapHandler.map==null){
+    gridItemLookup.map.init(true,gridHandler);
+  }
+  else{
+    addMarks();
+  }
 }
 
 //sample data for charts

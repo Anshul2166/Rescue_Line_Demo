@@ -483,7 +483,7 @@ const getContext = async (identifier, db) => {
     body: query
   }).then(function(data) {
     //[0] to return latest / most relevant
-    return data[0].docs[0];
+    return data.docs[0];
     // return data.docs;
   }).catch(function(err) {
   	console.log("================Error in data");

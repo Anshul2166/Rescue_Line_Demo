@@ -68,8 +68,8 @@ const get_feed = async () => {
 		})
 		.then(function(data) {
 			console.log("Sending the feed");
-			console.log(data[0].docs);
-			return data[0].docs;
+			// console.log(datadocs);
+			return data.docs;
 		})
 		.catch(function(err) {
 			console.log("================Error in data");
