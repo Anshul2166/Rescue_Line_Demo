@@ -176,8 +176,8 @@ function GridHandler() {
         reports_trend: true,
         tasks_completed: true,
         live_feed: true,
-        breakdown: true
-        // map: true
+        breakdown: true,
+        map: true
       };
       var inMenu = {};
       for (var i = 0; i < layout.length; i++) delete defaults[layout[i].type];
@@ -373,7 +373,7 @@ var specialKeyProcessing = {
         gridHandler.mapHandler.map.setZoom(15);
         //start panning to marker
         gridHandler.mapHandler.map.panTo(val.geometry.coordinates);
-        
+
         var exists = false;
         //check if marker already exists
         $.each(gridHandler.mapHandler.map._canvasContainer.children, function(
@@ -673,7 +673,7 @@ var gridItemLookup = {
             var curInfo = {};
             let map_marks_element = {
               disaster: "",
-              coordinates: { lat: "", lng: "" }
+              coordinates: { lng: "", lat: "" }
             };
             curInfo._id = feedData[i]._id;
             curInfo._rev = feedData[i]._rev;
@@ -702,8 +702,8 @@ var gridItemLookup = {
               }
             };
             curInfo.timestamp = feedData[i].timestamp;
-            map_marks_element.coordinates.lat = location[0];
-            map_marks_element.coordinates.lng = location[1];
+            map_marks_element.coordinates.lat = location[1];
+            map_marks_element.coordinates.lng = location[0];
             console.log(map_marks_element);
             map_marks.push(map_marks_element);
             console.log(map_marks);
@@ -890,12 +890,12 @@ function base64toBlob(base64Data, contentType) {
 }
 
 function markOnMap(gridHandler, map_marks) {
-  var link = document.createElement("span");
+  // var link = document.createElement("span");
   console.log("Showing markOnMap");
-  link.className = "cp cl-light";
-  $(link).html(
-    "<div class='inva rel tooltip-right' data-tooltip='View on map' style='margin:5px 0px 0px 5px'><i class='fas fa-map-marked-alt' style='font-size: 25px;'></i></div>"
-  );
+  // link.className = "cp cl-light";
+  // $(link).html(
+  //   "<div class='inva rel tooltip-right' data-tooltip='View on map' style='margin:5px 0px 0px 5px'><i class='fas fa-map-marked-alt' style='font-size: 25px;'></i></div>"
+  // );
   var addMarks = function() {
     //mm is for map marker
     for (let i = 0; i < map_marks.length; i++) {
@@ -940,7 +940,7 @@ function markOnMap(gridHandler, map_marks) {
     gridHandler.addView("map");
     setTimeout(addMarks, 2000);
   }
-  if(gridHandler.mapHandler.map==null){
+  else if(gridHandler.mapHandler.map==null){
     gridItemLookup.map.init(true,gridHandler);
   }
   else{
