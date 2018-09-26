@@ -13,34 +13,26 @@ $(document).on("ready", function() {
 		console.log(formData);
 		console.log(formData.get("image"));
 		readURL(this);
+		locationMarking();
 		// $("#missing_img").attr("src", );
 		// updateMissingPic(formData, Cookies.get("token"));
 	});
 	$("#missing_form").submit(function(e) {
 		// Get the files from input, create new FormData.
+		console.log("step 4");
 		console.log("Preventing");
 		e.preventDefault();
+		let location = JSON.parse(localStorage.getItem("missing-location-precise"));
+		let lat = location.lat;
+		let lng = location.lng;
+		console.log(location);
+		console.log(lat);
+		formData.append("lat", lat);
+		formData.append("lng", lng);
 		console.log("Sending in formData");
 		for (var pair of formData.entries()) {
 			console.log(pair[0] + ", " + pair[1]);
 		}
-		locationMarking();
-		// console.log(formData);
-		// $.ajax({
-		// 	method: "POST",
-		// 	url: "http://investorrank.in/api/missing/",
-		// 	processData: false,
-		// 	contentType: false,
-		// 	data: formData
-		// }).done(function(response) {
-		// 	console.log(response);
-		// 	if (response.status == "success") {
-		// 		handleSuccess("Updated missing pic");
-		// 		$("#missing_img").attr("src", response.data["missing_img"]);
-		// 	} else {
-		// 		handleError(response.error);
-		// 	}
-		// });
 	});
 });
 function readURL(input) {
@@ -52,65 +44,70 @@ function readURL(input) {
 }
 
 function locationMarking() {
-	var self=this;
+	var self = this;
 	self.loaded = false;
-  	self.map = null;
+	self.map = null;
 	console.log("More inside");
 	swal({
-      title: "Your Location Is Critical",
-      text: "Send us the location of last seen",
-      icon: "info"
-    }).then(function(){
-      self.load();
-      $('#location_prompt').show();
-      // localStorage.setItem('location-prompt',new Date().getTime());
-    });
-	this.load = function(){
+		title: "Your Location Is Critical",
+		text: "Send us the location of last seen",
+		icon: "info"
+	}).then(function() {
+		self.load();
+		$("#location_prompt").show();
+		// localStorage.setItem('location-prompt',new Date().getTime());
+	});
+	this.load = function() {
+		mapboxgl.accessToken =
+			"pk.eyJ1Ijoicm9naTU1NSIsImEiOiJjajh1MjJnYTYwdXU4MzNtYnZ5NHl1dGhpIn0.CBUJUe_M8sLWykZgHIpfIw";
+		self.map = new mapboxgl.Map({
+			container: "prompt_map",
+			style: "mapbox://styles/mapbox/streets-v10",
+			center: [-74.5, 40], // starting position [lng, lat]
+			zoom: 13 // starting zoom
+		});
 
-    mapboxgl.accessToken = 'pk.eyJ1Ijoicm9naTU1NSIsImEiOiJjajh1MjJnYTYwdXU4MzNtYnZ5NHl1dGhpIn0.CBUJUe_M8sLWykZgHIpfIw';
-    self.map = new mapboxgl.Map({
-      container: 'prompt_map',
-      style: 'mapbox://styles/mapbox/streets-v10',
-      center: [-74.50, 40], // starting position [lng, lat]
-      zoom: 13 // starting zoom
-    });
+		var nav = new mapboxgl.NavigationControl({ showCompass: false });
+		var geolocate = new mapboxgl.GeolocateControl({
+			positionOptions: {
+				enableHighAccuracy: true
+			},
+			trackUserLocation: false,
+			showUserLocation: false
+		});
 
-    var nav = new mapboxgl.NavigationControl({ showCompass : false });
-    var geolocate = new mapboxgl.GeolocateControl({
-        positionOptions: {
-            enableHighAccuracy: true
-        },
-        trackUserLocation: false,
-        showUserLocation: false
-    });
+		var markerCreated = false;
 
-    var markerCreated = false;
+		geolocate.on("geolocate", function(e) {
+			if (markerCreated) return false;
 
-    geolocate.on('geolocate', function(e) {
+			var marker = new mapboxgl.Marker({ color: "#c74b3b" })
+				.setDraggable(true)
+				.setLngLat({ lat: e.coords.latitude, lng: e.coords.longitude })
+				.addTo(self.map);
 
-      if (markerCreated)
-        return false;
+			markerCreated = true;
 
-      var marker = new mapboxgl.Marker({ color: "#c74b3b" })
-        .setDraggable(true)
-        .setLngLat({ lat: e.coords.latitude , lng: e.coords.longitude })
-        .addTo(self.map);
+			localStorage.setItem(
+				"location-precise",
+				JSON.stringify({
+					lat: e.coords.latitude,
+					lng: e.coords.longitude
+				})
+			);
 
-      markerCreated = true;
+			marker.on("dragend", function(e) {
+				console.log(e);
+				localStorage.setItem(
+					"location-precise",
+					JSON.stringify(e.target._lngLat)
+				);
+			});
+		});
 
-      localStorage.setItem('location-precise',JSON.stringify({ lat: e.coords.latitude , lng: e.coords.longitude }));
+		self.map.addControl(nav, "top-left");
+		self.map.addControl(geolocate);
 
-      marker.on('dragend',function(e){
-        console.log(e);
-        localStorage.setItem('location-precise',JSON.stringify(e.target._lngLat));
-      });
-
-    });
-
-    self.map.addControl(nav, 'top-left');
-    self.map.addControl(geolocate);
-
-    self.loaded = true;
-
-  };
+		self.loaded = true;
+	};
 }
