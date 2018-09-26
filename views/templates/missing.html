@@ -6,13 +6,13 @@
     <div class="signup-box inva rounded bg-white pad tc">
       <h1 style="margin:5px 0px;" class="roboto-thin">Report a missing person</h1>
       <div class="dash-profile-pic inva">
-          <span class="v-align"></span><img id="profile_img" class="invm" src="/assets/placeholder.jpg" style="width:100%;" />
+          <span class="v-align"></span><img id="missing_img" class="invm" src="/assets/placeholder.jpg" style="width:100%;" />
           <form id="missing_pic_form" enctype="multipart/form-data">
             <input id="missing_pic" name="missing_pic" type="file" style="display:none;"/>
           </form>
           <div class="dash-profile-pic-edit cl-white tc"><label for="missing_pic" class="inva wh100 cp"><i class="fas fa-edit"></i> Change</label></div>
         </div>
-      <form id="missing_form">
+      <form id="missing_form" name="missing_form">
         <input name="email" type="email" class="line-input" placeholder="Please enter your email here" required>
         <input name="address" type="text" class="line-input" placeholder="Last sighted location" required>
         <input name="name" type="text" class="line-input" placeholder="Name of missing person" required>
