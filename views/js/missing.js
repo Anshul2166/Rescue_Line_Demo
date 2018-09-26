@@ -33,6 +33,7 @@ $(document).on("ready", function() {
 		for (var pair of formData.entries()) {
 			console.log(pair[0] + ", " + pair[1]);
 		}
+		handleSuccess("Added missing report. You will get notified on result");
 	});
 });
 function readURL(input) {
@@ -42,7 +43,13 @@ function readURL(input) {
 	};
 	reader.readAsDataURL(input.files[0]);
 }
-
+function handleSuccess(msg){
+  swal({
+    title: "Success",
+    text: msg,
+    icon: "success",
+  });
+}
 function locationMarking() {
 	var self = this;
 	self.loaded = false;
