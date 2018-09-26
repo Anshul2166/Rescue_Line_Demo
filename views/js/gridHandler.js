@@ -477,9 +477,8 @@ function FeedItem(itemInfo, gridHandler) {
     } else if (itemInfo.priority_weight > 0.5) {
       priority = { text: "MEDIUM", class: "prio-yellow" };
     }
-
-    //TODO: have similiar_nearby field, will have to get in DB
-
+    let totalInjured=itemInfo.minor_injuries+itemInfo.serious_injuries;
+    //TODO: have similiar_nearby field, will have to get in DB    
     self.feedItem.className = "feed-item rel " + priority.class;
     $(self.feedItem).html(
       '<img src="/assets/placeholder.jpg">' +
@@ -492,7 +491,7 @@ function FeedItem(itemInfo, gridHandler) {
         itemInfo.identifier +
         " " +
         processedIntent.phrase +
-        ". 5 others might be involved. Estimated priority: " +
+        "."+ totalInjured +" might be involved. Estimated priority: " +
         priority.text +
         "</div>" +
         "</div>" +
@@ -679,7 +678,8 @@ var gridItemLookup = {
         data: JSON.stringify({ token: Cookies.get("token") })
       }).done(function(response) {
         feedData = response.data.feed;
-        // if (response.status == "success") {
+        console.log("Here is the reponse to init");
+        console.log(response);
         if (response != undefined) {
           for (var i = 0; i < feedData.length; i++) {
             var curInfo = {};
@@ -703,7 +703,8 @@ var gridItemLookup = {
               breakdown_data.datasets[0].data[index] =
                 breakdown_data.datasets[0].data[index] + 1;
             }
-
+            curInfo.serious_injuries=feedData[i].serious_injuries||0;
+            curInfo.minor_injuries=feedData[i].minor_injuries||0;
             curInfo.priority_weight = feedData[i].priority_weight;
             curInfo.address = feedData[i].address;
             let location = feedData[i].device_location.geometry.coordinates;
