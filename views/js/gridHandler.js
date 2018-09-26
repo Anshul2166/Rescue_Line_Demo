@@ -320,18 +320,14 @@ var intentPhrases = {
 
 var colorDisaster = {
   fire: "#e25822",
-  earthquake: "reported an earthquake",
+  earthquake: "#0abf27",
   avalanche: "#6F263D",
-  tornado: "reported a tornado",
-  volcano: "reported experiencing the effects of a volcano",
-  flood: "reported flooding",
+  tornado: "#b2825f",
+  volcano: "#97ab12",
+  flood: "#8ff1f7",
   landslide: "#236192",
-  tsunami: "reported a tsunami",
-  sandstorm: "reported a sandstorm",
-  need_medic: "needs medical attention",
-  trapped: "is trapped",
-  needs_supplies: "needs supplies",
-  reported_incident: "reported a safety hazard"
+  tsunami: "#94d9e8",
+  sandstorm: "#bbe20a",
 };
 
 var breakdown_data = {
