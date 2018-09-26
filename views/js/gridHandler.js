@@ -327,7 +327,7 @@ var colorDisaster = {
   flood: "#8ff1f7",
   landslide: "#236192",
   tsunami: "#94d9e8",
-  sandstorm: "#bbe20a",
+  sandstorm: "#bbe20a"
 };
 
 var breakdown_data = {
@@ -454,6 +454,7 @@ function FeedItem(itemInfo, gridHandler) {
   //builder is refresher, so we can conveniently refresh when needed
   this.refresh = function(itemInfo) {
     var priority = { text: "LOW", class: "" };
+    let coordinates=itemInfo.address_geocoded.geometry.coordinates;
     var keyToText = function(key) {
       return key
         .split("_")
@@ -477,8 +478,8 @@ function FeedItem(itemInfo, gridHandler) {
     } else if (itemInfo.priority_weight > 0.5) {
       priority = { text: "MEDIUM", class: "prio-yellow" };
     }
-    let totalInjured=itemInfo.minor_injuries+itemInfo.serious_injuries;
-    //TODO: have similiar_nearby field, will have to get in DB    
+    let totalInjured = itemInfo.minor_injuries + itemInfo.serious_injuries;
+    //TODO: have similiar_nearby field, will have to get in DB
     self.feedItem.className = "feed-item rel " + priority.class;
     $(self.feedItem).html(
       '<img src="/assets/placeholder.jpg">' +
@@ -491,7 +492,9 @@ function FeedItem(itemInfo, gridHandler) {
         itemInfo.identifier +
         " " +
         processedIntent.phrase +
-        "."+ totalInjured +" might be involved. Estimated priority: " +
+        "." +
+        totalInjured +
+        " might be involved. Estimated priority: " +
         priority.text +
         "</div>" +
         "</div>" +
@@ -535,7 +538,20 @@ function FeedItem(itemInfo, gridHandler) {
     //open share-modal to send event directly to a responder
     $fi.find(".fii-share").on("click", function() {
       console.log("open share modal");
-      $(".share-modal").show();
+      $.ajax({
+        method: "POST",
+        url: "/api/responder/nearby",
+        contentType: "application/json",
+        data: JSON.stringify({coordinates })
+      }).done(function(response) {
+        console.log(response);
+        if (response.status == "success") {
+          handleSuccess("Saved");
+        } else {
+          handleError(response.error);
+        }
+      });
+      // $(".share-modal").show();
     });
 
     itemInfo.timestamp = new Date(itemInfo.timestamp).toLocaleString();
@@ -671,6 +687,7 @@ var gridItemLookup = {
       var feedData = [];
       var finalInfo = [];
       let map_marks = [];
+
       $.ajax({
         method: "POST",
         url: "/api/data/feed",
@@ -703,8 +720,8 @@ var gridItemLookup = {
               breakdown_data.datasets[0].data[index] =
                 breakdown_data.datasets[0].data[index] + 1;
             }
-            curInfo.serious_injuries=feedData[i].serious_injuries||0;
-            curInfo.minor_injuries=feedData[i].minor_injuries||0;
+            curInfo.serious_injuries = feedData[i].serious_injuries || 0;
+            curInfo.minor_injuries = feedData[i].minor_injuries || 0;
             curInfo.priority_weight = feedData[i].priority_weight;
             curInfo.address = feedData[i].address;
             let location = feedData[i].device_location.geometry.coordinates;
@@ -944,17 +961,15 @@ function markOnMap(gridHandler, map_marks) {
         .setLngLat(coordinates)
         .setPopup(popup)
         .addTo(gridHandler.mapHandler.map);
-      $("#mm_3>svg").css('fill', 'red');
+      $("#mm_3>svg").css("fill", "red");
     }
   };
-  if(gridHandler.mapHandler==null){
+  if (gridHandler.mapHandler == null) {
     gridHandler.addView("map");
     setTimeout(addMarks, 2000);
-  }
-  else if(gridHandler.mapHandler.map==null){
-    gridItemLookup.map.init(true,gridHandler);
-  }
-  else{
+  } else if (gridHandler.mapHandler.map == null) {
+    gridItemLookup.map.init(true, gridHandler);
+  } else {
     addMarks();
   }
 }
