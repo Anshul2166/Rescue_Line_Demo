@@ -262,6 +262,16 @@ function GridItem(itemInfo, onSizeChange, self) {
       onSizeChange();
     });
 
+    $(gridItem)
+    .find(".fa-info")
+    .on("click", function(e) {
+      console.log("clicked on info");
+      // self.$grid.packery("remove", gridItem);
+      // if ($("#bd-empty").length == 1) self.addViewManager.clear();
+      // self.addViewManager.insert(itemInfo.type);
+      // onSizeChange();
+    });
+
   setTimeout(function() {
     itemBuilder.init(gridItem, self);
   }, 400);
@@ -750,6 +760,7 @@ var gridItemLookup = {
       ' <span class="gih-header">MAP</span>' +
       ' <div class="gih-options">' +
       '   <i class="fas fa-expand cp"></i>' +
+      '   <i class="fa fa-info cp"></i>' +
       '   <i class="fas fa-times-circle cp"></i>' +
       "   </div>" +
       " </div>" +
