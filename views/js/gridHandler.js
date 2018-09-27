@@ -453,6 +453,7 @@ function FeedItem(itemInfo, gridHandler) {
 
   //builder is refresher, so we can conveniently refresh when needed
   this.refresh = function(itemInfo) {
+    console.log("itemInfo");
     var priority = { text: "LOW", class: "" };
     let coordinates = itemInfo.address_geocoded.geometry.coordinates;
     var keyToText = function(key) {
@@ -469,7 +470,10 @@ function FeedItem(itemInfo, gridHandler) {
       text: keyToText(itemInfo.verified_intent),
       phrase: intentPhrases[itemInfo.verified_intent]
     };
-
+    let disaster=processedIntent.text;
+    let address=itemInfo.address;
+    let lat="96.78";
+    let lng="196.78";
     //lf_ is live_feed, + docID
     self.feedItem.id = "lf_" + itemInfo._id;
 
@@ -569,9 +573,11 @@ function FeedItem(itemInfo, gridHandler) {
                 "</div>"
             );
             $('#send-to-responder').click(function(){
-
+               let message="Please check this out.";
+               message+=" Our current enquiry suggests that there has been an incident of "+disaster+" in which we estimate around "+totalInjured+" injuries. The address is "+address+" with latitude "+lat+" and longitude "+lng+" .The distance from your current location to this place should be approximately "+distance_from_responder+" km" ;
                gridHandler.chatHandler.startChat(response.data[0].username, Cookies.get("token"));
-               gridHandler.chatHandler.sendChat("This is the message",Cookies.get("token"));
+               gridHandler.chatHandler.sendChat(message,Cookies.get("token"));
+               handleSuccess("Chat send");
             });
            
           }
