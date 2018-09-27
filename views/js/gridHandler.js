@@ -575,8 +575,12 @@ function FeedItem(itemInfo, gridHandler) {
             $('#send-to-responder').click(function(){
                let message="Please check this out.";
                message+=" Our current enquiry suggests that there has been an incident of "+disaster+" in which we estimate around "+totalInjured+" injuries. The address is "+address+" with latitude "+lat+" and longitude "+lng+" .The distance from your current location to this place should be approximately "+distance_from_responder+" km" ;
+               let attachment=$("#msg-to-responders").val();
+               console.log("Here is the attachment");
+               console.log(attachment);
                gridHandler.chatHandler.startChat(response.data[0].username, Cookies.get("token"));
                gridHandler.chatHandler.sendChat(message,Cookies.get("token"));
+               gridHandler.chatHandler.sendChat(attachment,Cookies.get("token"));
                handleSuccess("Chat send");
             });
            
