@@ -144,7 +144,37 @@ function ChatHandler(options){
         });
 
   }
+  this.sendChat=function(message,token){
 
+    if (self.state.current_target == null)
+      return false;
+
+    console.log("in send chat");
+    var msgEl = self.insertChat({msg: message, timestamp:'now'}, 'sent'); //insert, but if it is an error, we will remove DOM element.
+    var payload = {
+      "receiver" : self.state.current_target,
+      "msg" : message
+    };
+    $.ajax({
+      method: "POST",
+      url: "/api/chat/send",
+      contentType: "application/json",
+      data: JSON.stringify({ message: payload, token: token })
+    }).done(function(response){
+      console.log(response);
+      if (response.status == "success"){
+        if ($('.chat-log').find('.chat-starter').length > 0)
+          $('.chat-log').find('.chat-starter').remove();
+
+        $('.chat-input').val('');
+      } else {
+        // TODO: send error properly from server-side
+        handleError(response.error);
+        $(msgEl).remove();
+      }
+    });
+
+  }
   //inserts chat
   //type can be 'rec' (received) or 'sent'
   //msgInfo example {msg: "Hello this is the message.", time: '13 mins'}
@@ -328,10 +358,10 @@ function ChatHandler(options){
         handleChat($(this));
       }
   });
-
+ 
   $("#chat_send").on("click", function() {
     handleChat($('.chat-input'));
-  });
+  });  
 
   $("#ch_nearby").on("click", function() {
     if ( !locationHandler.hasLocation() ){

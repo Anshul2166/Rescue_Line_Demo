@@ -550,8 +550,8 @@ function FeedItem(itemInfo, gridHandler) {
         console.log("Sharing response");
         console.log(response);
         if (response.status == "success") {
-          handleSuccess("Saved");
           $(".share-modal").show();
+          $("#share-box-body").html('');
           for (var i = 0; i < response.data.length; i++) {
             let distance_from_responder=getDistanceFromLatLonInKm(response.data[i].geo[1],response.data[i].geo[0],coordinates[1],coordinates[0]).toFixed(2);
             $("#share-box-body").append(
@@ -565,9 +565,15 @@ function FeedItem(itemInfo, gridHandler) {
                      "</div>" +
                      '<span class="ch-msg roboto-thin cl-light-gray">'+distance_from_responder+' km away+</span>' +
                   "</div>" +
-                '  <i class="tooltip-left top-right abs" data-tooltip="Send" style="font-size:20px;top:21px;"><i class="fab fa-telegram-plane cl-light"></i></i>' +
+                '  <div id="send-to-responder" class="send-to-responder ci-i ci-plane bg-light cp cl-white tc abs top-right-0"><i class="fab fa-telegram-plane"></i></div>' +
                 "</div>"
             );
+            $('#send-to-responder').click(function(){
+
+               gridHandler.chatHandler.startChat(response.data[0].username, Cookies.get("token"));
+               gridHandler.chatHandler.sendChat("This is the message",Cookies.get("token"));
+            });
+           
           }
         } else {
           handleError(response.error);
@@ -1012,6 +1018,7 @@ function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
 function deg2rad(deg) {
   return deg * (Math.PI/180)
 }
+
 
 //sample data for charts
 
