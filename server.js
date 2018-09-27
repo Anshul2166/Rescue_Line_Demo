@@ -9,7 +9,6 @@ var cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 var DB = require('./util/db.js');
 var IO = require('./util/io.js');
-var cors = require('cors')
 exports.dbh = new DB();
 exports.io = new IO(http);
 exports.parser = function(){
@@ -18,7 +17,7 @@ exports.parser = function(){
   // parse application/json
   app.use(bodyParser.json());
   app.use(cookieParser());
-  app.use(cors());
+  // app.use(cors());
 };
 
 http.listen(port, function(){
