@@ -53,6 +53,8 @@ $(document).on('ready',function(){
     "profile" : function(){
       console.log("Loaded profile view");
       var profile = getProfile(Cookies.get('token'));
+      if (!locationHandler.recentPrompt())
+        locationHandler.precisePrompt();
     },
     "dashboard" : function(){
       console.log("Loaded dashboard view");

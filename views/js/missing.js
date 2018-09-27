@@ -14,26 +14,50 @@ $(document).on("ready", function() {
 		console.log(formData.get("image"));
 		readURL(this);
 		locationMarking();
-		// $("#missing_img").attr("src", );
-		// updateMissingPic(formData, Cookies.get("token"));
 	});
 	$("#missing_form").submit(function(e) {
 		// Get the files from input, create new FormData.
 		console.log("step 4");
 		console.log("Preventing");
 		e.preventDefault();
-		let location = JSON.parse(localStorage.getItem("missing-location-precise"));
+		let location = JSON.parse(
+			localStorage.getItem("missing-location-precise")
+		);
 		let lat = location.lat;
 		let lng = location.lng;
 		console.log(location);
 		console.log(lat);
 		formData.append("lat", lat);
-		formData.append("lng", lng);
+		formData.append("lon", lng);
 		console.log("Sending in formData");
 		for (var pair of formData.entries()) {
 			console.log(pair[0] + ", " + pair[1]);
 		}
 		handleSuccess("Added missing report. You will get notified on result");
+		$.ajax({
+			method: "POST",
+			url: "http://investorrank.in/api/missing/",
+			contentType: "application/json",
+			dataType: "jsonp",
+			// crossDomain: true,
+			processData: false,
+			contentType: false,
+			// headers: {
+			//            "Access-Control-Allow-Origin":"*"
+			//          },
+			// data: JSON.stringify({
+			// 	input: message,
+			// 	token: token,
+			// 	location: localStorage.getItem("location-precise")
+			// })
+			data: formData
+		}).done(function(response) {
+			console.log("Got the response from the server");
+			console.log(response);
+		}).fail(function(error){
+			console.log("error here");
+			console.log(error);
+		});
 	});
 });
 function readURL(input) {
@@ -43,12 +67,12 @@ function readURL(input) {
 	};
 	reader.readAsDataURL(input.files[0]);
 }
-function handleSuccess(msg){
-  swal({
-    title: "Success",
-    text: msg,
-    icon: "success",
-  });
+function handleSuccess(msg) {
+	swal({
+		title: "Success",
+		text: msg,
+		icon: "success"
+	});
 }
 function locationMarking() {
 	var self = this;

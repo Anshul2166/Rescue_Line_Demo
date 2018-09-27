@@ -1,16 +1,30 @@
 {% include 'templates/includes/dash_header.html' %}
 
-<div class="share-modal overlay" style="top:0;left:0;z-index:102;">
-  <div class="share-box bg-light-gray rounded abs c-align-abs">
-    <div class="gi-head" style="cursor: auto !important;">
+<div class="share-modal overlay"
+  style="top:0;left:0;z-index:102;">
+
+  <div id="share-box"
+    class="share-box bg-light-gray rounded abs c-align-abs">
+
+    <div class="gi-head"
+      style="cursor: auto !important;">
       <span class="gih-header">RESPONDERS NEAR INCIDENT</span>
+
       <div class="gih-options">
-        <i class="fas fa-times-circle cp"></i>
+        <i class="fas fa-times-circle cp" />
+
       </div>
     </div>
-    <div class="share-message"><input type="text" placeholder="Attach a message.."></div>
-    <div class="gi-body touch-scroll" style="display:block;">
-      <div class="ch-item no-cp rel tl">
+    <div class="share-message">
+      <input type="text"
+        placeholder="Attach a message..">
+
+    </div>
+
+    <div id="share-box-id"
+      class="gi-body touch-scroll"
+      style="display:block;">
+      <!-- <div class="ch-item no-cp rel tl">
         <div class="ch-item-pic inva">
           <img src="/assets/placeholder.jpg">
         </div>
@@ -29,57 +43,137 @@
           <span class="ch-msg roboto-thin cl-light-gray">0.63 miles away</span>
         </div>
         <i class="tooltip-left top-right abs " data-tooltip="Send" style="font-size:20px;top:21px;"><i class="fab fa-telegram-plane cl-light"></i></i>
-      </div>
+      </div> -->
     </div>
   </div>
 </div>
 
 <div class="dash-sidebar bg-dark">
-  <img id="sb_logo" class="dash-logo" src="/assets/logo/rescueline-white.png" style="top:20px;"/>
-  <div id="profile" class="ds-item ds-active a-b no-a-b"><i class="fas fa-user"></i><span>Profile</span></div>
-  <div id="dashboard" class="ds-item a-b"><i class="fas fa-chart-line"></i><span>Dashboard</span></div>
-  <div id="get_help" class="ds-item a-b"><i class="fas fa-comment"></i><span>Chat</span></div>
-  <div id="map" class="ds-item a-b"><i class="fas fa-map-marker-alt"></i><span>Maps</span></div>
-  <div id="safe_place" class="ds-item a-b"><i class="fas fa-hospital"></i><span>Safe Places</span></div>
+  <img id="sb_logo"
+    class="dash-logo"
+    src="/assets/logo/rescueline-white.png"
+    style="top:20px;">
+
+  <div id="profile"
+    class="ds-item ds-active a-b no-a-b">
+    <i class="fas fa-user" />
+
+    <span>Profile</span>
+  </div>
+  <div id="dashboard"
+    class="ds-item a-b">
+    <i class="fas fa-chart-line" />
+
+    <span>Dashboard</span>
+  </div>
+  <div id="get_help"
+    class="ds-item a-b">
+    <i class="fas fa-comment" />
+
+    <span>Chat</span>
+  </div>
+  <div id="map"
+    class="ds-item a-b">
+    <i class="fas fa-map-marker-alt" />
+
+    <span>Maps</span>
+  </div>
+  <div id="safe_place"
+    class="ds-item a-b">
+    <i class="fas fa-hospital" />
+
+    <span>Safe Places</span>
+  </div>
 </div>
 
 <div class="dash-container bg-light-gray pad">
-  <div id="profile_view" class="dash-view active-view">
-      <h3>PROFILE</h3>
-      <div class="wrap-600 tc">
-        <div class="dash-profile-pic inva">
-          <span class="v-align"></span><img id="profile_img" class="invm" src="/assets/placeholder.jpg" style="width:100%;" />
-          <form id="profile_pic_form" enctype="multipart/form-data">
-            <input id="profile_pic" name="profile_pic" type="file" style="display:none;"/>
-          </form>
-          <div class="dash-profile-pic-edit cl-white tc"><label for="profile_pic" class="inva wh100 cp"><i class="fas fa-edit"></i> Change</label></div>
-        </div>
-        <div class="dash-profile-info roboto-thin inva">
-          <span id="profile_username" class="md-txt cl-med-gray"></span>
-          <form id="profile_form">
-            <input name="name" placeholder="Name">
-            <input name="email" placeholder="Recovery E-mail">
-            <div id="email-tip" class="input-tip cl-red roboto" style="display:none;">IMPORTANT to recover forgotten username or password</div>
-            <input name="phone" placeholder="Phone number">
-          </form><br>
-          <div id="update_profile" class="bt-lg bg-light cl-white">Update Profile</div>
+
+  <div id="profile_view"
+    class="dash-view active-view">
+    <h3>PROFILE</h3>
+
+    <div class="wrap-600 tc">
+
+      <div class="dash-profile-pic inva">
+        <span class="v-align" />
+
+        <img id="profile_img"
+          class="invm"
+          src="/assets/placeholder.jpg"
+          style="width:100%;">
+
+
+        <form id="profile_pic_form"
+          enctype="multipart/form-data">
+          <input id="profile_pic"
+            name="profile_pic"
+            type="file"
+            style="display:none;">
+
+        </form>
+        <div class="dash-profile-pic-edit cl-white tc">
+          <label for="profile_pic"
+            class="inva wh100 cp">
+            <i class="fas fa-edit" />
+            Change
+          </label>
         </div>
       </div>
+
+      <div class="dash-profile-info roboto-thin inva">
+        <span id="profile_username"
+          class="md-txt cl-med-gray" />
+
+
+        <form id="profile_form">
+          <input name="name"
+            placeholder="Name">
+
+          <input name="email"
+            placeholder="Recovery E-mail">
+
+          <div id="email-tip"
+            class="input-tip cl-red roboto"
+            style="display:none;">IMPORTANT to recover forgotten username or password
+          </div>
+          <input name="phone"
+            placeholder="Phone number">
+
+        </form>
+        <br>
+
+        <div id="update_profile"
+          class="bt-lg bg-light cl-white">Update Profile
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="dashboard_view" class="dash-view">
+
+  <div id="dashboard_view"
+    class="dash-view">
+
     <div class="tip rounded">
-      <i class="far fa-lightbulb" style="margin-top: 14px;"></i>
+      <i class="far fa-lightbulb"
+        style="margin-top: 14px;" />
+
       <span class="inva">Click and drag top of box to move</span>
     </div>
+
     <div style="position:relative;">
       <h3>COORDINATOR</h3>
+
       <div class="abs top-right-0 cp f17">
-        <div class="tooltip-bottom inva rel" data-tooltip="Receive Incidents In" style="margin-right:10px;">
+
+        <div class="tooltip-bottom inva rel"
+          data-tooltip="Receive Incidents In"
+          style="margin-right:10px;">
+
           <select>
             <option>Entire country</option>
             <option>100 mile radius</option>
           </select>
         </div>
+
         <div class="basic-drop add-view-drop bg-white tc abs">
           <div id="bd-reports_trend" class="a-b">Reports Trend</div>
           <div id="bd-tasks_completed" class="a-b">Tasks Completed</div>
@@ -87,26 +181,41 @@
           <div id="bd-breakdown" class="a-b">Breakdown</div>
           <div id="bd-map" class="a-b">Map</div>
         </div>
-        <div class="tooltip-bottom inva rel grid-add" data-tooltip="Add View" style="margin-right:10px;">
-          <i class="fas fa-plus" style="height:17px;width:17px;"></i>
+
+        <div class="tooltip-bottom inva rel grid-add"
+          data-tooltip="Add View"
+          style="margin-right:10px;">
+          <i class="fas fa-plus"
+            style="height:17px;width:17px;" />
+
         </div>
-        <div class="tooltip-left inva rel grid-save" data-tooltip="Save View">
-          <i class="fas fa-save" style="height:17px;width:17px;"></i>
+
+        <div class="tooltip-left inva rel grid-save"
+          data-tooltip="Save View">
+          <i class="fas fa-save"
+            style="height:17px;width:17px;" />
+
         </div>
       </div>
     </div>
+
     <div class="dash-grid">
     </div>
   </div>
-  <div id="get_help_view" class="dash-view wh100">
-      {% include 'templates/includes/chat.html' %}
+
+  <div id="get_help_view"
+    class="dash-view wh100">{% include 'templates/includes/chat.html' %}
   </div>
-  <div id="map_view" class="dash-view">
-    <div id="mapbox"></div>
+
+  <div id="map_view"
+    class="dash-view">
+    <div id="mapbox" />
+
   </div>
-  <div id="safe_place_view" class="dash-view">
+
+  <div id="safe_place_view"
+    class="dash-view">
     <h3>SAFE PLACE</h3>
   </div>
 </div>
-
-<script src="/js/coordinator.js"></script>
+<script src="/js/coordinator.js" />

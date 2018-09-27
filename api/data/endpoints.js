@@ -3,7 +3,7 @@ const app = (module.exports = express());
 const jwt = require("jsonwebtoken");
 const dbh = require("../../server.js").dbh; //import db instance from server.js
 const parser = require("../../server.js").parser(); //import parser instance from server.js
-const get_nearby = require("../chat/endpoints.js").getNearby;
+
 app.post("/api/data/feed", async (req, res) => {
 	var settings = req.body.settings;
 	var token = req.body.token;
@@ -53,7 +53,8 @@ app.post("/api/responder/nearby", async (req, res) => {
 	var token = req.body.token;
 	var coordinates = req.body.location;
 	var tokenInfo = null;
-
+	console.log("Here are the coordinates");
+	console.log(coordinates);
 	jwt.verify(
 		token,
 		"MkREMTk1RTExN0ZFNUE5MkYxNDE2NDYwNzFFNTI2N0JCQQ==",
@@ -85,10 +86,13 @@ app.post("/api/responder/nearby", async (req, res) => {
 		return false;
 	}
 
-	var feed = await get_nearby(coordinates);
+	var db_response = await getNearby(coordinates);
+	console.log("Logging in nearby responders");
+	console.log(db_response);
 	db_response.data = await Promise.all(
 		db_response.data
 			.filter(function(obj) {
+				console.log(obj.doc);
 				if (obj.doc.type != "responder") return false; // skip
 
 				return true;
@@ -158,3 +162,36 @@ function buildError(code, message) {
 		}
 	};
 }
+const getNearby = async coords => {
+	var dbName = "users_db";
+	dbh.use(dbName);
+	console.log("The locations are");
+	console.log(coords[0]);
+	console.log(coords[1]);
+	// Find nearby users within 25km radius
+	var query = {
+		lat: coords[1],
+		lon: coords[0],
+		radius: 25000,
+		relation: "contains",
+		include_docs: true
+	};
+	console.log("Inside getNearby");
+	var db_response = dbh.db
+		.geo("geoDoc", "geo", query)
+		.then(function(data) {
+			console.log(data);
+			return {
+				status: "success",
+				data: data.rows
+			};
+		})
+		.catch(function(err) {
+			console.log("getNearby ERROR");
+			return buildError(
+				400,
+				"There was a database error. Please try again in a while."
+			);
+		});
+	return db_response;
+};

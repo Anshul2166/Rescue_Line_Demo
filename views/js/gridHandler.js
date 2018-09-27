@@ -454,7 +454,7 @@ function FeedItem(itemInfo, gridHandler) {
   //builder is refresher, so we can conveniently refresh when needed
   this.refresh = function(itemInfo) {
     var priority = { text: "LOW", class: "" };
-    let coordinates=itemInfo.address_geocoded.geometry.coordinates;
+    let coordinates = itemInfo.address_geocoded.geometry.coordinates;
     var keyToText = function(key) {
       return key
         .split("_")
@@ -542,16 +542,36 @@ function FeedItem(itemInfo, gridHandler) {
         method: "POST",
         url: "/api/responder/nearby",
         contentType: "application/json",
-        data: JSON.stringify({coordinates })
+        data: JSON.stringify({
+          location: coordinates,
+          token: Cookies.get("token")
+        })
       }).done(function(response) {
+        console.log("Sharing response");
         console.log(response);
         if (response.status == "success") {
           handleSuccess("Saved");
+          $(".share-modal").show();
+          for (var i = 0; i < response.data.length; i++) {
+            // $("#share-box-id").append(
+            //     '<div class="ch-item no-cp rel tl">' +
+            //       '<div class="ch-item-pic inva">' +
+            //         '<img src="/assets/placeholder.jpg">' +
+            //       "</div>" +
+            //       '<div class="ch-item-preview inva" style="margin:3px 0px 0px 10px;">' +
+            //         '<div class="ch-item-name f-med">' +
+            //           response.data[i].name +
+            //          "</div>" +
+            //          '<span class="ch-msg roboto-thin cl-light-gray">0.43 miles away</span>' +
+            //       "</div>" +
+            //     '  <i class="tooltip-left top-right abs" data-tooltip="Send" style="font-size:20px;top:21px;"><i class="fab fa-telegram-plane cl-light"></i></i>' +
+            //     "</div>"
+            // );
+          }
         } else {
           handleError(response.error);
         }
       });
-      // $(".share-modal").show();
     });
 
     itemInfo.timestamp = new Date(itemInfo.timestamp).toLocaleString();
