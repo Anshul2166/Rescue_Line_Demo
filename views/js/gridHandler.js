@@ -553,6 +553,7 @@ function FeedItem(itemInfo, gridHandler) {
           handleSuccess("Saved");
           $(".share-modal").show();
           for (var i = 0; i < response.data.length; i++) {
+            let distance_from_responder=getDistanceFromLatLonInKm(response.data[i].geo[1],response.data[i].geo[0],coordinates[1],coordinates[0]).toFixed(2);
             $("#share-box-body").append(
                 '<div class="ch-item no-cp rel tl">' +
                   '<div class="ch-item-pic inva">' +
@@ -562,7 +563,7 @@ function FeedItem(itemInfo, gridHandler) {
                     '<div class="ch-item-name f-med">' +
                       response.data[i].name +
                      "</div>" +
-                     '<span class="ch-msg roboto-thin cl-light-gray">0.43 miles away</span>' +
+                     '<span class="ch-msg roboto-thin cl-light-gray">'+distance_from_responder+' km away+</span>' +
                   "</div>" +
                 '  <i class="tooltip-left top-right abs" data-tooltip="Send" style="font-size:20px;top:21px;"><i class="fab fa-telegram-plane cl-light"></i></i>' +
                 "</div>"
@@ -992,6 +993,24 @@ function markOnMap(gridHandler, map_marks) {
   } else {
     addMarks();
   }
+}
+
+function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1); 
+  var a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ; 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
 }
 
 //sample data for charts

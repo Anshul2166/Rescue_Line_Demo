@@ -111,7 +111,9 @@ app.post("/api/responder/nearby", async (req, res) => {
 					username: thisProfile.username,
 					name: thisProfile.name,
 					profile_pic: thisProfile.profile_pic || null,
-					type: thisProfile.type
+					type: thisProfile.type,
+					phone:thisProfile.phone||null,
+					geo:thisProfile.geo.geometry.coordinates
 				};
 			})
 	);
