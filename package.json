@@ -12,15 +12,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rogisolorzano/rescue-line"
+    "url": "https://github.com/Anshul2166/Rescue_Line_Demo"
   },
   "dependencies": {
     "@cloudant/cloudant": "^2.4.0",
     "bcrypt": "^2.0.1",
     "body-parser": "^1.18.3",
     "cfenv": "^1.1.0",
-    "cloudant": "^1.10.0",
-    "cloudant-promise": "^0.1.0",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
     "dotenv": "^4.0.0",
@@ -42,6 +40,6 @@
     "twilio": "^3.17.5",
     "watson-developer-cloud": "^3.5.3"
   },
-  "author": "Rogi Solorzano",
+  "author": "Anshul Dubey",
   "license": "Apache-2.0"
 }
