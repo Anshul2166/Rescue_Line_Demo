@@ -92,7 +92,7 @@ function LocationHandler(){
       if (response.status == "success"){
         console.log("Updated location successfully");
       } else {
-        handleError(response.error);
+        // handleError(response.error);
       }
     });
 

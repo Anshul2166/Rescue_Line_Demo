@@ -82,7 +82,7 @@ $(document).on("ready", function() {
 					let lon = final_result.lon;
 					chatHandler.startChat(
 						"anshul2166",
-						Cookies.getToken()
+						Cookies.get("token")
 						);
 					let message =
 					"Found your missing person " +
