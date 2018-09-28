@@ -2,12 +2,11 @@ $(document).on("ready", function() {
 	//code to run at page load
 	var chatHandler = new ChatHandler();
 	console.log("Here in missing");
-	var formData;
 	$("#missing_pic").on("change", function() {
 		// Get the files from input, create new FormData.
 		var myForm = document.getElementById("missing_form");
 		var file = $("#missing_pic").get(0).files[0];
-		formData = new FormData(myForm);
+		let formData = new FormData();
 		console.log(file);
 		formData.append("image", file, file.name);
 		console.log("Changing form data");
@@ -18,6 +17,9 @@ $(document).on("ready", function() {
 	});
 	$("#missing_form").submit(function(e) {
 		// Get the files from input, create new FormData.
+		let formData = new FormData();
+		var file = $("#missing_pic").get(0).files[0];
+		formData.append("image", file, file.name);
 		console.log("step 4");
 		console.log("Preventing");
 		e.preventDefault();
@@ -26,12 +28,9 @@ $(document).on("ready", function() {
 			);
 		let lat = location.lat;
 		let lng = location.lng;
-		let first_name =
-		$('#missing_form input[name="first_name"]').val() || "";
+		let first_name =$('#missing_form input[name="first_name"]').val() || "";
 		let last_name = $('#missing_form input[name="last_name"]').val() || "";
 		formData.append("lat", lat);
-		formData.append("lon", lng);
-		formData.append("lon", lng);
 		formData.append("lon", lng);
 		formData.append("first_name", first_name);
 		formData.append("last_name", last_name);
@@ -40,118 +39,70 @@ $(document).on("ready", function() {
 			console.log(pair[0] + ", " + pair[1]);
 		}
 		handleSuccess("Added missing report. You will get notified on result");
+		
 		$.ajax({
-			method: "GET",
-			url:
-			"https://cors-anywhere.herokuapp.com/investorrank.in/api/missing/"
+			method: "POST",
+			url:"https://cors-anywhere.herokuapp.com/http://investorrank.in/api/missing",
+			// crossDomain: true, // tell browser to allow cross domain.
+			processData: false,
+			contentType: false,
+			data: formData
 		})
 		.done(function(response) {
-			console.log("Sending in get-response-success");
-			console.log(response);
-			let results = response.results;
-			let max = 0;
-			let final_result;
-			for (var i = 0; i < results.length; i++) {
-				if (max < results[i].id) {
-					max = results[i].id;
-					final_result = results[i];
+			console.log("Sending in response-success");
+			$.ajax({
+				method: "GET",
+				url:
+				"https://cors-anywhere.herokuapp.com/investorrank.in/api/missing/"
+			})
+			.done(function(response) {
+				console.log("Sending in get-response-success");
+				console.log(response);
+				let results = response.results;
+				let max = 0;
+				let final_result;
+				for (var i = 0; i < results.length; i++) {
+					if (max < results[i].id) {
+						max = results[i].id;
+						final_result = results[i];
+					}
 				}
-			}
-			console.log(final_result);
-			if (final_result.image_found == true) {
-				console.log("Found the image");
-				let first_name = final_result.first_name;
-				let last_name = final_result.last_name;
-				let name = "";
-				if (first_name == "" || last_name == "") {
-					name = first_name + last_name;
-				} else {
-					name = first_name + " " + last_name;
+				console.log(final_result);
+				if (final_result.image_found == true) {
+					console.log("Found the image");
+					let first_name = final_result.first_name;
+					let last_name = final_result.last_name;
+					let name = "";
+					if (first_name == "" || last_name == "") {
+						name = first_name + last_name;
+					} else {
+						name = first_name + " " + last_name;
+					}
+					let lat = final_result.lat;
+					let lon = final_result.lon;
+					chatHandler.startChat(
+						"anshul2166",
+						Cookies.getToken()
+						);
+					let message =
+					"Found your missing person " +
+					name +
+					". The last position was latitude:" +
+					lat +
+					" and longitude:" +
+					lon;
+					chatHandler.sendChat(message, Cookies.get("token"));
 				}
-				let lat = final_result.lat;
-				let lon = final_result.lon;
-				chatHandler.startChat(
-					"anshul2166",
-					Cookies.get("token")
-					);
-				let message =
-				"Found your missing person " +
-				name +
-				". The last position was latitude:" +
-				lat +
-				" and longitude:" +
-				lon;
-				chatHandler.sendChat(message, Cookies.get("token"));
-			}
+			})
+			.fail(function(err) {
+				console.log("Error in sending user profile1");
+				console.log(err);
+			});
 		})
 		.fail(function(err) {
-			console.log("Error in sending user profile1");
+			console.log("Error in sending user profile2");
 			console.log(err);
 		});
-		// $.ajax({
-		// 	method: "POST",
-		// 	url:
-		// 	"https://cors-anywhere.herokuapp.com/investorrank.in/api/missing/",
-		// 	crossDomain: true, // tell browser to allow cross domain.
-		// 	processData: false,
-		// 	contentType: false,
-		// 	data: formData
-		// })
-		// .done(function(response) {
-		// 	console.log("Sending in response-success");
-		// 	$.ajax({
-		// 		method: "GET",
-		// 		url:
-		// 		"https://cors-anywhere.herokuapp.com/investorrank.in/api/missing/"
-		// 	})
-		// 	.done(function(response) {
-		// 		console.log("Sending in get-response-success");
-		// 		console.log(response);
-		// 		let data = response.results;
-		// 		let max = 0;
-		// 		let final_result;
-		// 		for (var i = 0; i < results.length; i++) {
-		// 			if (max < results[i].id) {
-		// 				max = results[i].id;
-		// 				final_result = results[i];
-		// 			}
-		// 		}
-		// 		console.log(final_result);
-		// 		if (final_result.image_found == true) {
-		// 			console.log("Found the image");
-		// 			let first_name = final_result.first_name;
-		// 			let last_name = final_result.last_name;
-		// 			let name = "";
-		// 			if (first_name == "" || last_name == "") {
-		// 				name = first_name + last_name;
-		// 			} else {
-		// 				name = first_name + " " + last_name;
-		// 			}
-		// 			let lat = final_result.lat;
-		// 			let lon = final_result.lon;
-		// 			chatHandler.startChat(
-		// 				"anshul2166",
-		// 				Cookies.getToken()
-		// 				);
-		// 			let message =
-		// 			"Found your missing person " +
-		// 			name +
-		// 			". The last position was latitude:" +
-		// 			lat +
-		// 			" and longitude:" +
-		// 			lon;
-		// 			chatHandler.sendChat(message, Cookies.get("token"));
-		// 		}
-		// 	})
-		// 	.fail(function(err) {
-		// 		console.log("Error in sending user profile1");
-		// 		console.log(err);
-		// 	});
-		// })
-		// .fail(function(err) {
-		// 	console.log("Error in sending user profile2");
-		// 	console.log(err);
-		// });
 	});
 });
 function readURL(input) {
@@ -214,7 +165,7 @@ function locationMarking() {
 			markerCreated = true;
 
 			localStorage.setItem(
-				"location-precise",
+				"missing-location-precise",
 				JSON.stringify({
 					lat: e.coords.latitude,
 					lng: e.coords.longitude
@@ -224,7 +175,7 @@ function locationMarking() {
 			marker.on("dragend", function(e) {
 				console.log(e);
 				localStorage.setItem(
-					"location-precise",
+					"missing-location-precise",
 					JSON.stringify(e.target._lngLat)
 					);
 			});

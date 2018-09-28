@@ -133,7 +133,7 @@ function updateProfilePic(formData, token) {
     console.log(response);
     if (response.status == "success") {
       handleSuccess("Updated profile pic");
-      $("#profile_img").attr("src", response.data["profile_pic"]);
+      // $("#profile_img").attr("src", response.data["profile_pic"]);
       formData.delete('token');
       // formData.append("lat","17.385");
       // formData.append("lon","78.48");
@@ -271,7 +271,7 @@ $(document).on("ready", function() {
       formData = new FormData();
 
     formData.append("image", file, file.name);
-
+    readURLProfile(this);
     updateProfilePic(formData, Cookies.get("token"));
   });
 
@@ -283,3 +283,10 @@ $(document).on("ready", function() {
     $(".share-modal").hide();
   });
 });
+function readURLProfile(input) {
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    $("#profile_img").attr("src", e.target.result);
+  };
+  reader.readAsDataURL(input.files[0]);
+}
