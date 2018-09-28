@@ -35,13 +35,13 @@ module.exports = class DB {
       } else {
          // user-provided service with 'cloudant' in its name
          console.log("Inside the second state");
-         this.cloudant = Cloudant({appEnv.getService(/cloudant/).credentials,plugins: 'promises'});
+         this.cloudant = new Cloudant({url:appEnv.getService(/cloudant/).credentials.url,plugins: 'promises'});
       }
 
     } else {
       //fail safe, for some read cfenv.getAppEnv isn't parsing appEnvOpts correctly
       console.log("Failing safe");
-      this.cloudant = Cloudant({vcapLocal.services['cloudantNoSQLDB'][0].credentials,plugins: 'promises'});
+      this.cloudant = Cloudant({url:vcapLocal.services['cloudantNoSQLDB'][0].credentials.url,plugins: 'promises'});
     }
 
     this.use('users_db');
