@@ -14,7 +14,7 @@ module.exports = class DB {
     var vcapLocal;
     try {
       vcapLocal = require('../vcap-local.json');
-      console.log("Loaded local VCAP", vcapLocal);
+      console.log("Loaded local VCAP1", vcapLocal);
     } catch (e) {
       console.log(e);
     }
