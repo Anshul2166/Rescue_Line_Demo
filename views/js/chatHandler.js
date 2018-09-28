@@ -2,7 +2,8 @@
 function ChatHandler(options){
 
   var self = this;
-  var noti, locationHandler = null;
+  var noti;
+  var locationHandler = new LocationHandler();
 
   this.state = options || {};
   //user ID of current chat. defaults to 'rescueline-bot' for citizen
@@ -15,11 +16,12 @@ function ChatHandler(options){
   this.setLocationHandler = function(lH){
     locationHandler = lH;
   };
-
   //start a chat session
   this.startChat = function(username,token){
     $('.chat-log').html('<div class="spinner c-align-abs"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
+    console.log("Inside start chat");
     self.state.current_target = username;
+    console.log(self.state.current_target);
     $.get("/api/chat/logs?username="+ username + "&token="+ token)
         .done(function(response) {
           console.log(response);
@@ -145,7 +147,8 @@ function ChatHandler(options){
 
   }
   this.sendChat=function(message,token){
-
+    console.log("Inside sendChatBySelf");
+    console.log(self.state.current_target);
     if (self.state.current_target == null)
       return false;
 
@@ -181,6 +184,8 @@ function ChatHandler(options){
   //animate is false if you don't want to animate scroll
   this.insertChat = function(msgInfo,type,animate){
     var msgEl = document.createElement('div');
+    console.log("Inside insert chat");
+    console.log(msgInfo);
     var $chatLog = $('.chat-log');
     if (type == "rec"){
       $(msgEl).html('<div class="chat-row"><div class="received paper">'+ msgInfo.msg +'<div class="ts abs bottom-right">'+ msgInfo.timestamp +'</div></div></div>');
@@ -227,44 +232,46 @@ function ChatHandler(options){
     });
   }
 
-  function sendChat(message,token){
+  // function sendChat(message,token){
 
-    if (self.state.current_target == null)
-      return false;
+  //   if (self.state.current_target == null)
+  //     return false;
 
-    console.log("in send chat");
-    var msgEl = self.insertChat({msg: message, timestamp:'now'}, 'sent'); //insert, but if it is an error, we will remove DOM element.
-    var payload = {
-      "receiver" : self.state.current_target,
-      "msg" : message
-    };
-    $.ajax({
-      method: "POST",
-      url: "/api/chat/send",
-      contentType: "application/json",
-      data: JSON.stringify({ message: payload, token: token })
-    }).done(function(response){
-      console.log(response);
-      if (response.status == "success"){
-        if ($('.chat-log').find('.chat-starter').length > 0)
-          $('.chat-log').find('.chat-starter').remove();
+  //   console.log("in send chat");
+  //   var msgEl = self.insertChat({msg: message, timestamp:'now'}, 'sent'); //insert, but if it is an error, we will remove DOM element.
+  //   var payload = {
+  //     "receiver" : self.state.current_target,
+  //     "msg" : message
+  //   };
+  //   $.ajax({
+  //     method: "POST",
+  //     url: "/api/chat/send",
+  //     contentType: "application/json",
+  //     data: JSON.stringify({ message: payload, token: token })
+  //   }).done(function(response){
+  //     console.log(response);
+  //     if (response.status == "success"){
+  //       if ($('.chat-log').find('.chat-starter').length > 0)
+  //         $('.chat-log').find('.chat-starter').remove();
 
-        $('.chat-input').val('');
-      } else {
-        // TODO: send error properly from server-side
-        handleError(response.error);
-        $(msgEl).remove();
-      }
-    });
-  }
+  //       $('.chat-input').val('');
+  //     } else {
+  //       // TODO: send error properly from server-side
+  //       handleError(response.error);
+  //       $(msgEl).remove();
+  //     }
+  //   });
+  // }
 
   var handleChat = function ($chatInput){
     var chat = $chatInput.val();
+    console.log("Called handleChat");
+    console.log(self.state.current_target);
     if ($.trim(chat).length > 0){
       if (self.state.current_target == "rescueline-bot"){
         sendAssistantChat(chat, Cookies.get('token'));
       } else {
-        sendChat(chat,Cookies.get('token'));
+        self.sendChat(chat,Cookies.get('token'));
       }
     }
   };
@@ -352,16 +359,13 @@ function ChatHandler(options){
 
     return chatHistory;
   }
-
   $(".chat-input").on("keydown", function(e) {
       if(e.which == 13){
+        console.log("Calling handleChat by enter input");
         handleChat($(this));
       }
   });
  
-  $("#chat_send").on("click", function() {
-    handleChat($('.chat-input'));
-  });  
 
   $("#ch_nearby").on("click", function() {
     if ( !locationHandler.hasLocation() ){

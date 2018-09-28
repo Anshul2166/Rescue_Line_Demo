@@ -1,6 +1,5 @@
 $(document).on("ready", function() {
 	//code to run at page load
-	var chatHandler = new ChatHandler();
 	console.log("Here in missing");
 	$("#missing_pic").on("change", function() {
 		// Get the files from input, create new FormData.
@@ -18,6 +17,7 @@ $(document).on("ready", function() {
 	$("#missing_form").submit(function(e) {
 		// Get the files from input, create new FormData.
 		let formData = new FormData();
+		let chatHandler = new ChatHandler();
 		var file = $("#missing_pic").get(0).files[0];
 		formData.append("image", file, file.name);
 		console.log("step 4");

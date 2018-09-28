@@ -52,12 +52,12 @@ module.exports = class DB {
     // Specify the database we are going to use e.g 'users'
     // Create database if it doesn't exist
  //    this.cloudant.db.create(dbName, function(err, data) {
- //    	console.log("Inside");
- //    	if(err)
-	//     	console.log("Database exists. Error : ", err); 
- //  		else
-	//     	console.log("Created database.");
-	// });
+ //     console.log("Inside");
+ //     if(err)
+  //      console.log("Database exists. Error : ", err); 
+ //     else
+  //      console.log("Created database.");
+  // });
     this.cloudant.db.create(dbName).then(function(data){
       console.log('created database');
     }).catch(function(err){
