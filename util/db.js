@@ -30,15 +30,18 @@ module.exports = class DB {
       // Initialize database with credentials
       if (appEnv.services['cloudantNoSQLDB']) {
          // CF service named 'cloudantNoSQLDB'
+         console.log("Inside the third stage");
          this.cloudant = Cloudant({url:appEnv.services['cloudantNoSQLDB'][0].credentials.url,plugins: 'promises'});
       } else {
          // user-provided service with 'cloudant' in its name
-         this.cloudant = Cloudant(appEnv.getService(/cloudant/).credentials);
+         console.log("Inside the second state");
+         this.cloudant = Cloudant({appEnv.getService(/cloudant/).credentials,plugins: 'promises'});
       }
 
     } else {
       //fail safe, for some read cfenv.getAppEnv isn't parsing appEnvOpts correctly
-      this.cloudant = Cloudant(vcapLocal.services['cloudantNoSQLDB'][0].credentials);
+      console.log("Failing safe");
+      this.cloudant = Cloudant({vcapLocal.services['cloudantNoSQLDB'][0].credentials,plugins: 'promises'});
     }
 
     this.use('users_db');
