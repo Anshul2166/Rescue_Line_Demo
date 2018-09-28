@@ -170,7 +170,7 @@ app.get('/api/chat/nearby', async (req, res) => {
     thisProfile = obj.doc;
 
     if (typeof thisProfile["profile_pic"] != "undefined")
-      thisProfile["profile_pic"] = signer.signUrl("rl-profile",thisProfile["profile_pic"],120);
+      thisProfile["profile_pic"] = signer.signUrl("rl-profile",thisProfile["profile_pic"],1200);
 
     return {
       username: thisProfile.username,

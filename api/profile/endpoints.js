@@ -14,7 +14,7 @@ var awsConfig = {
     endpoint: 's3.hkg-ap-geo.objectstorage.softlayer.net',
     apiKeyId: process.env.COS_API_KEY,
     ibmAuthEndpoint: 'https://iam.ng.bluemix.net/oidc/token',
-    serviceInstanceId: 'crn:v1:bluemix:public:iam-identity::a/09d967f2761a48b5ad7f87eb0b675302::serviceid:ServiceId-f7e1c675-cd6e-4b7a-af85-7c5e321f8aff'
+    serviceInstanceId: 'crn:v1:bluemix:public:cloud-object-storage:global:a/09d967f2761a48b5ad7f87eb0b675302:0def49e6-6cfa-430d-870c-161625b37884::'
 };
 
 var s3 = new AWS.S3(awsConfig);

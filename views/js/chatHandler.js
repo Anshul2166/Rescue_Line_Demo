@@ -302,10 +302,11 @@ function ChatHandler(options){
     var chatHistory = document.createElement('div');
     var previewClass = "ch-msg roboto-thin cl-light-gray";
     var preview = "";
-
+    console.log("Building chat history");
+    console.log(chatInfo);
     if (typeof chatInfo.profile_pic == "undefined" || chatInfo.profile_pic == "none")
       chatInfo.profile_pic = "/assets/placeholder.jpg";
-
+  	console.log(chatInfo.profile_pic);
     if (!chatInfo.read)
       previewClass += " bold";
 
