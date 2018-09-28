@@ -1,6 +1,9 @@
 var express = require("express");
 var app = express();
-var port = process.env.PORT || 3000;
+var cfenv = require('cfenv');
+var appEnv = cfenv.getAppEnv();
+// var port = process.env.PORT || 3000;
+var port = cfenv.getPort() || 3000;
 var http = require('http').Server(app);
 //var cfenv = require("cfenv");
 var bodyParser = require('body-parser');
