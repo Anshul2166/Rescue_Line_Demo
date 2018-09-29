@@ -45,6 +45,6 @@
       var socket = io();
       socket.emit('chat message', "Hello");
       socket.on('chat message',function(msg){
-        console.log(msg);
+        // console.log(msg);
       });
     });

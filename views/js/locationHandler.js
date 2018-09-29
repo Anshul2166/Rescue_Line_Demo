@@ -66,7 +66,7 @@ function LocationHandler(){
       localStorage.setItem('location-precise',JSON.stringify({ lat: e.coords.latitude , lng: e.coords.longitude }));
 
       marker.on('dragend',function(e){
-        console.log(e);
+        // console.log(e);
         localStorage.setItem('location-precise',JSON.stringify(e.target._lngLat));
       });
 
@@ -87,10 +87,10 @@ function LocationHandler(){
       contentType: "application/json",
       data: JSON.stringify({ location : latLng, token: token })
     }).done(function(response){
-      console.log("Updating the user's location");
-      console.log(response);
+      // console.log("Updating the user's location");
+      // console.log(response);
       if (response.status == "success"){
-        console.log("Updated location successfully");
+        // console.log("Updated location successfully");
       } else {
         // handleError(response.error);
       }

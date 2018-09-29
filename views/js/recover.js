@@ -8,7 +8,7 @@ function RecoverHandler(){
       contentType: "application/json",
       data: JSON.stringify({ email : email })
     }).done(function(response){
-      console.log(response);
+      // console.log(response);
       if (response.status == "success"){
         handleSuccess("If this e-mail is in our database, you will receive instructions to recover your account.");
         $("#recover_form input[name='email']").val('');

@@ -25,4 +25,4 @@ npm install
 ```
 npm start
 ```
-7.) Go to http://localhost:3000 to view
+7.) Go to http://localhost:8080 to view

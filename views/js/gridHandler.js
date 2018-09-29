@@ -144,7 +144,7 @@ function GridHandler() {
         contentType: "application/json",
         data: JSON.stringify({ settings: order, token: Cookies.get("token") })
       }).done(function(response) {
-        console.log(response);
+        // console.log(response);
         if (response.status == "success") {
           handleSuccess("Saved");
         } else {
@@ -183,7 +183,7 @@ function GridHandler() {
       for (var i = 0; i < layout.length; i++) delete defaults[layout[i].type];
 
       $.each(defaults, function(key, value) {
-        console.log("inserting ", key);
+        // console.log("inserting ", key);
         thisSelf.insert(key);
       });
 
@@ -243,7 +243,7 @@ function GridItem(itemInfo, onSizeChange, self) {
   $(gridItem)
     .find(".fa-expand")
     .on("click", function() {
-      console.log("in resize");
+      // console.log("in resize");
       if ($(gridItem).hasClass("gi-mini")) {
         $(gridItem).removeClass("gi-mini");
       } else {
@@ -255,7 +255,7 @@ function GridItem(itemInfo, onSizeChange, self) {
   $(gridItem)
     .find(".fa-times-circle")
     .on("click", function(e) {
-      console.log("in remove");
+      // console.log("in remove");
       self.$grid.packery("remove", gridItem);
       if ($("#bd-empty").length == 1) self.addViewManager.clear();
       self.addViewManager.insert(itemInfo.type);
@@ -372,7 +372,7 @@ var reports_trend_data = {
 var specialKeyProcessing = {
   address_geocoded: function(val, gridHandler, eventId) {
     var link = document.createElement("span");
-    console.log("Showing address geocoded");
+    // console.log("Showing address geocoded");
     link.className = "cp cl-light";
     $(link).html(
       "<div class='inva rel tooltip-right' data-tooltip='View on map' style='margin:5px 0px 0px 5px'><i class='fas fa-map-marked-alt' style='font-size: 25px;'></i></div>"
@@ -392,11 +392,11 @@ var specialKeyProcessing = {
           index,
           item
         ) {
-          console.log("ITEM.ID", item.id);
+          // console.log("ITEM.ID", item.id);
           if (item.id == markerId) exists = true;
         });
 
-        console.log("EXISTS", exists);
+        // console.log("EXISTS", exists);
         if (exists) return false;
 
         // create the popup
@@ -405,8 +405,8 @@ var specialKeyProcessing = {
         // create the marker
         var marker = new mapboxgl.Marker();
         marker._element.id = markerId;
-        console.log(markerId);
-        console.log("MARKER", marker);
+        // console.log(markerId);
+        // console.log("MARKER", marker);
 
         //attach popup and add to map
         marker
@@ -453,7 +453,7 @@ function FeedItem(itemInfo, gridHandler) {
 
   //builder is refresher, so we can conveniently refresh when needed
   this.refresh = function(itemInfo) {
-    console.log(itemInfo);
+    // console.log(itemInfo);
     var priority = { text: "LOW", class: "" };
     let coordinates = itemInfo.address_geocoded.geometry.coordinates;
     var keyToText = function(key) {
@@ -516,7 +516,7 @@ function FeedItem(itemInfo, gridHandler) {
 
     //set minimize & maximize
     $fi.find(".fii-details").on("click", function() {
-      console.log($fid.css("height"));
+      // console.log($fid.css("height"));
       if ($fid.css("height") == "0px") {
         //if is minimized, then maximize
         $fid.animate(
@@ -541,7 +541,7 @@ function FeedItem(itemInfo, gridHandler) {
 
     //open share-modal to send event directly to a responder
     $fi.find(".fii-share").on("click", function() {
-      console.log("open share modal");
+      // console.log("open share modal");
       $.ajax({
         method: "POST",
         url: "/api/responder/nearby",
@@ -551,8 +551,8 @@ function FeedItem(itemInfo, gridHandler) {
           token: Cookies.get("token")
         })
       }).done(function(response) {
-        console.log("Sharing response");
-        console.log(response);
+        // console.log("Sharing response");
+        // console.log(response);
         if (response.status == "success") {
           $(".share-modal").show();
           $("#share-box-body").html('');
@@ -576,8 +576,8 @@ function FeedItem(itemInfo, gridHandler) {
                let message="Please check this out.";
                message+=" Our current enquiry suggests that there has been an incident of "+disaster+" in which we estimate around "+totalInjured+" injuries. The address is "+address+" with latitude "+lat+" and longitude "+lng+" .The distance from your current location to this place should be approximately "+distance_from_responder+" km" ;
                let attachment=$("#msg-to-responders").val();
-               console.log("Here is the attachment");
-               console.log(attachment);
+               // console.log("Here is the attachment");
+               // console.log(attachment);
                gridHandler.chatHandler.startChat(response.data[0].username, Cookies.get("token"));
                gridHandler.chatHandler.sendChat(message,Cookies.get("token"));
                gridHandler.chatHandler.sendChat(attachment,Cookies.get("token"));
@@ -652,8 +652,8 @@ var gridItemLookup = {
     init: function(item, self) {
       //$.get(/api/data/reports-trend-data/)
       //hourly
-      console.log("Getting the data");
-      console.log(reports_trend_data);
+      // console.log("Getting the data");
+      // console.log(reports_trend_data);
       var view = "Hourly";
       var ctx = $("#reports_trend_chart")[0].getContext("2d");
       self.charts.insert(
@@ -732,8 +732,8 @@ var gridItemLookup = {
         data: JSON.stringify({ token: Cookies.get("token") })
       }).done(function(response) {
         feedData = response.data.feed;
-        console.log("Here is the reponse to init");
-        console.log(response);
+        // console.log("Here is the reponse to init");
+        // console.log(response);
         if (response != undefined) {
           for (var i = 0; i < feedData.length; i++) {
             var curInfo = {};
@@ -771,9 +771,9 @@ var gridItemLookup = {
             curInfo.timestamp = feedData[i].timestamp;
             map_marks_element.coordinates.lat = location[1];
             map_marks_element.coordinates.lng = location[0];
-            console.log(map_marks_element);
+            // console.log(map_marks_element);
             map_marks.push(map_marks_element);
-            console.log(map_marks);
+            // console.log(map_marks);
             //get the time from timestamp
             let cur_date = new Date(curInfo.timestamp);
             let time_diff = Math.abs(date - cur_date) / 36e5;
@@ -818,7 +818,7 @@ var gridItemLookup = {
           .get(0),
         $(item).find(".gi-body")
       );
-      console.log("===================Loading map");
+      // console.log("===================Loading map");
       self.mapHandler.load();
     }
   },
@@ -839,10 +839,10 @@ var gridItemLookup = {
       //$.get(/api/data/breakdown-chart-data/)
       var ctx = $("#breakdown_chart")[0].getContext("2d");
       if (breakdown_data.datasets.length == 0) {
-        console.log("Nothing here");
+        // console.log("Nothing here");
       } else {
-        console.log("Finally getting here");
-        console.log(breakdown_data);
+        // console.log("Finally getting here");
+        // console.log(breakdown_data);
         breakdown_data.datasets[0].backgroundColor = getColors(
           breakdown_data.datasets[0].data.length
         );
@@ -957,7 +957,7 @@ function base64toBlob(base64Data, contentType) {
 }
 
 function markOnMap(gridHandler, map_marks) {
-  console.log("Showing markOnMap");
+  // console.log("Showing markOnMap");
   var addMarks = function() {
     //mm is for map marker
     for (let i = 0; i < map_marks.length; i++) {
@@ -975,11 +975,11 @@ function markOnMap(gridHandler, map_marks) {
         index,
         item
       ) {
-        console.log("ITEM.ID", item.id);
+        // console.log("ITEM.ID", item.id);
         if (item.id == markerId) exists = true;
       });
 
-      console.log("EXISTS", exists);
+      // console.log("EXISTS", exists);
       if (exists) return false;
 
       // create the popup
@@ -990,8 +990,8 @@ function markOnMap(gridHandler, map_marks) {
         color: colorDisaster[disaster]
       });
       marker._element.id = markerId;
-      console.log(markerId);
-      console.log("MARKER", marker);
+      // console.log(markerId);
+      // console.log("MARKER", marker);
 
       //attach popup and add to map
       marker

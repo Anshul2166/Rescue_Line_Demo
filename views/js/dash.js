@@ -82,7 +82,7 @@ function loadingButton($button) {
 
 function getProfile(token) {
   $.get("/api/profile/" + token).done(function(response) {
-    console.log(response);
+    // console.log(response);
     if (response.status == "success") {
       if (typeof response.data["username"] != "undefined")
         $("#profile_username").html(response.data["username"]);
@@ -112,7 +112,7 @@ function updateProfile(profile, token) {
     contentType: "application/json",
     data: JSON.stringify({ profile: profile, token: token })
   }).done(function(response) {
-    console.log(response);
+    // console.log(response);
     if (response.status == "success") {
       handleSuccess("Saved profile");
     } else {
@@ -130,7 +130,7 @@ function updateProfilePic(formData, token) {
     contentType: false,
     data: formData
   }).done(function(response) {
-    console.log(response);
+    // console.log(response);
     if (response.status == "success") {
       handleSuccess("Updated profile pic");
       // $("#profile_img").attr("src", response.data["profile_pic"]);
@@ -148,9 +148,9 @@ function updateProfilePic(formData, token) {
       formData.append("first_name",first_name);
       formData.append("last_name",last_name);
       formData.append("phone_number",phone_number);
-      for (var pair of formData.entries()) {
-        console.log(pair[0]+ ', ' + pair[1]); 
-      }
+      // for (var pair of formData.entries()) {
+      //   console.log(pair[0]+ ', ' + pair[1]); 
+      // }
       $.ajax({
         method: "POST",
         // url: "https://cors-anywhere.herokuapp.com/investorrank.in/api/missing/",
@@ -160,10 +160,10 @@ function updateProfilePic(formData, token) {
         contentType: false, 
         data: formData
       }).done(function(response) {
-        console.log("Sending in response-success");
+        // console.log("Sending in response-success");
       }).fail(function(err){
-        console.log("Error in sending user profile");
-        console.log(err);
+        // console.log("Error in sending user profile");
+        // console.log(err);
       });
     } else {
       handleError(response.error);
@@ -183,15 +183,15 @@ function ViewManager(allViews) {
   this.load = function(view) {
     var viewLoader = views[view];
     if (typeof viewLoader == "undefined") {
-      console.log("ERROR: INVALID VIEW");
+      // console.log("ERROR: INVALID VIEW");
       return;
     }
     var loadResponse = viewLoader();
 
     if (currView == view) return;
 
-    console.log(currView);
-    console.log(view);
+    // console.log(currView);
+    // console.log(view);
     $("#" + currView).removeClass("ds-active no-a-b");
     $("#" + currView).css("background-color", "transparent");
     $("#" + currView + "_view").removeClass("active-view");

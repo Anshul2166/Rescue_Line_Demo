@@ -5,7 +5,7 @@ function MapHandler(){
   this.map = null;
 
   this.load = function(){
-    console.log("in load");
+    // console.log("in load");
     $('#mapbox').css('width',$('.dash-container').width()+'px');
     $('#mapbox').css('height',$('.dash-container').height()+'px');
     setTimeout(function(){
@@ -39,28 +39,28 @@ $(document).on('ready',function(){
   //load views into viewManager programmatically
   var viewManager = new ViewManager({
     "profile" : function(){
-      console.log("Loaded profile view");
+      // console.log("Loaded profile view");
       var profile = getProfile(Cookies.get('token'));
     },
     "get_help" : function(){
-      console.log("Loaded get help view");
+      // console.log("Loaded get help view");
       chatHandler.getHistory(Cookies.get('token'));
       if (!locationHandler.recentPrompt())
         locationHandler.precisePrompt();
     },
     "map" : function(){
-      console.log("map view");
+      // console.log("map view");
       if (!mapHandler.loaded)
         mapHandler.load();
     },
     "safe_place" : function(){
-      console.log("safe_place view");
+      // console.log("safe_place view");
     },
     "missing" : function(){
-      console.log("missing view");
+      // console.log("missing view");
     },
     "tips" : function(){
-      console.log("Tips and tricks view");
+      // console.log("Tips and tricks view");
     }
   });
 

@@ -6,28 +6,28 @@ $(document).on('ready',function(){
   //load views into tipsManager programmatically
   var tipsManager = new TipsManager({
     "fire" : function(){
-      console.log("Loaded fire");
+      // console.log("Loaded fire");
     },
     "earthquake" : function(){
-      console.log("Loaded earthquake");
+      // console.log("Loaded earthquake");
     },
     "flood" : function(){
-      console.log("Loading flood");
+      // console.log("Loading flood");
     },
     "sandstorm" : function(){
-      console.log("sandstorm view");
+      // console.log("sandstorm view");
     },
     "avalanche" : function(){
-      console.log("avalanche view");
+      // console.log("avalanche view");
     },
     "tornado" : function(){
-      console.log("tornado view");
+      // console.log("tornado view");
     },
     "tsunami" : function(){
-      console.log("tsunami view");
+      // console.log("tsunami view");
     },
     "volcano" : function(){
-      console.log("volcano view");
+      // console.log("volcano view");
     }
   });
 });
@@ -44,7 +44,7 @@ function TipsManager(allViews){
   this.load = function(view){
     var viewLoader = views[view];
     if (typeof viewLoader == "undefined"){
-      console.log("ERROR: INVALID VIEW");
+      // console.log("ERROR: INVALID VIEW");
       return;
     }
     var loadResponse = viewLoader();
@@ -52,8 +52,8 @@ function TipsManager(allViews){
     if(currView == view)
       return;
 
-    console.log(currView);
-    console.log(view);
+    // console.log(currView);
+    // console.log(view);
     $('#'+currView).removeClass('ds-active no-a-b');
     $('#'+currView).css('background-color','transparent');
     $('#'+currView+"_view").removeClass('active-view');

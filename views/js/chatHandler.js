@@ -19,12 +19,12 @@ function ChatHandler(options){
   //start a chat session
   this.startChat = function(username,token){
     $('.chat-log').html('<div class="spinner c-align-abs"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
-    console.log("Inside start chat");
+    // console.log("Inside start chat");
     self.state.current_target = username;
-    console.log(self.state.current_target);
+    // console.log(self.state.current_target);
     $.get("/api/chat/logs?username="+ username + "&token="+ token)
         .done(function(response) {
-          console.log(response);
+          // console.log(response);
           if (response.status == "success"){
             if (response.data.length == 0 || $.isEmptyObject(response.data)){
               $('.chat-log').html('<div class="chat-starter c-align-abs f17 cl-light-gray tc" style="width:180px;height:70px;">No recent logs.<br>Start the conversation</div>');
@@ -51,7 +51,7 @@ function ChatHandler(options){
 
     $.get("/api/chat/history/"+ token)
         .done(function(response) {
-          console.log(response);
+          // console.log(response);
           if (response.status == "success"){
             var $ch = $('.ch-cont');
             var unreadCount = 0;
@@ -111,7 +111,7 @@ function ChatHandler(options){
 
     $.get("/api/chat/nearby?location="+ JSON.stringify(location) +"&token="+ token)
         .done(function(response) {
-          console.log(response);
+          // console.log(response);
 
           if (response.status == "success"){
             var $ch = $('.ch-cont');
@@ -147,12 +147,12 @@ function ChatHandler(options){
 
   }
   this.sendChat=function(message,token){
-    console.log("Inside sendChatBySelf");
-    console.log(self.state.current_target);
+    // console.log("Inside sendChatBySelf");
+    // console.log(self.state.current_target);
     if (self.state.current_target == null)
       return false;
 
-    console.log("in send chat");
+    // console.log("in send chat");
     var msgEl = self.insertChat({msg: message, timestamp:'now'}, 'sent'); //insert, but if it is an error, we will remove DOM element.
     var payload = {
       "receiver" : self.state.current_target,
@@ -164,7 +164,7 @@ function ChatHandler(options){
       contentType: "application/json",
       data: JSON.stringify({ message: payload, token: token })
     }).done(function(response){
-      console.log(response);
+      // console.log(response);
       if (response.status == "success"){
         if ($('.chat-log').find('.chat-starter').length > 0)
           $('.chat-log').find('.chat-starter').remove();
@@ -184,8 +184,8 @@ function ChatHandler(options){
   //animate is false if you don't want to animate scroll
   this.insertChat = function(msgInfo,type,animate){
     var msgEl = document.createElement('div');
-    console.log("Inside insert chat");
-    console.log(msgInfo);
+    // console.log("Inside insert chat");
+    // console.log(msgInfo);
     var $chatLog = $('.chat-log');
     if (type == "rec"){
       $(msgEl).html('<div class="chat-row"><div class="received paper">'+ msgInfo.msg +'<div class="ts abs bottom-right">'+ msgInfo.timestamp +'</div></div></div>');
@@ -217,7 +217,7 @@ function ChatHandler(options){
       contentType: "application/json",
       data: JSON.stringify({ input: message, token: token, location: localStorage.getItem('location-precise') })
     }).done(function(response){
-      console.log(response);
+      // console.log(response);
       if (response.status == "success"){
         if ($('.chat-log').find('.chat-starter').length > 0)
           $('.chat-log').find('.chat-starter').remove();
@@ -265,8 +265,8 @@ function ChatHandler(options){
 
   var handleChat = function ($chatInput){
     var chat = $chatInput.val();
-    console.log("Called handleChat");
-    console.log(self.state.current_target);
+    // console.log("Called handleChat");
+    // console.log(self.state.current_target);
     if ($.trim(chat).length > 0){
       if (self.state.current_target == "rescueline-bot"){
         sendAssistantChat(chat, Cookies.get('token'));
@@ -302,11 +302,11 @@ function ChatHandler(options){
     var chatHistory = document.createElement('div');
     var previewClass = "ch-msg roboto-thin cl-light-gray";
     var preview = "";
-    console.log("Building chat history");
-    console.log(chatInfo);
+    // console.log("Building chat history");
+    // console.log(chatInfo);
     if (typeof chatInfo.profile_pic == "undefined" || chatInfo.profile_pic == "none")
       chatInfo.profile_pic = "/assets/placeholder.jpg";
-  	console.log(chatInfo.profile_pic);
+  	// console.log(chatInfo.profile_pic);
     if (!chatInfo.read)
       previewClass += " bold";
 
@@ -335,13 +335,13 @@ function ChatHandler(options){
         chatInfo.read = true;
         $.get("/api/chat/read/"+ chatInfo._id)
             .done(function(response) {
-              console.log("Read the chat");
-              console.log(response);
+              // console.log("Read the chat");
+              // console.log(response);
               if (response.status == "success"){
-                console.log("Marked chat as read");
+                // console.log("Marked chat as read");
               } else {
                 //error
-                console.log("Could not mark chat as read");
+                // console.log("Could not mark chat as read");
                 handleError(response.error);
               }
             });
@@ -362,7 +362,7 @@ function ChatHandler(options){
   }
   $(".chat-input").on("keydown", function(e) {
       if(e.which == 13){
-        console.log("Calling handleChat by enter input");
+        // console.log("Calling handleChat by enter input");
         handleChat($(this));
       }
   });

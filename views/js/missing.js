@@ -6,11 +6,11 @@ $(document).on("ready", function() {
 		var myForm = document.getElementById("missing_form");
 		var file = $("#missing_pic").get(0).files[0];
 		let formData = new FormData();
-		console.log(file);
+		// console.log(file);
 		formData.append("image", file, file.name);
-		console.log("Changing form data");
-		console.log(formData);
-		console.log(formData.get("image"));
+		// console.log("Changing form data");
+		// console.log(formData);
+		// console.log(formData.get("image"));
 		readURL(this);
 		locationMarking();
 	});
@@ -20,8 +20,8 @@ $(document).on("ready", function() {
 		let chatHandler = new ChatHandler();
 		var file = $("#missing_pic").get(0).files[0];
 		formData.append("image", file, file.name);
-		console.log("step 4");
-		console.log("Preventing");
+		// console.log("step 4");
+		// console.log("Preventing");
 		e.preventDefault();
 		let location = JSON.parse(
 			localStorage.getItem("missing-location-precise")
@@ -35,10 +35,10 @@ $(document).on("ready", function() {
 		formData.append("lon", lng);
 		formData.append("first_name", first_name);
 		formData.append("last_name", last_name);
-		console.log("Sending in formData");
-		for (var pair of formData.entries()) {
-			console.log(pair[0] + ", " + pair[1]);
-		}
+		// console.log("Sending in formData");
+		// for (var pair of formData.entries()) {
+		// 	console.log(pair[0] + ", " + pair[1]);
+		// }
 		handleSuccess("Added missing report. You will get notified on result");
 
 		$.ajax({
@@ -51,15 +51,15 @@ $(document).on("ready", function() {
 			data: formData
 		})
 			.done(function(response) {
-				console.log("Sending in response-success");
+				// console.log("Sending in response-success");
 				$.ajax({
 					method: "GET",
 					url:
 						"https://cors-anywhere.herokuapp.com/investorrank.in/api/missing/"
 				})
 					.done(function(response) {
-						console.log("Sending in get-response-success");
-						console.log(response);
+						// console.log("Sending in get-response-success");
+						// console.log(response);
 						let results = response.results;
 						let max = 0;
 						let final_result;
@@ -69,9 +69,9 @@ $(document).on("ready", function() {
 								final_result = results[i];
 							}
 						}
-						console.log(final_result);
+						// console.log(final_result);
 						if (final_result.image_found == true) {
-							console.log("Found the image");
+							// console.log("Found the image");
 							let first_name = final_result.first_name;
 							let last_name = final_result.last_name;
 							let name = "";
@@ -83,7 +83,7 @@ $(document).on("ready", function() {
 							if ((name = "")) {
 								name = "Anshul";
 							}
-							console.log("Here is the name " + name);
+							// console.log("Here is the name " + name);
 							let lat = final_result.lat;
 							let lon = final_result.lon;
 							// =Handler.startChat(
@@ -102,8 +102,8 @@ $(document).on("ready", function() {
 						}
 					})
 					.fail(function(err) {
-						console.log("Error in sending user profile1");
-						console.log(err);
+						// console.log("Error in sending user profile1");
+						// console.log(err);
 						let message =
 							"Found your missing person " +
 							"Anshul" +
@@ -115,15 +115,15 @@ $(document).on("ready", function() {
 					});
 			})
 			.fail(function(err) {
-				console.log("Sending in the get response");
+				// console.log("Sending in the get response");
 				$.ajax({
 					method: "GET",
 					url:
 						"https://cors-anywhere.herokuapp.com/investorrank.in/api/missing/"
 				})
 					.done(function(response) {
-						console.log("Sending in get-response-success");
-						console.log(response);
+						// console.log("Sending in get-response-success");
+						// console.log(response);
 						let results = response.results;
 						let max = 0;
 						let final_result;
@@ -133,9 +133,9 @@ $(document).on("ready", function() {
 								final_result = results[i];
 							}
 						}
-						console.log(final_result);
+						// console.log(final_result);
 						if (final_result.image_found == true) {
-							console.log("Found the image");
+							// console.log("Found the image");
 							let first_name = final_result.first_name;
 							let last_name = final_result.last_name;
 							let name = "";
@@ -162,8 +162,8 @@ $(document).on("ready", function() {
 						}
 					})
 					.fail(function(err) {
-						console.log("Error in sending user profile2");
-						console.log(err);
+						// console.log("Error in sending user profile2");
+						// console.log(err);
 						let message =
 							"Found your missing person " +
 							"Anshul" +
@@ -194,7 +194,7 @@ function locationMarking() {
 	var self = this;
 	self.loaded = false;
 	self.map = null;
-	console.log("More inside");
+	// console.log("More inside");
 	swal({
 		title: "Your Location Is Critical",
 		text: "Send us the location of last seen",
@@ -244,7 +244,7 @@ function locationMarking() {
 			);
 
 			marker.on("dragend", function(e) {
-				console.log(e);
+				// console.log(e);
 				localStorage.setItem(
 					"missing-location-precise",
 					JSON.stringify(e.target._lngLat)

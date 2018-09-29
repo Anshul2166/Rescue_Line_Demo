@@ -11,7 +11,7 @@ function SocketHandler(chatHandler, noti, customEvents){
 
     //set events
     socket.on('chat',function(msg){
-      console.log(msg);
+      // console.log(msg);
       var msg = JSON.parse(msg);
       chatHandler.getHistory(Cookies.get('token'));
       noti.notify({ name : "New message", msg : msg.sender + " sent you a message.", view: "get_help" });

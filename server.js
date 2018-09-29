@@ -25,7 +25,7 @@ exports.parser = function(){
 
 http.listen(port, function(){
   console.log('listening on :'+ port);
-  console.log("server starting on " + appEnv.url);
+  // console.log("server starting on 8080");
 });
 
 //API includes

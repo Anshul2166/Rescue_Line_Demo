@@ -24,15 +24,15 @@ module.exports.sendMail = function(email,subject,msg,html){
     text: msg,
     html: html
   };
-  console.log("Sending from "+process.env.EMAIL_USERNAME+" and "+process.env.EMAIL_PASSWORD+" to "+email);
+  // console.log("Sending from "+process.env.EMAIL_USERNAME+" and "+process.env.EMAIL_PASSWORD+" to "+email);
   transporter.sendMail(mailOptions, function(error, info){
-    console.log("Here is the info");
-    console.log(info);
-    console.log(error);
+    // console.log("Here is the info");
+    // console.log(info);
+    // console.log(error);
     if (error)
       status = { "status" : "error", "error" : error };
   });
-  console.log("Status is");
-  console.log(status);
+  // console.log("Status is");
+  // console.log(status);
   return status;
 };

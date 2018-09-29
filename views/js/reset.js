@@ -8,7 +8,7 @@ function ResetHandler(){
       contentType: "application/json",
       data: JSON.stringify({ password : password, token : token })
     }).done(function(response){
-      console.log(response);
+      // console.log(response);
       if (response.status == "success"){
         handleSuccess("You successfully reset your password. Redirecting you to login now.");
         setTimeout(function(){

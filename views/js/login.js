@@ -26,7 +26,7 @@ function LoginHandler(){
       contentType: "application/json",
       data: JSON.stringify({ username: username, password: password })
     }).done(function(response){
-      console.log(response);
+      // console.log(response);
       if (response.status == "success"){
         Cookies.set('token', response.data.token, { expires: 7 });
         window.location.href = '/dashboard';

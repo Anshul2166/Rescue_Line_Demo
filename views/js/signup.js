@@ -21,9 +21,9 @@ function SignupHandler(type){
 
     $.get("/api/account/check-name/"+ username)
         .done(function(response) {
-              console.log(response);
+              // console.log(response);
               if (response.status == "success"){
-                console.log(response.data.is_available);
+                // console.log(response.data.is_available);
                 if (response.data.is_available === true){
                   resetInputs($('#username')[0]);
                   state.validUsername = true;
@@ -33,7 +33,7 @@ function SignupHandler(type){
                   inputTip($('#username'),'Sorry, that username is taken.','cl-red');
                 }
               } else {
-                console.log("Error");
+                // console.log("Error");
                 state.validUsername = false;
               }
         });
@@ -52,7 +52,7 @@ function SignupHandler(type){
       contentType: "application/json",
       data: JSON.stringify({ name: name, username: username, password: password, type : userType, code: code })
     }).done(function(response){
-      console.log(response);
+      // console.log(response);
 
       if (response.status == "success"){
         Cookies.set('token', response.data.token, { expires: 7 });

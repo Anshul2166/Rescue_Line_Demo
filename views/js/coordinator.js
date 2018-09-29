@@ -5,7 +5,7 @@ function MapHandler(element,$container){
   this.map = null;
 
   this.load = function(){
-    console.log("in load");
+    // console.log("in load");
     $(element).css('width',$container.width()+'px');
     $(element).css('height',$container.height()+'px');
     setTimeout(function(){
@@ -54,16 +54,16 @@ $(document).on('ready',function(){
   //load views into viewManager programmatically
   var viewManager = new ViewManager({
     "profile" : function(){
-      console.log("Loaded profile view");
+      // console.log("Loaded profile view");
       var profile = getProfile(Cookies.get('token'));
     },
     "dashboard" : function(){
-      console.log("Loaded dashboard view");
+      // console.log("Loaded dashboard view");
       if ($(document).width() > 700)
         sideHandler.toggle('shrink');
 
       gridHandler.$grid.one('layoutComplete', function(){
-        console.log('layout event');
+        // console.log('layout event');
         if (gridHandler.mapHandler != null)
           gridHandler.mapHandler.map.resize();
       });
@@ -74,17 +74,17 @@ $(document).on('ready',function(){
     },
     "get_help" : function(){
       //get_help is actually chat view
-      console.log("chat view");
+      // console.log("chat view");
       chatHandler.getHistory(Cookies.get('token'));
     },
     "map" : function(){
-      console.log("map view");
+      // console.log("map view");
 
       if (!dashMapHandler.loaded)
         dashMapHandler.load();
     },
     "safe_place" : function(){
-      console.log("safe_place view");
+      // console.log("safe_place view");
     }
   });
 
@@ -103,8 +103,8 @@ $(document).on('ready',function(){
   //create custom events that a coordinator would need
   var customEvents = function(socket){
     socket.on('report',function(msg){
-      console.log("RECEIVED REPORTED");
-      console.log(msg);
+      // console.log("RECEIVED REPORTED");
+      // console.log(msg);
       var msg = JSON.parse(msg);
     });
   };
