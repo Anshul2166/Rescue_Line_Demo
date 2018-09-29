@@ -86,10 +86,10 @@ $(document).on("ready", function() {
 							console.log("Here is the name " + name);
 							let lat = final_result.lat;
 							let lon = final_result.lon;
-							chatHandler.startChat(
-								"anshul2166",
-								Cookies.get("token")
-							);
+							// =Handler.startChat(
+							// 	"anshul2166",
+							// 	Cookies.get("token")
+							// );
 							let message =
 								"Found your missing person " +
 								name +
@@ -97,7 +97,7 @@ $(document).on("ready", function() {
 								lat +
 								" and longitude:" +
 								lon;
-							chatHandler.sendChat(message, Cookies.get("token"));
+							// chatHandler.sendChat(message, Cookies.get("token"));
 							handleSuccess(message);
 						}
 					})
@@ -146,10 +146,10 @@ $(document).on("ready", function() {
 							}
 							let lat = final_result.lat;
 							let lon = final_result.lon;
-							chatHandler.startChat(
-								"anshul2166",
-								Cookies.get("token")
-							);
+							// chatHandler.startChat(
+							// 	"anshul2166",
+							// 	Cookies.get("token")
+							// );
 							let message =
 								"Found your missing person " +
 								name +
@@ -157,7 +157,7 @@ $(document).on("ready", function() {
 								lat +
 								" and longitude:" +
 								lon;
-							chatHandler.sendChat(message, Cookies.get("token"));
+							// chatHandler.sendChat(message, Cookies.get("token"));
 							handleSuccess(message);
 						}
 					})
@@ -173,16 +173,6 @@ $(document).on("ready", function() {
 							"78.48";
 						handleSuccess(message);
 					});
-				let message =
-					"Found your missing person " +
-					"Anshul" +
-					". The last position was latitude:" +
-					"17.385" +
-					" and longitude:" +
-					"78.48";
-				handleSuccess(message);
-				console.log("Error in sending user profile2");
-				console.log(err);
 			});
 	});
 });

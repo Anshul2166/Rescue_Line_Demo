@@ -453,7 +453,7 @@ function FeedItem(itemInfo, gridHandler) {
 
   //builder is refresher, so we can conveniently refresh when needed
   this.refresh = function(itemInfo) {
-    console.log("itemInfo");
+    console.log(itemInfo);
     var priority = { text: "LOW", class: "" };
     let coordinates = itemInfo.address_geocoded.geometry.coordinates;
     var keyToText = function(key) {
@@ -472,8 +472,8 @@ function FeedItem(itemInfo, gridHandler) {
     };
     let disaster=processedIntent.text;
     let address=itemInfo.address;
-    let lat="96.78";
-    let lng="196.78";
+    lat=itemInfo.address_geocoded.geometry.coordinates[1];
+    lng=itemInfo.address_geocoded.geometry.coordinates[0];
     //lf_ is live_feed, + docID
     self.feedItem.id = "lf_" + itemInfo._id;
 
