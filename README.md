@@ -3,13 +3,15 @@
 Rescue Line is an IBM Cloud Foundry app built with NodeJS, Express, Nunjucks, Cloudant NoSQL and IBM Cloud Object Storage for image storage.
 The web app front-end is pure HTML, CSS & JS.
 
+You can directly visit our site deployed at [Rescue Line](https://rescue-line-prevolitional-dozer.eu-gb.mybluemix.net/)
+
 Getting started:
 
 1.) Make sure [Git](https://git-scm.com/downloads) and [NodeJS](https://nodejs.org/en/) are installed
 
 2.) Open command line, 'cd' to your home directory and then clone this app:
 ```
-git clone https://github.com/rogisolorzano/rescue-line
+git clone https://github.com/Anshul2166/Rescue_Line_Demo
 ```
 3.) 'cd' into newly cloned app directory
 ```
